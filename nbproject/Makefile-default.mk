@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/Main.asm //icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/config.asm
+SOURCEFILES_QUOTED_IF_SPACED=//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/Main.asm //icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/config.asm StartMessage.asm UART.asm LCD.asm
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/2034501830/Main.o ${OBJECTDIR}/_ext/2034501830/config.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/2034501830/Main.o.d ${OBJECTDIR}/_ext/2034501830/config.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/2034501830/Main.o ${OBJECTDIR}/_ext/2034501830/config.o ${OBJECTDIR}/StartMessage.o ${OBJECTDIR}/UART.o ${OBJECTDIR}/LCD.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/2034501830/Main.o.d ${OBJECTDIR}/_ext/2034501830/config.o.d ${OBJECTDIR}/StartMessage.o.d ${OBJECTDIR}/UART.o.d ${OBJECTDIR}/LCD.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/2034501830/Main.o ${OBJECTDIR}/_ext/2034501830/config.o
+OBJECTFILES=${OBJECTDIR}/_ext/2034501830/Main.o ${OBJECTDIR}/_ext/2034501830/config.o ${OBJECTDIR}/StartMessage.o ${OBJECTDIR}/UART.o ${OBJECTDIR}/LCD.o
 
 # Source Files
-SOURCEFILES=//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/Main.asm //icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/config.asm
+SOURCEFILES=//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/Main.asm //icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/config.asm StartMessage.asm UART.asm LCD.asm
 
 
 CFLAGS=
@@ -110,6 +110,30 @@ ${OBJECTDIR}/_ext/2034501830/config.o: //icnas1.cc.ic.ac.uk/st4517/Year3/Micropr
 	@${DEP_GEN} -d "${OBJECTDIR}/_ext/2034501830/config.o"
 	@${FIXDEPS} "${OBJECTDIR}/_ext/2034501830/config.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
+${OBJECTDIR}/StartMessage.o: StartMessage.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/StartMessage.o.d 
+	@${RM} ${OBJECTDIR}/StartMessage.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/StartMessage.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_ICD3=1 -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/StartMessage.lst\" -e\"${OBJECTDIR}/StartMessage.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/StartMessage.o\" \"StartMessage.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/StartMessage.o"
+	@${FIXDEPS} "${OBJECTDIR}/StartMessage.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
+${OBJECTDIR}/UART.o: UART.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/UART.o.d 
+	@${RM} ${OBJECTDIR}/UART.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/UART.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_ICD3=1 -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/UART.lst\" -e\"${OBJECTDIR}/UART.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/UART.o\" \"UART.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/UART.o"
+	@${FIXDEPS} "${OBJECTDIR}/UART.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
+${OBJECTDIR}/LCD.o: LCD.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/LCD.o.d 
+	@${RM} ${OBJECTDIR}/LCD.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/LCD.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_ICD3=1 -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/LCD.lst\" -e\"${OBJECTDIR}/LCD.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/LCD.o\" \"LCD.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/LCD.o"
+	@${FIXDEPS} "${OBJECTDIR}/LCD.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
 else
 ${OBJECTDIR}/_ext/2034501830/Main.o: //icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/Main.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/_ext/2034501830" 
@@ -126,6 +150,30 @@ ${OBJECTDIR}/_ext/2034501830/config.o: //icnas1.cc.ic.ac.uk/st4517/Year3/Micropr
 	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/_ext/2034501830/config.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/_ext/2034501830/config.lst\" -e\"${OBJECTDIR}/_ext/2034501830/config.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/_ext/2034501830/config.o\" \"//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/config.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/_ext/2034501830/config.o"
 	@${FIXDEPS} "${OBJECTDIR}/_ext/2034501830/config.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
+${OBJECTDIR}/StartMessage.o: StartMessage.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/StartMessage.o.d 
+	@${RM} ${OBJECTDIR}/StartMessage.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/StartMessage.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/StartMessage.lst\" -e\"${OBJECTDIR}/StartMessage.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/StartMessage.o\" \"StartMessage.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/StartMessage.o"
+	@${FIXDEPS} "${OBJECTDIR}/StartMessage.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
+${OBJECTDIR}/UART.o: UART.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/UART.o.d 
+	@${RM} ${OBJECTDIR}/UART.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/UART.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/UART.lst\" -e\"${OBJECTDIR}/UART.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/UART.o\" \"UART.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/UART.o"
+	@${FIXDEPS} "${OBJECTDIR}/UART.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
+${OBJECTDIR}/LCD.o: LCD.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/LCD.o.d 
+	@${RM} ${OBJECTDIR}/LCD.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/LCD.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/LCD.lst\" -e\"${OBJECTDIR}/LCD.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/LCD.o\" \"LCD.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/LCD.o"
+	@${FIXDEPS} "${OBJECTDIR}/LCD.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
 endif
 

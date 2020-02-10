@@ -14,6 +14,9 @@
                    projectFiles="true">
       <itemPath>//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/Main.asm</itemPath>
       <itemPath>//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/config.asm</itemPath>
+      <itemPath>StartMessage.asm</itemPath>
+      <itemPath>UART.asm</itemPath>
+      <itemPath>LCD.asm</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

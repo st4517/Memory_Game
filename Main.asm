@@ -20,13 +20,28 @@ rst	code	0    ; reset vector
 	global myTable
 	
 setup	;clearing and resetting here
-	call setup
+	lfsr	FSR0, myArray	; Load FSR0 with address in RAM	
+	movlw	upper(myTable)	; address of data in PM
+	movwf	TBLPTRU		; load upper bits to TBLPTRU
+	movlw	high(myTable)	; address of data in PM
+	movwf	TBLPTRH		; load high byte to TBLPTRH
+	movlw	low(myTable)	; address of data in PM
+	movwf	TBLPTRL		; load low byte to TBLPTRL
+	movlw	myTable_l	; bytes to read
+	movwf 	counter		; our counter register
+loop 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
+	movff	TABLAT, POSTINC0; move data from TABLAT to (FSR0), inc FSR0	
+	decfsz	counter		; count down to zero
+	bra	loop		; keep going until finished
+	
+	call 
 	
 	; ******* myTable, data in programme memory, and its length *****
 myTable data	    "Press key to continue\n"	; message, plus carriage return
 	constant    myTable_l=.13	; length of data
 	call writemessage
 
+setupMessageRAM
 
 
 	end
