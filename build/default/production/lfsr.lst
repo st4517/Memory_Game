@@ -1,4 +1,4 @@
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE  1
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -16,72 +16,66 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00009 
                       02986         LIST
                       00002 
-  0000                00003         extern  UART_Setup, UART_Transmit_Message  ; external UART subroutines
-  0000                00004         extern  LCD_Setup, LCD_Write_Message        ; external LCD subroutines
-                      00005         
-  0000                00006         global writemessage
-  0000                00007         global setup
-  0000                00008         extern myTable
-  0000                00009         extern myTable_l
-  0000                00010         extern myArray
-                      00011         
-                      00012 acs0    udata_acs   ; reserve data space in access ram
-000000                00013 counter     res 1   ; reserve one byte for a counter variable
-000001                00014 delay_count res 1   ; reserve one byte for counter in the delay routine
-                      00015 
-                      00016 ;rst    code    0    ; reset vector
-                      00017         ;goto   setup
-                      00018 
-                      00019 pdata   code    ; a section of programme memory for storing data
-                      00020 
-                      00021         
-                      00022 main    code
-                      00023         ; ******* Programme FLASH read Setup Code ***********************
-000000 9C7F           00024 setup   bcf     EECON1, CFGS    ; point to Flash program memory  
-000002 8E7F           00025         bsf     EECON1, EEPGD   ; access Flash program memory
-000004 EC?? F???      00026         call    UART_Setup      ; setup UART
-000008 EC?? F???      00027         call    LCD_Setup       ; setup LCD
-00000C 0012           00028         return
-                      00029         ;goto   start
-                      00030         
-                      00031         ; ******* Main programme ****************************************
-00000E EE?? F0??      00032 writemessage    lfsr    FSR0, myArray   ; Load FSR0 with address in RAM 
-000012 0E??           00033         movlw   upper(myTable)  ; address of data in PM
-000014 6EF8           00034         movwf   TBLPTRU         ; load upper bits to TBLPTRU
-000016 0E??           00035         movlw   high(myTable)   ; address of data in PM
-000018 6EF7           00036         movwf   TBLPTRH         ; load high byte to TBLPTRH
-00001A 0E??           00037         movlw   low(myTable)    ; address of data in PM
-00001C 6EF6           00038         movwf   TBLPTRL         ; load low byte to TBLPTRL
-00001E 0E??           00039         movlw   myTable_l       ; bytes to read
-000020 6E??           00040         movwf   counter         ; our counter register
-000022 0009           00041 loop    tblrd*+                 ; one byte from PM to TABLAT, increment TBLPRT
-000024 CFF5 FFEE      00042         movff   TABLAT, POSTINC0; move data from TABLAT to (FSR0), inc FSR0     
-000028 2E??           00043         decfsz  counter         ; count down to zero
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE  2
+                      00003 acs0    udata_acs   ; named variables in access ram           
+                      00004 
+000000                00005 s0            res 1   ; reserve 1 byte for variable delay
+000001                00006 s1            res 1
+000002                00007 s2            res 1
+000003                00008 s3            res 1
+                      00009 
+000004                00010 random res 1
+000005                00011 counter res 1
+000006                00012 level      res 1
+                      00013 
+                      00014 MAIN code
+                      00015     org 0x0
+000000 EF?? F???      00016         goto start
+                      00017     org 0x100                                 ; Main code starts here at address 0x100
+000100 C??? FFE8      00018 shift   movff s3, WREG                
+000104 1800           00019         xorwf s2,0, ACCESS          ;XOR gate, stores result in WREG
+000106 C??? F???      00020         movff s2,s3                         ; shifts values to right
+00010A C??? F???      00021         movff s1,s2
+00010E C??? F???      00022         movff s0,s1
+000112 6E00           00023         movwf s0, ACCESS           ;moves XORed result to s0
+000114 0012           00024         return
+                      00025 
+000116 EE01 F040      00026 setFSR lfsr FSR0, 0x140
+00011A 0012           00027         return
+00011C 0E01           00028 start   movlw 0x01
+00011E 6E??           00029         movwf s0
+000120 6E??           00030         movwf s1
+000122 6E??           00031         movwf s2
+000124 6E??           00032         movwf s3
+000126 6A??           00033         clrf counter
+000128 EC?? F???      00034         call setFSR
+                      00035 
+00012C EC?? F???      00036 load    call produce                       ;produces random number 0-3, stores in random
+000130 C??? FFEE      00037         movff random, POSTINC0              ;stored in FSR
+000134 2A00           00038         incf counter,1,0
+000136 0E04           00039         movlw 0x04
+000138 62??           00040         cpfseq counter                  ;stops looping when sequence is length 4
+00013A D???           00041         bra load
+00013C EC?? F???      00042         call setFSR
+000140 EF?? F???      00043         goto theend
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-00002A D???           00044         bra     loop            ; keep going until finished
-                      00045                         
-00002C 0E??           00046         movlw   myTable_l-1     ; output message to LCD (leave out "\n")
-00002E EE?? F0??      00047         lfsr    FSR2, myArray
-000032 EC?? F???      00048         call    LCD_Write_Message
-                      00049         
-000036 0E??           00050         movlw   myTable_l       ; output message to UART
-000038 EE?? F0??      00051         lfsr    FSR2, myArray
-00003C EC?? F???      00052         call    UART_Transmit_Message
-000040 0012           00053         return
-                      00054         ;goto   $               ; goto current line in code
-                      00055 
-                      00056         ; a delay subroutine if you need one, times around loop in delay_count
-000042 2E??           00057 delay   decfsz  delay_count     ; decrement until zero
-000044 D???           00058         bra delay
-000046 0012           00059         return
-                      00060 
-                      00061         end
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE  3
+                      00044 
+000144 EC?? F???      00045 produce call shift                              ;makes first random number
+000148 C??? F???      00046         movff s0, random            ;puts it in random
+00014C EC?? F???      00047         call shift                               ;makes second random number
+000150 C??? F000      00048         movff s0,W                        
+000154 2600           00049         addwf random,1,0           ;adds twice to random
+000156 2600           00050         addwf random,1,0           ;now random number can be 0-3
+000158 0012           00051         return
+                      00052         
+00015A EF?? F???      00053 theend goto $
+                      00054         
+                      00055         end
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE  3
 
 
 SYMBOL TABLE
@@ -140,7 +134,7 @@ ADMSK5                            00000005
 ADON                              00000000
 ADRES                             00000FC3
 ADRESH                            00000FC4
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE  4
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE  4
 
 
 SYMBOL TABLE
@@ -199,7 +193,7 @@ ANSEL16                           00000000
 ANSEL17                           00000001
 ANSEL18                           00000002
 ANSEL19                           00000003
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE  5
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE  5
 
 
 SYMBOL TABLE
@@ -258,7 +252,7 @@ C1TSEL0                           00000000
 C1TSEL1                           00000001
 C1TSEL2                           00000002
 C2INA                             00000004
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE  6
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE  6
 
 
 SYMBOL TABLE
@@ -317,7 +311,7 @@ CCP1IP                            00000001
 CCP1M0                            00000000
 CCP1M1                            00000001
 CCP1M2                            00000002
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE  7
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE  7
 
 
 SYMBOL TABLE
@@ -376,7 +370,7 @@ CCP5M0                            00000000
 CCP5M1                            00000001
 CCP5M2                            00000002
 CCP5M3                            00000003
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE  8
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE  8
 
 
 SYMBOL TABLE
@@ -435,7 +429,7 @@ CCP9IP                            00000006
 CCP9M0                            00000000
 CCP9M1                            00000001
 CCP9M2                            00000002
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE  9
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE  9
 
 
 SYMBOL TABLE
@@ -494,7 +488,7 @@ CHSN1                             00000001
 CHSN2                             00000002
 CK1                               00000006
 CK2                               00000001
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 10
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 10
 
 
 SYMBOL TABLE
@@ -553,7 +547,7 @@ CTMUIE                            00000003
 CTMUIF                            00000003
 CTMUIP                            00000003
 CTMUMD                            00000006
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 11
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 11
 
 
 SYMBOL TABLE
@@ -612,7 +606,7 @@ ECCP1AS1                          00000005
 ECCP1AS2                          00000006
 ECCP1ASE                          00000007
 ECCP1CON                          00000FBB
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 12
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 12
 
 
 SYMBOL TABLE
@@ -671,7 +665,7 @@ FSR2H                             00000FDA
 FSR2L                             00000FD9
 GCEN                              00000007
 GIE                               00000007
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 13
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 13
 
 
 SYMBOL TABLE
@@ -730,7 +724,7 @@ INT3F                             00000002
 INT3IE                            00000005
 INT3IF                            00000002
 INT3IP                            00000001
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 14
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 14
 
 
 SYMBOL TABLE
@@ -789,7 +783,7 @@ LATB7                             00000007
 LATC                              00000F8B
 LATC0                             00000000
 LATC1                             00000001
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 15
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 15
 
 
 SYMBOL TABLE
@@ -848,7 +842,7 @@ LATJ1                             00000001
 LATJ2                             00000002
 LATJ3                             00000003
 LATJ4                             00000004
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 16
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 16
 
 
 SYMBOL TABLE
@@ -858,8 +852,6 @@ LATJ5                             00000005
 LATJ6                             00000006
 LATJ7                             00000007
 LB                                00000006
-LCD_Setup                         00000000
-LCD_Write_Message                 00000000
 LVDIE                             00000002
 LVDIF                             00000002
 LVDIP                             00000002
@@ -907,14 +899,14 @@ ODCON2                            00000F28
 ODCON3                            00000F27
 OE                                00000001
 OERR                              00000001
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 17
+OERR1                             00000001
+OERR2                             00000001
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 17
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-OERR1                             00000001
-OERR2                             00000001
 OSC1                              00000007
 OSC2                              00000006
 OSCCON                            00000FD3
@@ -966,14 +958,14 @@ P3DC6                             00000006
 P3M0                              00000006
 P3M1                              00000007
 P3RSEN                            00000007
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 18
+PA3                               00000000
+PADCFG1                           00000F53
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 18
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-PA3                               00000000
-PADCFG1                           00000F53
 PB1                               00000007
 PB3                               00000005
 PC                                00000FF9
@@ -1025,14 +1017,14 @@ POSTDEC0                          00000FED
 POSTDEC1                          00000FE5
 POSTDEC2                          00000FDD
 POSTINC0                          00000FEE
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 19
+POSTINC1                          00000FE6
+POSTINC2                          00000FDE
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 19
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-POSTINC1                          00000FE6
-POSTINC2                          00000FDE
 PR10                              00000F34
 PR12                              00000F31
 PR2                               00000FCB
@@ -1084,14 +1076,14 @@ RA2                               00000002
 RA3                               00000003
 RA4                               00000004
 RA5                               00000005
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 20
+RA6                               00000006
+RA7                               00000007
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 20
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-RA6                               00000006
-RA7                               00000007
 RB0                               00000000
 RB1                               00000001
 RB2                               00000002
@@ -1143,14 +1135,14 @@ RD4                               00000004
 RD5                               00000005
 RD6                               00000006
 RD7                               00000007
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 21
+RDPU                              00000007
+RE0                               00000000
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 21
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-RDPU                              00000007
-RE0                               00000000
 RE1                               00000001
 RE2                               00000002
 RE3                               00000003
@@ -1202,14 +1194,14 @@ ROON                              00000007
 ROSEL                             00000004
 ROSSLP                            00000005
 RSEN                              00000001
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 22
+RTCC                              00000004
+RTCCAL                            00000F5E
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 22
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-RTCC                              00000004
-RTCCAL                            00000F5E
 RTCCFG                            00000F5F
 RTCCIE                            00000000
 RTCCIF                            00000000
@@ -1261,14 +1253,14 @@ SOSCEN                            00000003
 SOSCGO                            00000003
 SOSCI                             00000001
 SOSCO                             00000000
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 23
+SOSCRUN                           00000006
+SP0                               00000000
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 23
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-SOSCRUN                           00000006
-SP0                               00000000
 SP1                               00000001
 SP2                               00000002
 SP3                               00000003
@@ -1320,14 +1312,14 @@ SSPM0                             00000000
 SSPM1                             00000001
 SSPM2                             00000002
 SSPM3                             00000003
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 24
+SSPOV                             00000006
+SSPSTAT                           00000FC7
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 24
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-SSPOV                             00000006
-SSPSTAT                           00000FC7
 STATUS                            00000FD8
 STKFUL                            00000007
 STKOVF                            00000007
@@ -1379,14 +1371,14 @@ T1GGO_NOT_T1DONE                  00000003
 T1GPOL                            00000006
 T1GSPM                            00000004
 T1GSS0                            00000000
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 25
+T1GSS1                            00000001
+T1GTM                             00000005
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 25
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-T1GSS1                            00000001
-T1GTM                             00000005
 T1GVAL                            00000002
 T2CKPS0                           00000000
 T2CKPS1                           00000001
@@ -1438,14 +1430,14 @@ T6OUTPS1                          00000004
 T6OUTPS2                          00000005
 T6OUTPS3                          00000006
 T7CKI                             00000004
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 26
+T7CKPS0                           00000004
+T7CKPS1                           00000005
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 26
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-T7CKPS0                           00000004
-T7CKPS1                           00000005
 T7CON                             00000F3D
 T7G                               00000001
 T7GCON                            00000F3C
@@ -1497,14 +1489,14 @@ TMR1GIE                           00000002
 TMR1GIF                           00000002
 TMR1GIP                           00000002
 TMR1H                             00000FCF
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 27
+TMR1IE                            00000000
+TMR1IF                            00000000
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 27
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-TMR1IE                            00000000
-TMR1IF                            00000000
 TMR1IP                            00000000
 TMR1L                             00000FCE
 TMR1MD                            00000001
@@ -1556,14 +1548,14 @@ TMR6IP                            00000002
 TMR6MD                            00000004
 TMR6ON                            00000002
 TMR7                              00000F3E
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 28
+TMR7CS0                           00000006
+TMR7CS1                           00000007
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 28
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-TMR7CS0                           00000006
-TMR7CS1                           00000007
 TMR7GE                            00000007
 TMR7GIE                           00000007
 TMR7GIF                           00000007
@@ -1615,14 +1607,14 @@ TRISC4                            00000004
 TRISC5                            00000005
 TRISC6                            00000006
 TRISC7                            00000007
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 29
+TRISD                             00000F95
+TRISD0                            00000000
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 29
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-TRISD                             00000F95
-TRISD0                            00000000
 TRISD1                            00000001
 TRISD2                            00000002
 TRISD3                            00000003
@@ -1674,14 +1666,14 @@ TRISJ7                            00000007
 TRMT                              00000001
 TRMT1                             00000001
 TRMT2                             00000001
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 30
+TUN0                              00000000
+TUN1                              00000001
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 30
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-TUN0                              00000000
-TUN1                              00000001
 TUN2                              00000002
 TUN3                              00000003
 TUN4                              00000004
@@ -1720,8 +1712,6 @@ U2OD                              00000007
 UA                                00000001
 UART1MD                           00000003
 UART2MD                           00000004
-UART_Setup                        00000000
-UART_Transmit_Message             00000000
 UB                                00000007
 ULPEN                             00000002
 ULPLVL                            00000005
@@ -1733,16 +1723,16 @@ VDIRMAG                           00000007
 VNCFG                             00000003
 VREF_MINUS                        00000002
 VREF_PLUS                         00000003
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 31
+W                                 00000000
+WAIT0                             00000004
+WAIT1                             00000005
+WCOL                              00000007
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 31
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-W                                 00000000
-WAIT0                             00000004
-WAIT1                             00000005
-WCOL                              00000007
 WDTCON                            00000FD1
 WM0                               00000000
 WM1                               00000001
@@ -1754,6 +1744,7 @@ WRH                               00000003
 WRL                               00000002
 WUE                               00000001
 Z                                 00000002
+_.org_1_015A                      0000015A
 _ABW_MM_3L                        000000FF
 _ABW_XM12_3L                      000000EF
 _ABW_XM16_3L                      000000DF
@@ -1792,15 +1783,15 @@ _CONFIG7L                         0030000C
 _CP0_OFF_5L                       000000FF
 _CP0_ON_5L                        000000FE
 _CP1_OFF_5L                       000000FF
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 32
+_CP1_ON_5L                        000000FD
+_CP2_OFF_5L                       000000FF
+_CP2_ON_5L                        000000FB
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 32
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-_CP1_ON_5L                        000000FD
-_CP2_OFF_5L                       000000FF
-_CP2_ON_5L                        000000FB
 _CP3_OFF_5L                       000000FF
 _CP3_ON_5L                        000000F7
 _CP4_OFF_5L                       000000FF
@@ -1851,15 +1842,15 @@ _FOSC_EC3IO_1H                    000000F4
 _FOSC_EC3_1H                      000000F5
 _FOSC_HS1_1H                      000000F3
 _FOSC_HS2_1H                      000000F2
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 33
+_FOSC_INTIO1_1H                   000000F9
+_FOSC_INTIO2_1H                   000000F8
+_FOSC_LP_1H                       000000F0
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 33
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-_FOSC_INTIO1_1H                   000000F9
-_FOSC_INTIO2_1H                   000000F8
-_FOSC_LP_1H                       000000F0
 _FOSC_RCIO_1H                     000000F7
 _FOSC_RC_1H                       000000F6
 _FOSC_XT_1H                       000000F1
@@ -1910,15 +1901,15 @@ _WDTPS_256_2H                     000000A3
 _WDTPS_262144_2H                  000000CB
 _WDTPS_2_2H                       00000087
 _WDTPS_32768_2H                   000000BF
-MPASM 5.81                  STARTMESSAGE.ASM   2-13-2020  15:56:06         PAGE 34
+_WDTPS_32_2H                      00000097
+_WDTPS_4096_2H                    000000B3
+_WDTPS_4_2H                       0000008B
+MPASM 5.81                          LFSR.ASM   2-13-2020  15:56:06         PAGE 34
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-_WDTPS_32_2H                      00000097
-_WDTPS_4096_2H                    000000B3
-_WDTPS_4_2H                       0000008B
 _WDTPS_512_2H                     000000A7
 _WDTPS_524288_2H                  000000CF
 _WDTPS_64_2H                      0000009B
@@ -1950,15 +1941,19 @@ _WRTD_ON_6H                       0000007F
 _XINST_OFF_1L                     000000BF
 _XINST_ON_1L                      000000FF
 __18F87K22                        00000001
-counter                           00000000
-delay                             00000042
-delay_count                       00000001
-loop                              00000022
-myArray                           00000000
-myTable                           00000000
-myTable_l                         00000000
-setup                             00000000
-writemessage                      0000000E
+counter                           00000005
+level                             00000006
+load                              0000012C
+produce                           00000144
+random                            00000004
+s0                                00000000
+s1                                00000001
+s2                                00000002
+s3                                00000003
+setFSR                            00000116
+shift                             00000100
+start                             0000011C
+theend                            0000015A
 
 Errors   :     0
 Warnings :     0 reported,     0 suppressed

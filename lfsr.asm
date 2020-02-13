@@ -11,10 +11,10 @@ random res 1
 counter res 1
 level      res 1
 
-code
-org 0x0
-goto start
-org 0x100                                 ; Main code starts here at address 0x100
+MAIN code
+    org 0x0
+	goto start
+    org 0x100                                 ; Main code starts here at address 0x100
 shift	movff s3, WREG                
 	xorwf s2,0, ACCESS          ;XOR gate, stores result in WREG
 	movff s2,s3                         ; shifts values to right
@@ -34,10 +34,10 @@ start   movlw 0x01
         call setFSR
 
 load    call produce                       ;produces random number 0-3, stores in random
-        movff random, POSTINC0 ;stored in FSR
+        movff random, POSTINC0		    ;stored in FSR
         incf counter,1,0
         movlw 0x04
-        cpfseq counter                  stops looping when sequence is length 4
+        cpfseq counter                  ;stops looping when sequence is length 4
         bra load
         call setFSR
         goto theend

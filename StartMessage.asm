@@ -5,15 +5,16 @@
 	
 	global writemessage
 	global setup
+	extern myTable
+	extern myTable_l
+	extern myArray
 	
 acs0	udata_acs   ; reserve data space in access ram
 counter	    res 1   ; reserve one byte for a counter variable
 delay_count res 1   ; reserve one byte for counter in the delay routine
 
-
-
-rst	code	0    ; reset vector
-	goto	setup
+;rst	code	0    ; reset vector
+	;goto	setup
 
 pdata	code    ; a section of programme memory for storing data
 
@@ -41,7 +42,7 @@ loop 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 	movff	TABLAT, POSTINC0; move data from TABLAT to (FSR0), inc FSR0	
 	decfsz	counter		; count down to zero
 	bra	loop		; keep going until finished
-		
+			
 	movlw	myTable_l-1	; output message to LCD (leave out "\n")
 	lfsr	FSR2, myArray
 	call	LCD_Write_Message

@@ -1,4 +1,4 @@
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE  1
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -25,32 +25,67 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00009 tables  udata   0x400    ; reserve data anywhere in RAM (here at 0x400)
 000400                00010 myArray res 0x80    ; reserve 128 bytes for message data
                       00011         
-                      00012         
-                      00013 
-                      00014 rst     code    0    ; reset vector
-                      00015         
-000000 EF?? F???      00016         goto    setup
-  0000                00017         extern  LCD_Setup, LCD_Write_Message        ; external LCD subroutines
-  0000                00018         extern writemessage
-  0000                00019         extern setup
-  0000                00020         global myTable
-                      00021         
-Error[115]  : Duplicate label ("setup" or redefining symbol that cannot be redefined)
-000004                00022 setup   ;clearing and resetting here
-000004 EC?? F???      00023         call setup
-                      00024         
-                      00025         ; ******* myTable, data in programme memory, and its length *****
-000008 7250 7365 2073 00026 myTable data        "Press key to continue\n"   ; message, plus carriage return
-       656B 2079 6F74 
-       6320 6E6F 6974 
-       756E 0A65 
-  000D                00027         constant    myTable_l=.13       ; length of data
-00001E EC?? F???      00028         call writemessage
-                      00029 
-                      00030 
-                      00031 
-                      00032         end
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE  2
+                      00012         ; ******* myTable, data in programme memory, and its length *****
+Error[152]  : Executable code and data must be defined in an appropriate section
+Error[152]  : Executable code and data must be defined in an appropriate section
+Error[152]  : Executable code and data must be defined in an appropriate section
+Error[152]  : Executable code and data must be defined in an appropriate section
+Error[152]  : Executable code and data must be defined in an appropriate section
+Error[152]  : Executable code and data must be defined in an appropriate section
+Error[152]  : Executable code and data must be defined in an appropriate section
+Error[152]  : Executable code and data must be defined in an appropriate section
+Error[152]  : Executable code and data must be defined in an appropriate section
+Error[152]  : Executable code and data must be defined in an appropriate section
+Error[152]  : Executable code and data must be defined in an appropriate section
+000480                00013 myTable data        "Press key to continue\n"   ; message, plus carriage return
+  000D                00014         constant    myTable_l=.13       ; length of data
+Error[152]  : Executable code and data must be defined in an appropriate section
+Error[152]  : Executable code and data must be defined in an appropriate section
+000480                00015         call writemessage
+                      00016 
+                      00017         
+  0000                00018         extern  LCD_Setup, LCD_Write_Message        ; external LCD subroutines
+  0000                00019         extern writemessage
+  0000                00020         extern setup
+  0000                00021         global myTable
+Error[113]  : Symbol not previously defined (myTable_1)
+  0000                00022         global myTable_1
+                      00023 
+                      00024 rst     code    0    ; reset vector
+000000 EF?? F???      00025         goto    setup_main
+                      00026 
+                      00027 
+                      00028         
+                      00029         
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000004                00030 setup_main      ;clearing and resetting here
+000004 EE?? F0??      00031         lfsr    FSR0, myArray   ; Load FSR0 with address in RAM 
+000008 0E??           00032         movlw   upper(myTable)  ; address of data in PM
+00000A 6EF8           00033         movwf   TBLPTRU         ; load upper bits to TBLPTRU
+00000C 0E??           00034         movlw   high(myTable)   ; address of data in PM
+00000E 6EF7           00035         movwf   TBLPTRH         ; load high byte to TBLPTRH
+000010 0E??           00036         movlw   low(myTable)    ; address of data in PM
+000012 6EF6           00037         movwf   TBLPTRL         ; load low byte to TBLPTRL
+000014 0E0D           00038         movlw   myTable_l       ; bytes to read
+000016 6E??           00039         movwf   counter         ; our counter register
+000018 0009           00040 loop    tblrd*+                 ; one byte from PM to TABLAT, increment TBLPRT
+00001A CFF5 FFEE      00041         movff   TABLAT, POSTINC0; move data from TABLAT to (FSR0), inc FSR0     
+00001E 2E??           00042         decfsz  counter         ; count down to zero
+000020 D???           00043         bra     loop            ; keep going until finished
+                      00044         
+                      00045         
+                      00046 
+                      00047 
+                      00048 ;setupMessageRAM
+                      00049 
+                      00050 
+                      00051         end
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE  3
 
 
 SYMBOL TABLE
@@ -109,7 +144,7 @@ ADMSK5                            00000005
 ADON                              00000000
 ADRES                             00000FC3
 ADRESH                            00000FC4
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE  3
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE  4
 
 
 SYMBOL TABLE
@@ -168,7 +203,7 @@ ANSEL16                           00000000
 ANSEL17                           00000001
 ANSEL18                           00000002
 ANSEL19                           00000003
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE  4
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE  5
 
 
 SYMBOL TABLE
@@ -227,7 +262,7 @@ C1TSEL0                           00000000
 C1TSEL1                           00000001
 C1TSEL2                           00000002
 C2INA                             00000004
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE  5
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE  6
 
 
 SYMBOL TABLE
@@ -286,7 +321,7 @@ CCP1IP                            00000001
 CCP1M0                            00000000
 CCP1M1                            00000001
 CCP1M2                            00000002
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE  6
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE  7
 
 
 SYMBOL TABLE
@@ -345,7 +380,7 @@ CCP5M0                            00000000
 CCP5M1                            00000001
 CCP5M2                            00000002
 CCP5M3                            00000003
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE  7
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE  8
 
 
 SYMBOL TABLE
@@ -404,7 +439,7 @@ CCP9IP                            00000006
 CCP9M0                            00000000
 CCP9M1                            00000001
 CCP9M2                            00000002
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE  8
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE  9
 
 
 SYMBOL TABLE
@@ -463,7 +498,7 @@ CHSN1                             00000001
 CHSN2                             00000002
 CK1                               00000006
 CK2                               00000001
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE  9
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 10
 
 
 SYMBOL TABLE
@@ -522,7 +557,7 @@ CTMUIE                            00000003
 CTMUIF                            00000003
 CTMUIP                            00000003
 CTMUMD                            00000006
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 10
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 11
 
 
 SYMBOL TABLE
@@ -581,7 +616,7 @@ ECCP1AS1                          00000005
 ECCP1AS2                          00000006
 ECCP1ASE                          00000007
 ECCP1CON                          00000FBB
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 11
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 12
 
 
 SYMBOL TABLE
@@ -640,7 +675,7 @@ FSR2H                             00000FDA
 FSR2L                             00000FD9
 GCEN                              00000007
 GIE                               00000007
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 12
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 13
 
 
 SYMBOL TABLE
@@ -699,7 +734,7 @@ INT3F                             00000002
 INT3IE                            00000005
 INT3IF                            00000002
 INT3IP                            00000001
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 13
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 14
 
 
 SYMBOL TABLE
@@ -758,7 +793,7 @@ LATB7                             00000007
 LATC                              00000F8B
 LATC0                             00000000
 LATC1                             00000001
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 14
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 15
 
 
 SYMBOL TABLE
@@ -817,7 +852,7 @@ LATJ1                             00000001
 LATJ2                             00000002
 LATJ3                             00000003
 LATJ4                             00000004
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 15
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 16
 
 
 SYMBOL TABLE
@@ -876,7 +911,7 @@ ODCON2                            00000F28
 ODCON3                            00000F27
 OE                                00000001
 OERR                              00000001
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 16
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 17
 
 
 SYMBOL TABLE
@@ -935,7 +970,7 @@ P3DC6                             00000006
 P3M0                              00000006
 P3M1                              00000007
 P3RSEN                            00000007
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 17
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 18
 
 
 SYMBOL TABLE
@@ -994,7 +1029,7 @@ POSTDEC0                          00000FED
 POSTDEC1                          00000FE5
 POSTDEC2                          00000FDD
 POSTINC0                          00000FEE
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 18
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 19
 
 
 SYMBOL TABLE
@@ -1053,7 +1088,7 @@ RA2                               00000002
 RA3                               00000003
 RA4                               00000004
 RA5                               00000005
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 19
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 20
 
 
 SYMBOL TABLE
@@ -1112,7 +1147,7 @@ RD4                               00000004
 RD5                               00000005
 RD6                               00000006
 RD7                               00000007
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 20
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 21
 
 
 SYMBOL TABLE
@@ -1171,7 +1206,7 @@ ROON                              00000007
 ROSEL                             00000004
 ROSSLP                            00000005
 RSEN                              00000001
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 21
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 22
 
 
 SYMBOL TABLE
@@ -1230,7 +1265,7 @@ SOSCEN                            00000003
 SOSCGO                            00000003
 SOSCI                             00000001
 SOSCO                             00000000
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 22
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 23
 
 
 SYMBOL TABLE
@@ -1289,7 +1324,7 @@ SSPM0                             00000000
 SSPM1                             00000001
 SSPM2                             00000002
 SSPM3                             00000003
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 23
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 24
 
 
 SYMBOL TABLE
@@ -1348,7 +1383,7 @@ T1GGO_NOT_T1DONE                  00000003
 T1GPOL                            00000006
 T1GSPM                            00000004
 T1GSS0                            00000000
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 24
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 25
 
 
 SYMBOL TABLE
@@ -1407,7 +1442,7 @@ T6OUTPS1                          00000004
 T6OUTPS2                          00000005
 T6OUTPS3                          00000006
 T7CKI                             00000004
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 25
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 26
 
 
 SYMBOL TABLE
@@ -1466,7 +1501,7 @@ TMR1GIE                           00000002
 TMR1GIF                           00000002
 TMR1GIP                           00000002
 TMR1H                             00000FCF
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 26
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 27
 
 
 SYMBOL TABLE
@@ -1525,7 +1560,7 @@ TMR6IP                            00000002
 TMR6MD                            00000004
 TMR6ON                            00000002
 TMR7                              00000F3E
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 27
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 28
 
 
 SYMBOL TABLE
@@ -1584,7 +1619,7 @@ TRISC4                            00000004
 TRISC5                            00000005
 TRISC6                            00000006
 TRISC7                            00000007
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 28
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 29
 
 
 SYMBOL TABLE
@@ -1643,7 +1678,7 @@ TRISJ7                            00000007
 TRMT                              00000001
 TRMT1                             00000001
 TRMT2                             00000001
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 29
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 30
 
 
 SYMBOL TABLE
@@ -1702,7 +1737,7 @@ VREF_MINUS                        00000002
 VREF_PLUS                         00000003
 W                                 00000000
 WAIT0                             00000004
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 30
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 31
 
 
 SYMBOL TABLE
@@ -1761,7 +1796,7 @@ _CP0_ON_5L                        000000FE
 _CP1_OFF_5L                       000000FF
 _CP1_ON_5L                        000000FD
 _CP2_OFF_5L                       000000FF
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 31
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 32
 
 
 SYMBOL TABLE
@@ -1820,7 +1855,7 @@ _FOSC_HS1_1H                      000000F3
 _FOSC_HS2_1H                      000000F2
 _FOSC_INTIO1_1H                   000000F9
 _FOSC_INTIO2_1H                   000000F8
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 32
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 33
 
 
 SYMBOL TABLE
@@ -1879,7 +1914,7 @@ _WDTPS_2_2H                       00000087
 _WDTPS_32768_2H                   000000BF
 _WDTPS_32_2H                      00000097
 _WDTPS_4096_2H                    000000B3
-MPASM 5.81                          MAIN.ASM   2-10-2020  16:44:08         PAGE 33
+MPASM 5.81                          MAIN.ASM   2-13-2020  15:56:06         PAGE 34
 
 
 SYMBOL TABLE
@@ -1921,13 +1956,15 @@ counter                           00000003
 d0                                00000000
 d1                                00000001
 d2                                00000002
+loop                              00000018
 myArray                           00000400
-myTable                           00000008
+myTable                           00000480
 myTable_l                         0000000D
 setup                             00000000
+setup_main                        00000004
 writemessage                      00000000
 
-Errors   :     1
+Errors   :    14
 Warnings :     0 reported,     0 suppressed
 Messages :     0 reported,     0 suppressed
 
