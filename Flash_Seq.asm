@@ -9,7 +9,7 @@ counter	res 1
 	
 
 ;rst	code	0    ; reset vector
-FLASH_SEQ   code
+flash   code
    
 	goto	resetcounter
 

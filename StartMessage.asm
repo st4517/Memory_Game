@@ -6,13 +6,15 @@
 	global writemessage
 	global setup
 	extern myTable
-	extern myTable_l
+	;extern myTable_l
 	extern myArray
 	
 acs0	udata_acs   ; reserve data space in access ram
 counter	    res 1   ; reserve one byte for a counter variable
 delay_count res 1   ; reserve one byte for counter in the delay routine
 
+ 
+ constant    myTable_l=.13
 ;rst	code	0    ; reset vector
 	;goto	setup
 
@@ -20,6 +22,8 @@ pdata	code    ; a section of programme memory for storing data
 
 	
 main	code
+	
+	
 	; ******* Programme FLASH read Setup Code ***********************
 setup	bcf	EECON1, CFGS	; point to Flash program memory  
 	bsf	EECON1, EEPGD 	; access Flash program memory
