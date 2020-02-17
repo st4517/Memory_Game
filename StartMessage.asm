@@ -6,7 +6,7 @@
 	global writemessage
 	global setup
 	extern myTable
-	;extern myTable_l
+	extern myTable_var
 	extern myArray
 	
 acs0	udata_acs   ; reserve data space in access ram
@@ -14,7 +14,7 @@ counter	    res 1   ; reserve one byte for a counter variable
 delay_count res 1   ; reserve one byte for counter in the delay routine
 
  
- constant    myTable_l=.13
+
 ;rst	code	0    ; reset vector
 	;goto	setup
 
@@ -40,18 +40,18 @@ writemessage 	lfsr	FSR0, myArray	; Load FSR0 with address in RAM
 	movwf	TBLPTRH		; load high byte to TBLPTRH
 	movlw	low(myTable)	; address of data in PM
 	movwf	TBLPTRL		; load low byte to TBLPTRL
-	movlw	myTable_l	; bytes to read
+	movlw	myTable_var	; bytes to read
 	movwf 	counter		; our counter register
 loop 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
 	movff	TABLAT, POSTINC0; move data from TABLAT to (FSR0), inc FSR0	
 	decfsz	counter		; count down to zero
 	bra	loop		; keep going until finished
 			
-	movlw	myTable_l-1	; output message to LCD (leave out "\n")
+	movlw	myTable_var-1	; output message to LCD (leave out "\n")
 	lfsr	FSR2, myArray
 	call	LCD_Write_Message
 	
-	movlw	myTable_l	; output message to UART
+	movlw	myTable_var	; output message to UART
 	lfsr	FSR2, myArray
 	call	UART_Transmit_Message
 	return

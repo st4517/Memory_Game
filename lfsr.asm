@@ -12,8 +12,8 @@ counter res 1
 level      res 1
 
 random	code
-    org 0x0
-	goto start
+;    org 0x0
+;	goto start
     org 0x100                                 ; Main code starts here at address 0x100
 shift	movff s3, WREG                
 	xorwf s2,0, ACCESS          ;XOR gate, stores result in WREG
