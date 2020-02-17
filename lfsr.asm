@@ -8,7 +8,7 @@ s2            res 1
 s3            res 1
 
 random res 1
-counter res 1
+LFSRCounter res 1
 level      res 1
 
 random	code
@@ -30,14 +30,14 @@ start   movlw 0x01
 	movwf s1
         movwf s2
         movwf s3
-        clrf counter
+        clrf LFSRCounter
         call setFSR
 
 load    call produce                       ;produces random number 0-3, stores in random
         movff random, POSTINC0		    ;stored in FSR
-        incf counter,1,0
+        incf LFSRCounter,1,0
         movlw 0x04
-        cpfseq counter                  ;stops looping when sequence is length 4
+        cpfseq LFSRCounter                  ;stops looping when sequence is length 4
         bra load
         call setFSR
         goto theend

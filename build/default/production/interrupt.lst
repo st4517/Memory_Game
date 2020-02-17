@@ -1,10 +1,10 @@
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE  1
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00001 #include p18f87k22.inc
+                      00001         #include p18f87k22.inc
                       00001         LIST
                       00002 
                       00003 ;==========================================================================
@@ -16,41 +16,45 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00009 
                       02986         LIST
                       00002 
-  0000                00003     global  UART_Setup, UART_Transmit_Message
-                      00004 
-                      00005 acs0    udata_acs           ; named variables in access ram
-000000                00006 UART_counter res 1          ; reserve 1 byte for variable UART_counter
-                      00007 
-                      00008 UART    code
-                      00009     
-000000                00010 UART_Setup
-000000 8EAB           00011     bsf     RCSTA1, SPEN    ; enable
-000002 98AC           00012     bcf     TXSTA1, SYNC    ; synchronous
-000004 94AC           00013     bcf     TXSTA1, BRGH    ; slow speed
-000006 8AAC           00014     bsf     TXSTA1, TXEN    ; enable transmit
-000008 9665           00015     bcf     BAUDCON1, BRG16 ; 8-bit generator only
-00000A 0E67           00016     movlw   .103            ; gives 9600 Baud rate (actually 9615)
-00000C 6EAF           00017     movwf   SPBRG1
-00000E 8C94           00018     bsf     TRISC, TX1      ; TX1 pin as output
-000010 0012           00019     return
-                      00020 
-000012                00021 UART_Transmit_Message       ; Message stored at FSR2, length stored in W
-000012 6E??           00022     movwf   UART_counter
-000014                00023 UART_Loop_message
-000014 50DE           00024     movf    POSTINC2, W
-000016 EC?? F???      00025     call    UART_Transmit_Byte
-00001A 2E??           00026     decfsz  UART_counter
-00001C D???           00027     bra     UART_Loop_message
-00001E 0012           00028     return
-                      00029 
-000020                00030 UART_Transmit_Byte          ; Transmits byte stored in W
-000020 A89E           00031     btfss   PIR1,TX1IF      ; TX1IF is set when TXREG1 is empty
-000022 D???           00032     bra     UART_Transmit_Byte
-000024 6EAD           00033     movwf   TXREG1
-000026 0012           00034     return
-                      00035 
-                      00036     end
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE  2
+                      00003 
+Warning[205]: Found directive in column 1. (extern)
+  0000                00004 extern interrupt_setup  
+                      00005         
+                      00006 interrupt   code
+                      00007    
+                      00008    
+                      00009 hi_int  code 0x0008
+Error[113]  : Symbol not previously defined (INTOIF)
+000008 A0F2           00010         btfss   INTCON,INTOIF
+00000A 0011           00011         retfie  FAST
+Error[113]  : Symbol not previously defined (compare_red)
+00000C EC00 F000      00012         call    compare_red
+000010 A0F0           00013         btfss   INTCON3,INT1IF
+000012 0011           00014         retfie  FAST
+Error[113]  : Symbol not previously defined (compare_blue)
+000014 EC00 F000      00015         call    compare_blue
+000018 A2F0           00016         btfss   INTCON3,INT2IF
+00001A 0011           00017         retfie  FAST
+Error[113]  : Symbol not previously defined (compare_violet)
+00001C EC00 F000      00018         call    compare_violet
+000020 A4F0           00019         btfss   INTCON3,INT3IF
+000022 0011           00020         retfie  FAST
+Error[113]  : Symbol not previously defined (compare_yellow)
+000024 EC00 F000      00021         call    compare_yellow
+                      00022         
+Error[115]  : Duplicate label ("interrupt_setup" or redefining symbol that cannot be redefined)
+000028 6893           00023 interrupt_setup setf TRISB
+00002A 6A81           00024         clrf PORTB
+Error[128]  : Missing argument(s)
+00002C 80F2           00025         bsf INTCON
+                      00026         
+                      00027         
+                      00028 
+                      00029         
+                      00030    
+                      00031    
+Error[129]  : Expected (END)
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE  2
 
 
 SYMBOL TABLE
@@ -109,7 +113,7 @@ ADMSK5                            00000005
 ADON                              00000000
 ADRES                             00000FC3
 ADRESH                            00000FC4
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE  3
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE  3
 
 
 SYMBOL TABLE
@@ -168,7 +172,7 @@ ANSEL16                           00000000
 ANSEL17                           00000001
 ANSEL18                           00000002
 ANSEL19                           00000003
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE  4
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE  4
 
 
 SYMBOL TABLE
@@ -227,7 +231,7 @@ C1TSEL0                           00000000
 C1TSEL1                           00000001
 C1TSEL2                           00000002
 C2INA                             00000004
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE  5
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE  5
 
 
 SYMBOL TABLE
@@ -286,7 +290,7 @@ CCP1IP                            00000001
 CCP1M0                            00000000
 CCP1M1                            00000001
 CCP1M2                            00000002
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE  6
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE  6
 
 
 SYMBOL TABLE
@@ -345,7 +349,7 @@ CCP5M0                            00000000
 CCP5M1                            00000001
 CCP5M2                            00000002
 CCP5M3                            00000003
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE  7
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE  7
 
 
 SYMBOL TABLE
@@ -404,7 +408,7 @@ CCP9IP                            00000006
 CCP9M0                            00000000
 CCP9M1                            00000001
 CCP9M2                            00000002
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE  8
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE  8
 
 
 SYMBOL TABLE
@@ -463,7 +467,7 @@ CHSN1                             00000001
 CHSN2                             00000002
 CK1                               00000006
 CK2                               00000001
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE  9
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE  9
 
 
 SYMBOL TABLE
@@ -522,7 +526,7 @@ CTMUIE                            00000003
 CTMUIF                            00000003
 CTMUIP                            00000003
 CTMUMD                            00000006
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 10
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 10
 
 
 SYMBOL TABLE
@@ -581,7 +585,7 @@ ECCP1AS1                          00000005
 ECCP1AS2                          00000006
 ECCP1ASE                          00000007
 ECCP1CON                          00000FBB
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 11
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 11
 
 
 SYMBOL TABLE
@@ -640,7 +644,7 @@ FSR2H                             00000FDA
 FSR2L                             00000FD9
 GCEN                              00000007
 GIE                               00000007
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 12
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 12
 
 
 SYMBOL TABLE
@@ -699,7 +703,7 @@ INT3F                             00000002
 INT3IE                            00000005
 INT3IF                            00000002
 INT3IP                            00000001
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 13
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 13
 
 
 SYMBOL TABLE
@@ -758,7 +762,7 @@ LATB7                             00000007
 LATC                              00000F8B
 LATC0                             00000000
 LATC1                             00000001
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 14
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 14
 
 
 SYMBOL TABLE
@@ -817,7 +821,7 @@ LATJ1                             00000001
 LATJ2                             00000002
 LATJ3                             00000003
 LATJ4                             00000004
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 15
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 15
 
 
 SYMBOL TABLE
@@ -876,7 +880,7 @@ OE                                00000001
 OERR                              00000001
 OERR1                             00000001
 OERR2                             00000001
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 16
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 16
 
 
 SYMBOL TABLE
@@ -935,7 +939,7 @@ P3M1                              00000007
 P3RSEN                            00000007
 PA3                               00000000
 PADCFG1                           00000F53
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 17
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 17
 
 
 SYMBOL TABLE
@@ -994,7 +998,7 @@ POSTDEC2                          00000FDD
 POSTINC0                          00000FEE
 POSTINC1                          00000FE6
 POSTINC2                          00000FDE
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 18
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 18
 
 
 SYMBOL TABLE
@@ -1053,7 +1057,7 @@ RA4                               00000004
 RA5                               00000005
 RA6                               00000006
 RA7                               00000007
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 19
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 19
 
 
 SYMBOL TABLE
@@ -1112,7 +1116,7 @@ RD6                               00000006
 RD7                               00000007
 RDPU                              00000007
 RE0                               00000000
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 20
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 20
 
 
 SYMBOL TABLE
@@ -1171,7 +1175,7 @@ ROSSLP                            00000005
 RSEN                              00000001
 RTCC                              00000004
 RTCCAL                            00000F5E
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 21
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 21
 
 
 SYMBOL TABLE
@@ -1230,7 +1234,7 @@ SOSCI                             00000001
 SOSCO                             00000000
 SOSCRUN                           00000006
 SP0                               00000000
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 22
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 22
 
 
 SYMBOL TABLE
@@ -1289,7 +1293,7 @@ SSPM2                             00000002
 SSPM3                             00000003
 SSPOV                             00000006
 SSPSTAT                           00000FC7
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 23
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 23
 
 
 SYMBOL TABLE
@@ -1348,7 +1352,7 @@ T1GSPM                            00000004
 T1GSS0                            00000000
 T1GSS1                            00000001
 T1GTM                             00000005
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 24
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 24
 
 
 SYMBOL TABLE
@@ -1407,7 +1411,7 @@ T6OUTPS3                          00000006
 T7CKI                             00000004
 T7CKPS0                           00000004
 T7CKPS1                           00000005
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 25
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 25
 
 
 SYMBOL TABLE
@@ -1466,7 +1470,7 @@ TMR1GIP                           00000002
 TMR1H                             00000FCF
 TMR1IE                            00000000
 TMR1IF                            00000000
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 26
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 26
 
 
 SYMBOL TABLE
@@ -1525,7 +1529,7 @@ TMR6ON                            00000002
 TMR7                              00000F3E
 TMR7CS0                           00000006
 TMR7CS1                           00000007
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 27
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 27
 
 
 SYMBOL TABLE
@@ -1584,7 +1588,7 @@ TRISC6                            00000006
 TRISC7                            00000007
 TRISD                             00000F95
 TRISD0                            00000000
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 28
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 28
 
 
 SYMBOL TABLE
@@ -1643,7 +1647,7 @@ TRMT1                             00000001
 TRMT2                             00000001
 TUN0                              00000000
 TUN1                              00000001
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 29
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 29
 
 
 SYMBOL TABLE
@@ -1687,11 +1691,6 @@ U2OD                              00000007
 UA                                00000001
 UART1MD                           00000003
 UART2MD                           00000004
-UART_Loop_message                 00000014
-UART_Setup                        00000000
-UART_Transmit_Byte                00000020
-UART_Transmit_Message             00000012
-UART_counter                      00000000
 UB                                00000007
 ULPEN                             00000002
 ULPLVL                            00000005
@@ -1702,17 +1701,17 @@ VCFG1                             00000005
 VDIRMAG                           00000007
 VNCFG                             00000003
 VREF_MINUS                        00000002
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 30
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 VREF_PLUS                         00000003
 W                                 00000000
 WAIT0                             00000004
 WAIT1                             00000005
 WCOL                              00000007
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 30
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 WDTCON                            00000FD1
 WM0                               00000000
 WM1                               00000001
@@ -1761,17 +1760,17 @@ _CONFIG7H                         0030000D
 _CONFIG7L                         0030000C
 _CP0_OFF_5L                       000000FF
 _CP0_ON_5L                        000000FE
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 31
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 _CP1_OFF_5L                       000000FF
 _CP1_ON_5L                        000000FD
 _CP2_OFF_5L                       000000FF
 _CP2_ON_5L                        000000FB
 _CP3_OFF_5L                       000000FF
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 31
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 _CP3_ON_5L                        000000F7
 _CP4_OFF_5L                       000000FF
 _CP4_ON_5L                        000000EF
@@ -1820,17 +1819,17 @@ _FOSC_EC2_1H                      000000FB
 _FOSC_EC3IO_1H                    000000F4
 _FOSC_EC3_1H                      000000F5
 _FOSC_HS1_1H                      000000F3
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 32
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 _FOSC_HS2_1H                      000000F2
 _FOSC_INTIO1_1H                   000000F9
 _FOSC_INTIO2_1H                   000000F8
 _FOSC_LP_1H                       000000F0
 _FOSC_RCIO_1H                     000000F7
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 32
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 _FOSC_RC_1H                       000000F6
 _FOSC_XT_1H                       000000F1
 _IDLOC0                           00200000
@@ -1879,17 +1878,17 @@ _WDTPS_2048_2H                    000000AF
 _WDTPS_256_2H                     000000A3
 _WDTPS_262144_2H                  000000CB
 _WDTPS_2_2H                       00000087
-MPASM 5.81                          UART.ASM   2-17-2020  12:10:00         PAGE 33
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 _WDTPS_32768_2H                   000000BF
 _WDTPS_32_2H                      00000097
 _WDTPS_4096_2H                    000000B3
 _WDTPS_4_2H                       0000008B
 _WDTPS_512_2H                     000000A7
+MPASM 5.81                     INTERRUPT.ASM   2-17-2020  16:33:13         PAGE 33
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 _WDTPS_524288_2H                  000000CF
 _WDTPS_64_2H                      0000009B
 _WDTPS_65536_2H                   000000C3
@@ -1920,11 +1919,10 @@ _WRTD_ON_6H                       0000007F
 _XINST_OFF_1L                     000000BF
 _XINST_ON_1L                      000000FF
 __18F87K22                        00000001
-__DEBUG                           
-__MPLAB_DEBUGGER_ICD3             1
+interrupt_setup                   00000000
 
-Errors   :     0
-Warnings :     0 reported,     0 suppressed
+Errors   :     8
+Warnings :     1 reported,     0 suppressed
 Messages :     0 reported,     0 suppressed
 
 

@@ -1,4 +1,4 @@
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE  1
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -24,7 +24,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 000003                00008 s3            res 1
                       00009 
 000004                00010 random res 1
-000005                00011 counter res 1
+000005                00011 LFSRCounter res 1
 000006                00012 level      res 1
                       00013 
                       00014 random  code
@@ -46,18 +46,18 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 000120 6E??           00030         movwf s1
 000122 6E??           00031         movwf s2
 000124 6E??           00032         movwf s3
-000126 6A??           00033         clrf counter
+000126 6A??           00033         clrf LFSRCounter
 000128 EC?? F???      00034         call setFSR
                       00035 
 00012C EC?? F???      00036 load    call produce                       ;produces random number 0-3, stores in random
 000130 C??? FFEE      00037         movff random, POSTINC0              ;stored in FSR
-000134 2A00           00038         incf counter,1,0
+000134 2A00           00038         incf LFSRCounter,1,0
 000136 0E04           00039         movlw 0x04
-000138 62??           00040         cpfseq counter                  ;stops looping when sequence is length 4
+000138 62??           00040         cpfseq LFSRCounter                  ;stops looping when sequence is length 4
 00013A D???           00041         bra load
 00013C EC?? F???      00042         call setFSR
 000140 EF?? F???      00043         goto theend
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE  2
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -75,7 +75,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 00015A EF?? F???      00053 theend goto $
                       00054         
                       00055         end
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE  3
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE  3
 
 
 SYMBOL TABLE
@@ -134,7 +134,7 @@ ADMSK5                            00000005
 ADON                              00000000
 ADRES                             00000FC3
 ADRESH                            00000FC4
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE  4
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE  4
 
 
 SYMBOL TABLE
@@ -193,7 +193,7 @@ ANSEL16                           00000000
 ANSEL17                           00000001
 ANSEL18                           00000002
 ANSEL19                           00000003
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE  5
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE  5
 
 
 SYMBOL TABLE
@@ -252,7 +252,7 @@ C1TSEL0                           00000000
 C1TSEL1                           00000001
 C1TSEL2                           00000002
 C2INA                             00000004
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE  6
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE  6
 
 
 SYMBOL TABLE
@@ -311,7 +311,7 @@ CCP1IP                            00000001
 CCP1M0                            00000000
 CCP1M1                            00000001
 CCP1M2                            00000002
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE  7
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE  7
 
 
 SYMBOL TABLE
@@ -370,7 +370,7 @@ CCP5M0                            00000000
 CCP5M1                            00000001
 CCP5M2                            00000002
 CCP5M3                            00000003
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE  8
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE  8
 
 
 SYMBOL TABLE
@@ -429,7 +429,7 @@ CCP9IP                            00000006
 CCP9M0                            00000000
 CCP9M1                            00000001
 CCP9M2                            00000002
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE  9
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE  9
 
 
 SYMBOL TABLE
@@ -488,7 +488,7 @@ CHSN1                             00000001
 CHSN2                             00000002
 CK1                               00000006
 CK2                               00000001
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 10
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 10
 
 
 SYMBOL TABLE
@@ -547,7 +547,7 @@ CTMUIE                            00000003
 CTMUIF                            00000003
 CTMUIP                            00000003
 CTMUMD                            00000006
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 11
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 11
 
 
 SYMBOL TABLE
@@ -606,7 +606,7 @@ ECCP1AS1                          00000005
 ECCP1AS2                          00000006
 ECCP1ASE                          00000007
 ECCP1CON                          00000FBB
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 12
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 12
 
 
 SYMBOL TABLE
@@ -665,7 +665,7 @@ FSR2H                             00000FDA
 FSR2L                             00000FD9
 GCEN                              00000007
 GIE                               00000007
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 13
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 13
 
 
 SYMBOL TABLE
@@ -724,7 +724,7 @@ INT3F                             00000002
 INT3IE                            00000005
 INT3IF                            00000002
 INT3IP                            00000001
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 14
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 14
 
 
 SYMBOL TABLE
@@ -783,7 +783,7 @@ LATB7                             00000007
 LATC                              00000F8B
 LATC0                             00000000
 LATC1                             00000001
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 15
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 15
 
 
 SYMBOL TABLE
@@ -842,7 +842,7 @@ LATJ1                             00000001
 LATJ2                             00000002
 LATJ3                             00000003
 LATJ4                             00000004
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 16
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 16
 
 
 SYMBOL TABLE
@@ -852,6 +852,7 @@ LATJ5                             00000005
 LATJ6                             00000006
 LATJ7                             00000007
 LB                                00000006
+LFSRCounter                       00000005
 LVDIE                             00000002
 LVDIF                             00000002
 LVDIP                             00000002
@@ -900,13 +901,13 @@ ODCON3                            00000F27
 OE                                00000001
 OERR                              00000001
 OERR1                             00000001
-OERR2                             00000001
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 17
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 17
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+OERR2                             00000001
 OSC1                              00000007
 OSC2                              00000006
 OSCCON                            00000FD3
@@ -959,13 +960,13 @@ P3M0                              00000006
 P3M1                              00000007
 P3RSEN                            00000007
 PA3                               00000000
-PADCFG1                           00000F53
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 18
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 18
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PADCFG1                           00000F53
 PB1                               00000007
 PB3                               00000005
 PC                                00000FF9
@@ -1018,13 +1019,13 @@ POSTDEC1                          00000FE5
 POSTDEC2                          00000FDD
 POSTINC0                          00000FEE
 POSTINC1                          00000FE6
-POSTINC2                          00000FDE
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 19
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 19
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+POSTINC2                          00000FDE
 PR10                              00000F34
 PR12                              00000F31
 PR2                               00000FCB
@@ -1077,13 +1078,13 @@ RA3                               00000003
 RA4                               00000004
 RA5                               00000005
 RA6                               00000006
-RA7                               00000007
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 20
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 20
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+RA7                               00000007
 RB0                               00000000
 RB1                               00000001
 RB2                               00000002
@@ -1136,13 +1137,13 @@ RD5                               00000005
 RD6                               00000006
 RD7                               00000007
 RDPU                              00000007
-RE0                               00000000
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 21
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 21
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+RE0                               00000000
 RE1                               00000001
 RE2                               00000002
 RE3                               00000003
@@ -1195,13 +1196,13 @@ ROSEL                             00000004
 ROSSLP                            00000005
 RSEN                              00000001
 RTCC                              00000004
-RTCCAL                            00000F5E
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 22
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 22
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+RTCCAL                            00000F5E
 RTCCFG                            00000F5F
 RTCCIE                            00000000
 RTCCIF                            00000000
@@ -1254,13 +1255,13 @@ SOSCGO                            00000003
 SOSCI                             00000001
 SOSCO                             00000000
 SOSCRUN                           00000006
-SP0                               00000000
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 23
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 23
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+SP0                               00000000
 SP1                               00000001
 SP2                               00000002
 SP3                               00000003
@@ -1313,13 +1314,13 @@ SSPM1                             00000001
 SSPM2                             00000002
 SSPM3                             00000003
 SSPOV                             00000006
-SSPSTAT                           00000FC7
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 24
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 24
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+SSPSTAT                           00000FC7
 STATUS                            00000FD8
 STKFUL                            00000007
 STKOVF                            00000007
@@ -1372,13 +1373,13 @@ T1GPOL                            00000006
 T1GSPM                            00000004
 T1GSS0                            00000000
 T1GSS1                            00000001
-T1GTM                             00000005
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 25
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 25
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+T1GTM                             00000005
 T1GVAL                            00000002
 T2CKPS0                           00000000
 T2CKPS1                           00000001
@@ -1431,13 +1432,13 @@ T6OUTPS2                          00000005
 T6OUTPS3                          00000006
 T7CKI                             00000004
 T7CKPS0                           00000004
-T7CKPS1                           00000005
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 26
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 26
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+T7CKPS1                           00000005
 T7CON                             00000F3D
 T7G                               00000001
 T7GCON                            00000F3C
@@ -1490,13 +1491,13 @@ TMR1GIF                           00000002
 TMR1GIP                           00000002
 TMR1H                             00000FCF
 TMR1IE                            00000000
-TMR1IF                            00000000
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 27
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 27
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TMR1IF                            00000000
 TMR1IP                            00000000
 TMR1L                             00000FCE
 TMR1MD                            00000001
@@ -1549,13 +1550,13 @@ TMR6MD                            00000004
 TMR6ON                            00000002
 TMR7                              00000F3E
 TMR7CS0                           00000006
-TMR7CS1                           00000007
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 28
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 28
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TMR7CS1                           00000007
 TMR7GE                            00000007
 TMR7GIE                           00000007
 TMR7GIF                           00000007
@@ -1608,13 +1609,13 @@ TRISC5                            00000005
 TRISC6                            00000006
 TRISC7                            00000007
 TRISD                             00000F95
-TRISD0                            00000000
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 29
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 29
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TRISD0                            00000000
 TRISD1                            00000001
 TRISD2                            00000002
 TRISD3                            00000003
@@ -1667,13 +1668,13 @@ TRMT                              00000001
 TRMT1                             00000001
 TRMT2                             00000001
 TUN0                              00000000
-TUN1                              00000001
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 30
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 30
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TUN1                              00000001
 TUN2                              00000002
 TUN3                              00000003
 TUN4                              00000004
@@ -1726,13 +1727,13 @@ VREF_PLUS                         00000003
 W                                 00000000
 WAIT0                             00000004
 WAIT1                             00000005
-WCOL                              00000007
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 31
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 31
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+WCOL                              00000007
 WDTCON                            00000FD1
 WM0                               00000000
 WM1                               00000001
@@ -1785,13 +1786,13 @@ _CP0_ON_5L                        000000FE
 _CP1_OFF_5L                       000000FF
 _CP1_ON_5L                        000000FD
 _CP2_OFF_5L                       000000FF
-_CP2_ON_5L                        000000FB
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 32
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 32
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_CP2_ON_5L                        000000FB
 _CP3_OFF_5L                       000000FF
 _CP3_ON_5L                        000000F7
 _CP4_OFF_5L                       000000FF
@@ -1844,13 +1845,13 @@ _FOSC_HS1_1H                      000000F3
 _FOSC_HS2_1H                      000000F2
 _FOSC_INTIO1_1H                   000000F9
 _FOSC_INTIO2_1H                   000000F8
-_FOSC_LP_1H                       000000F0
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 33
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 33
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_FOSC_LP_1H                       000000F0
 _FOSC_RCIO_1H                     000000F7
 _FOSC_RC_1H                       000000F6
 _FOSC_XT_1H                       000000F1
@@ -1903,13 +1904,13 @@ _WDTPS_2_2H                       00000087
 _WDTPS_32768_2H                   000000BF
 _WDTPS_32_2H                      00000097
 _WDTPS_4096_2H                    000000B3
-_WDTPS_4_2H                       0000008B
-MPASM 5.81                          LFSR.ASM   2-17-2020  12:09:23         PAGE 34
+MPASM 5.81                          LFSR.ASM   2-17-2020  16:33:13         PAGE 34
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_WDTPS_4_2H                       0000008B
 _WDTPS_512_2H                     000000A7
 _WDTPS_524288_2H                  000000CF
 _WDTPS_64_2H                      0000009B
@@ -1941,7 +1942,6 @@ _WRTD_ON_6H                       0000007F
 _XINST_OFF_1L                     000000BF
 _XINST_ON_1L                      000000FF
 __18F87K22                        00000001
-counter                           00000005
 level                             00000006
 load                              0000012C
 produce                           00000144

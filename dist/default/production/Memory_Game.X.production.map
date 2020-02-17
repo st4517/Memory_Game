@@ -1,68 +1,179 @@
 MPLINK 5.09, LINKER
-Linker Error Map File - Created Mon Feb 17 12:09:25 2020
+Linker Map File - Created Mon Feb 17 16:04:35 2020
 
-*Warning* - This is only a partial map file due to a link time error.
-   Only sections which were allocated prior to the error are shown below.
-
-CODEPAGES:
-    Memory      Start        End              Section    Address Size(Bytes)
- ---------  ---------  ---------            ---------  ---------  ---------
-      page     0x0000     0xffff                                           
-
-    userid     0x0000     0x0007                                           
-
-    config     0x0000     0x000d                                           
-
-     devid     0xfffe     0xffff                                           
-
-    eedata     0x0000     0x03ff                                           
-
-
-SHAREBANKS:
-
-DATABANKS:
-    Memory      Start        End              Section    Address Size(Bytes)
- ---------  ---------  ---------            ---------  ---------  ---------
-      gpr0     0x0060     0x00ff                                           
-
-      gpr1     0x0100     0x01ff                                           
-
-      gpr2     0x0200     0x02ff                                           
-
-      gpr3     0x0300     0x03ff                                           
-
-      gpr4     0x0400     0x04ff                                           
-
-      gpr5     0x0500     0x05ff                                           
-
-      gpr6     0x0600     0x06ff                                           
-
-      gpr7     0x0700     0x07ff                                           
-
-      gpr8     0x0800     0x08ff                                           
-
-      gpr9     0x0900     0x09ff                                           
-
-     gpr10     0x0a00     0x0aff                                           
-
-     gpr11     0x0b00     0x0bff                                           
-
-     gpr12     0x0c00     0x0cff                                           
-
-     gpr13     0x0d00     0x0dff                                           
-
-     gpr14     0x0e00     0x0eff                                           
-
-     gpr15     0x0f00     0x0f15                                           
-
-     sfr15     0x0f16     0x0f5f                                           
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                      rst       code   0x000000    program   0x000004
+                   .cinit    romdata   0x000004    program   0x000002
+                      LCD       code   0x000006    program   0x0000f2
+                   .org_0       code   0x000100    program   0x00005e
+                    flash       code   0x00015e    program   0x000108
+                     main       code   0x000266    program   0x00004c
+                    pdata       code   0x0002b2    program   0x000016
+.config_300000_BUILD/DEFAULT/PRODUCTION/_EXT/20    romdata   0x300000    program   0x000001
+.config_300001_BUILD/DEFAULT/PRODUCTION/_EXT/20    romdata   0x300001    program   0x000001
+.config_300002_BUILD/DEFAULT/PRODUCTION/_EXT/20    romdata   0x300002    program   0x000001
+.config_300003_BUILD/DEFAULT/PRODUCTION/_EXT/20    romdata   0x300003    program   0x000001
+.config_300004_BUILD/DEFAULT/PRODUCTION/_EXT/20    romdata   0x300004    program   0x000001
+.config_300005_BUILD/DEFAULT/PRODUCTION/_EXT/20    romdata   0x300005    program   0x000001
+.config_300006_BUILD/DEFAULT/PRODUCTION/_EXT/20    romdata   0x300006    program   0x000001
+.config_300008_BUILD/DEFAULT/PRODUCTION/_EXT/20    romdata   0x300008    program   0x000001
+.config_300009_BUILD/DEFAULT/PRODUCTION/_EXT/20    romdata   0x300009    program   0x000001
+.config_30000A_BUILD/DEFAULT/PRODUCTION/_EXT/20    romdata   0x30000a    program   0x000001
+.config_30000B_BUILD/DEFAULT/PRODUCTION/_EXT/20    romdata   0x30000b    program   0x000001
+.config_30000C_BUILD/DEFAULT/PRODUCTION/_EXT/20    romdata   0x30000c    program   0x000001
+.config_30000D_BUILD/DEFAULT/PRODUCTION/_EXT/20    romdata   0x30000d    program   0x000001
+                     acs0      udata   0x000000       data   0x000017
+                   tables      udata   0x000400       data   0x000080
 
 
-ACCESSBANKS:
-    Memory      Start        End              Section    Address Size(Bytes)
- ---------  ---------  ---------            ---------  ---------  ---------
- accessram     0x0000     0x005f                                           
 
- accesssfr     0x0f60     0x0fff                                           
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x0000f7      
+                            0x000100    0x0002c7      
+                            0x300000    0x300006      
+                            0x300008    0x30000d      
+            717 out of 132120 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                 Greeting   0x0002b2    program     extern \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+               LCD_Enable   0x0000a8    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+         LCD_Loop_message   0x00005e    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+          LCD_Send_Byte_D   0x000086    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+          LCD_Send_Byte_I   0x00006a    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+                LCD_Setup   0x000006    program     extern H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+        LCD_Write_Message   0x00005c    program     extern H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+                LCD_delay   0x0000ee    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+             LCD_delay_ms   0x0000cc    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+           LCD_delay_x4us   0x0000da    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+             _.org_0_015A   0x00015a    program     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+              _flash_0104   0x000262    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+               _main_000C   0x000272    program     static \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+                  allLEDS   0x000210    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                  blueLED   0x0001b0    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                    delay   0x0002ac    program     static H:\Year3\Microprocessors\Memory_Game.X\StartMessage.asm
+                    delay   0x000162    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                   delay1   0x00016c    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                   delay2   0x000176    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+               delayreset   0x000186    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                     endy   0x000260    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+               initialise   0x000266    program     static \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+                interpret   0x00023c    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                   lcdlp1   0x0000f0    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+                   lcdlp2   0x0000ce    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+                     load   0x000224    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                     load   0x00012c    program     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                     loop   0x000294    program     static H:\Year3\Microprocessors\Memory_Game.X\StartMessage.asm
+                  produce   0x000144    program     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                   redLED   0x000190    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+             resetcounter   0x00017c    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                   setFSR   0x00021e    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                   setFSR   0x000116    program     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                    setup   0x000276    program     extern H:\Year3\Microprocessors\Memory_Game.X\StartMessage.asm
+                    shift   0x000100    program     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                    start   0x00011c    program     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                   theend   0x00015a    program     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                violetLED   0x0001d0    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+             writemessage   0x000280    program     extern H:\Year3\Microprocessors\Memory_Game.X\StartMessage.asm
+                yellowLED   0x0001f0    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                LCD_cnt_h   0x000008       data     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+                LCD_cnt_l   0x000007       data     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+               LCD_cnt_ms   0x000009       data     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+              LCD_counter   0x00000b       data     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+                  LCD_tmp   0x00000a       data     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+              LFSRCounter   0x000011       data     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                   Length   0x000004       data     extern \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+             TextLocation   0x000400       data     extern \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+                  counter   0x000016       data     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                  counter   0x000005       data     static H:\Year3\Microprocessors\Memory_Game.X\StartMessage.asm
+                       d0   0x000013       data     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                       d0   0x000000       data     static \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+                       d1   0x000001       data     static \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+                       d1   0x000014       data     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                       d2   0x000002       data     static \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+                       d2   0x000015       data     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+              delay_count   0x000006       data     static H:\Year3\Microprocessors\Memory_Game.X\StartMessage.asm
+                    level   0x000003       data     static \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+                    level   0x000012       data     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                       s0   0x00000c       data     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                       s1   0x00000d       data     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                       s2   0x00000e       data     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                       s3   0x00000f       data     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                LCD_Setup   0x000006    program     extern H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+        LCD_Write_Message   0x00005c    program     extern H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+         LCD_Loop_message   0x00005e    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+          LCD_Send_Byte_I   0x00006a    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+          LCD_Send_Byte_D   0x000086    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+               LCD_Enable   0x0000a8    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+             LCD_delay_ms   0x0000cc    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+                   lcdlp2   0x0000ce    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+           LCD_delay_x4us   0x0000da    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+                LCD_delay   0x0000ee    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+                   lcdlp1   0x0000f0    program     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+                    shift   0x000100    program     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                   setFSR   0x000116    program     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                    start   0x00011c    program     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                     load   0x00012c    program     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                  produce   0x000144    program     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                   theend   0x00015a    program     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+             _.org_0_015A   0x00015a    program     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                    delay   0x000162    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                   delay1   0x00016c    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                   delay2   0x000176    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+             resetcounter   0x00017c    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+               delayreset   0x000186    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                   redLED   0x000190    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                  blueLED   0x0001b0    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                violetLED   0x0001d0    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                yellowLED   0x0001f0    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                  allLEDS   0x000210    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                   setFSR   0x00021e    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                     load   0x000224    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                interpret   0x00023c    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                     endy   0x000260    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+              _flash_0104   0x000262    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+               initialise   0x000266    program     static \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+               _main_000C   0x000272    program     static \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+                    setup   0x000276    program     extern H:\Year3\Microprocessors\Memory_Game.X\StartMessage.asm
+             writemessage   0x000280    program     extern H:\Year3\Microprocessors\Memory_Game.X\StartMessage.asm
+                     loop   0x000294    program     static H:\Year3\Microprocessors\Memory_Game.X\StartMessage.asm
+                    delay   0x0002ac    program     static H:\Year3\Microprocessors\Memory_Game.X\StartMessage.asm
+                 Greeting   0x0002b2    program     extern \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+                       d0   0x000000       data     static \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+                       d1   0x000001       data     static \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+                       d2   0x000002       data     static \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+                    level   0x000003       data     static \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+                   Length   0x000004       data     extern \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
+                  counter   0x000005       data     static H:\Year3\Microprocessors\Memory_Game.X\StartMessage.asm
+              delay_count   0x000006       data     static H:\Year3\Microprocessors\Memory_Game.X\StartMessage.asm
+                LCD_cnt_l   0x000007       data     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+                LCD_cnt_h   0x000008       data     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+               LCD_cnt_ms   0x000009       data     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+                  LCD_tmp   0x00000a       data     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+              LCD_counter   0x00000b       data     static H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
+                       s0   0x00000c       data     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                       s1   0x00000d       data     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                       s2   0x00000e       data     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                       s3   0x00000f       data     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+              LFSRCounter   0x000011       data     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                    level   0x000012       data     static H:\Year3\Microprocessors\Memory_Game.X\lfsr.asm
+                       d0   0x000013       data     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                       d1   0x000014       data     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                       d2   0x000015       data     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+                  counter   0x000016       data     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
+             TextLocation   0x000400       data     extern \\icnas1.cc.ic.ac.uk\st4517\Year3\Microprocessors\Memory_Game.X\Main.asm
 
 
