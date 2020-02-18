@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=StartMessage.asm LCD.asm lfsr.asm Flash_Seq.asm interrupt.asm main.asm
+SOURCEFILES_QUOTED_IF_SPACED=StartMessage.asm LCD.asm lfsr.asm Flash_Seq.asm interrupt.asm Main.asm
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/StartMessage.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/lfsr.o ${OBJECTDIR}/Flash_Seq.o ${OBJECTDIR}/interrupt.o ${OBJECTDIR}/main.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/StartMessage.o.d ${OBJECTDIR}/LCD.o.d ${OBJECTDIR}/lfsr.o.d ${OBJECTDIR}/Flash_Seq.o.d ${OBJECTDIR}/interrupt.o.d ${OBJECTDIR}/main.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/StartMessage.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/lfsr.o ${OBJECTDIR}/Flash_Seq.o ${OBJECTDIR}/interrupt.o ${OBJECTDIR}/Main.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/StartMessage.o.d ${OBJECTDIR}/LCD.o.d ${OBJECTDIR}/lfsr.o.d ${OBJECTDIR}/Flash_Seq.o.d ${OBJECTDIR}/interrupt.o.d ${OBJECTDIR}/Main.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/StartMessage.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/lfsr.o ${OBJECTDIR}/Flash_Seq.o ${OBJECTDIR}/interrupt.o ${OBJECTDIR}/main.o
+OBJECTFILES=${OBJECTDIR}/StartMessage.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/lfsr.o ${OBJECTDIR}/Flash_Seq.o ${OBJECTDIR}/interrupt.o ${OBJECTDIR}/Main.o
 
 # Source Files
-SOURCEFILES=StartMessage.asm LCD.asm lfsr.asm Flash_Seq.asm interrupt.asm main.asm
+SOURCEFILES=StartMessage.asm LCD.asm lfsr.asm Flash_Seq.asm interrupt.asm Main.asm
 
 
 
@@ -135,13 +135,13 @@ ${OBJECTDIR}/interrupt.o: interrupt.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${DEP_GEN} -d "${OBJECTDIR}/interrupt.o"
 	@${FIXDEPS} "${OBJECTDIR}/interrupt.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
-${OBJECTDIR}/main.o: main.asm  nbproject/Makefile-${CND_CONF}.mk
+${OBJECTDIR}/Main.o: Main.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/main.o.d 
-	@${RM} ${OBJECTDIR}/main.o 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/main.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_ICD3=1 -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/main.lst\" -e\"${OBJECTDIR}/main.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/main.o\" \"main.asm\" 
-	@${DEP_GEN} -d "${OBJECTDIR}/main.o"
-	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	@${RM} ${OBJECTDIR}/Main.o.d 
+	@${RM} ${OBJECTDIR}/Main.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/Main.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_ICD3=1 -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/Main.lst\" -e\"${OBJECTDIR}/Main.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/Main.o\" \"Main.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/Main.o"
+	@${FIXDEPS} "${OBJECTDIR}/Main.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
 else
 ${OBJECTDIR}/StartMessage.o: StartMessage.asm  nbproject/Makefile-${CND_CONF}.mk
@@ -184,13 +184,13 @@ ${OBJECTDIR}/interrupt.o: interrupt.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${DEP_GEN} -d "${OBJECTDIR}/interrupt.o"
 	@${FIXDEPS} "${OBJECTDIR}/interrupt.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
-${OBJECTDIR}/main.o: main.asm  nbproject/Makefile-${CND_CONF}.mk
+${OBJECTDIR}/Main.o: Main.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/main.o.d 
-	@${RM} ${OBJECTDIR}/main.o 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/main.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/main.lst\" -e\"${OBJECTDIR}/main.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/main.o\" \"main.asm\" 
-	@${DEP_GEN} -d "${OBJECTDIR}/main.o"
-	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	@${RM} ${OBJECTDIR}/Main.o.d 
+	@${RM} ${OBJECTDIR}/Main.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/Main.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/Main.lst\" -e\"${OBJECTDIR}/Main.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/Main.o\" \"Main.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/Main.o"
+	@${FIXDEPS} "${OBJECTDIR}/Main.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
 endif
 

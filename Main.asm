@@ -15,13 +15,14 @@ TextLocation res 0x80			    ; reserve 128 bytes for message data
 	extern  LCD_Setup, LCD_Write_Message	      ; external LCD subroutines
 	extern writemessage
 	extern setup
+	extern flashcounter
 	global TextLocation
 	global Greeting
 	global Length
-	;global myTable_1
+	
 
 rst	code	0						 ;reset vector
-	goto	initialise
+	goto	start
 	
 pdata	 code
 	 ;	; ******* Greeting, data in programme memory, and its length *****
@@ -30,15 +31,18 @@ Greeting data	    "Press any key\n"	; message, plus carriage return
 	
 main	code
 
-initialise call setup	
-	movlw greet_len
-	movwf Length ; length of data
-	call writemessage
-	goto $
+start	call	setup
+	call	setlfsr
+	call	setflash
+	movlw	greet_len
+	movwf	Length ; length of data
+	call	writemessage
+	goto	$
 
-;setupMessageRAM
+level	call	load   ;produces and stores random sequence
+	clrf	flashcounter
+	call	read
+	call	int_on
 
 
 	end
-
-
