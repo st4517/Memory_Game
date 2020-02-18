@@ -12,13 +12,12 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/Main.asm</itemPath>
-      <itemPath>//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/config.asm</itemPath>
       <itemPath>StartMessage.asm</itemPath>
       <itemPath>LCD.asm</itemPath>
       <itemPath>lfsr.asm</itemPath>
       <itemPath>Flash_Seq.asm</itemPath>
       <itemPath>interrupt.asm</itemPath>
+      <itemPath>main.asm</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -36,11 +35,11 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>ICD3PlatformTool</platformTool>
         <languageToolchain>MPASMWIN</languageToolchain>
-        <languageToolchainVersion>5.81</languageToolchainVersion>
+        <languageToolchainVersion>5.86</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>
-        <pack name="PIC18F-K_DFP" vendor="Microchip" version="1.0.40"/>
+        <pack name="PIC18F-K_DFP" vendor="Microchip" version="1.2.72"/>
       </packs>
       <compileType>
         <linkerTool>

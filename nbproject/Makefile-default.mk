@@ -30,12 +30,12 @@ ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 IMAGE_TYPE=debug
 OUTPUT_SUFFIX=cof
 DEBUGGABLE_SUFFIX=cof
-FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/Memory_Game.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/Memory_Game.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 else
 IMAGE_TYPE=production
 OUTPUT_SUFFIX=hex
 DEBUGGABLE_SUFFIX=cof
-FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/Memory_Game.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/Memory_Game.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 endif
 
 ifeq ($(COMPARE_BUILD), true)
@@ -57,17 +57,18 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/Main.asm //icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/config.asm StartMessage.asm LCD.asm lfsr.asm Flash_Seq.asm interrupt.asm
+SOURCEFILES_QUOTED_IF_SPACED=StartMessage.asm LCD.asm lfsr.asm Flash_Seq.asm interrupt.asm main.asm
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/2034501830/Main.o ${OBJECTDIR}/_ext/2034501830/config.o ${OBJECTDIR}/StartMessage.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/lfsr.o ${OBJECTDIR}/Flash_Seq.o ${OBJECTDIR}/interrupt.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/2034501830/Main.o.d ${OBJECTDIR}/_ext/2034501830/config.o.d ${OBJECTDIR}/StartMessage.o.d ${OBJECTDIR}/LCD.o.d ${OBJECTDIR}/lfsr.o.d ${OBJECTDIR}/Flash_Seq.o.d ${OBJECTDIR}/interrupt.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/StartMessage.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/lfsr.o ${OBJECTDIR}/Flash_Seq.o ${OBJECTDIR}/interrupt.o ${OBJECTDIR}/main.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/StartMessage.o.d ${OBJECTDIR}/LCD.o.d ${OBJECTDIR}/lfsr.o.d ${OBJECTDIR}/Flash_Seq.o.d ${OBJECTDIR}/interrupt.o.d ${OBJECTDIR}/main.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/2034501830/Main.o ${OBJECTDIR}/_ext/2034501830/config.o ${OBJECTDIR}/StartMessage.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/lfsr.o ${OBJECTDIR}/Flash_Seq.o ${OBJECTDIR}/interrupt.o
+OBJECTFILES=${OBJECTDIR}/StartMessage.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/lfsr.o ${OBJECTDIR}/Flash_Seq.o ${OBJECTDIR}/interrupt.o ${OBJECTDIR}/main.o
 
 # Source Files
-SOURCEFILES=//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/Main.asm //icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/config.asm StartMessage.asm LCD.asm lfsr.asm Flash_Seq.asm interrupt.asm
+SOURCEFILES=StartMessage.asm LCD.asm lfsr.asm Flash_Seq.asm interrupt.asm main.asm
+
 
 
 CFLAGS=
@@ -87,29 +88,13 @@ FIXDEPS=fixDeps
 ifneq ($(INFORMATION_MESSAGE), )
 	@echo $(INFORMATION_MESSAGE)
 endif
-	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/Memory_Game.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/Memory_Game.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 
 MP_PROCESSOR_OPTION=18f87k22
 MP_LINKER_DEBUG_OPTION= 
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: assemble
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/_ext/2034501830/Main.o: //icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/Main.asm  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/_ext/2034501830" 
-	@${RM} ${OBJECTDIR}/_ext/2034501830/Main.o.d 
-	@${RM} ${OBJECTDIR}/_ext/2034501830/Main.o 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/_ext/2034501830/Main.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_ICD3=1 -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/_ext/2034501830/Main.lst\" -e\"${OBJECTDIR}/_ext/2034501830/Main.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/_ext/2034501830/Main.o\" \"//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/Main.asm\" 
-	@${DEP_GEN} -d "${OBJECTDIR}/_ext/2034501830/Main.o"
-	@${FIXDEPS} "${OBJECTDIR}/_ext/2034501830/Main.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
-	
-${OBJECTDIR}/_ext/2034501830/config.o: //icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/config.asm  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/_ext/2034501830" 
-	@${RM} ${OBJECTDIR}/_ext/2034501830/config.o.d 
-	@${RM} ${OBJECTDIR}/_ext/2034501830/config.o 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/_ext/2034501830/config.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_ICD3=1 -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/_ext/2034501830/config.lst\" -e\"${OBJECTDIR}/_ext/2034501830/config.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/_ext/2034501830/config.o\" \"//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/config.asm\" 
-	@${DEP_GEN} -d "${OBJECTDIR}/_ext/2034501830/config.o"
-	@${FIXDEPS} "${OBJECTDIR}/_ext/2034501830/config.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
-	
 ${OBJECTDIR}/StartMessage.o: StartMessage.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/StartMessage.o.d 
@@ -150,23 +135,15 @@ ${OBJECTDIR}/interrupt.o: interrupt.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${DEP_GEN} -d "${OBJECTDIR}/interrupt.o"
 	@${FIXDEPS} "${OBJECTDIR}/interrupt.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
+${OBJECTDIR}/main.o: main.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/main.o.d 
+	@${RM} ${OBJECTDIR}/main.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/main.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_ICD3=1 -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/main.lst\" -e\"${OBJECTDIR}/main.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/main.o\" \"main.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/main.o"
+	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
 else
-${OBJECTDIR}/_ext/2034501830/Main.o: //icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/Main.asm  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/_ext/2034501830" 
-	@${RM} ${OBJECTDIR}/_ext/2034501830/Main.o.d 
-	@${RM} ${OBJECTDIR}/_ext/2034501830/Main.o 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/_ext/2034501830/Main.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/_ext/2034501830/Main.lst\" -e\"${OBJECTDIR}/_ext/2034501830/Main.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/_ext/2034501830/Main.o\" \"//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/Main.asm\" 
-	@${DEP_GEN} -d "${OBJECTDIR}/_ext/2034501830/Main.o"
-	@${FIXDEPS} "${OBJECTDIR}/_ext/2034501830/Main.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
-	
-${OBJECTDIR}/_ext/2034501830/config.o: //icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/config.asm  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/_ext/2034501830" 
-	@${RM} ${OBJECTDIR}/_ext/2034501830/config.o.d 
-	@${RM} ${OBJECTDIR}/_ext/2034501830/config.o 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/_ext/2034501830/config.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/_ext/2034501830/config.lst\" -e\"${OBJECTDIR}/_ext/2034501830/config.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/_ext/2034501830/config.o\" \"//icnas1.cc.ic.ac.uk/st4517/Year3/Microprocessors/Memory_Game.X/config.asm\" 
-	@${DEP_GEN} -d "${OBJECTDIR}/_ext/2034501830/config.o"
-	@${FIXDEPS} "${OBJECTDIR}/_ext/2034501830/config.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
-	
 ${OBJECTDIR}/StartMessage.o: StartMessage.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/StartMessage.o.d 
@@ -207,18 +184,26 @@ ${OBJECTDIR}/interrupt.o: interrupt.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${DEP_GEN} -d "${OBJECTDIR}/interrupt.o"
 	@${FIXDEPS} "${OBJECTDIR}/interrupt.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
+${OBJECTDIR}/main.o: main.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/main.o.d 
+	@${RM} ${OBJECTDIR}/main.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/main.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/main.lst\" -e\"${OBJECTDIR}/main.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/main.o\" \"main.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/main.o"
+	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
 endif
 
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: link
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-dist/${CND_CONF}/${IMAGE_TYPE}/Memory_Game.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk    
+dist/${CND_CONF}/${IMAGE_TYPE}/Memory_Game.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk    
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_LD} $(MP_EXTRA_LD_PRE)   -p$(MP_PROCESSOR_OPTION)  -w -x -u_DEBUG -z__ICD2RAM=1 -m"${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map"   -z__MPLAB_BUILD=1  -z__MPLAB_DEBUG=1 -z__MPLAB_DEBUGGER_ICD3=1 $(MP_LINKER_DEBUG_OPTION) -odist/${CND_CONF}/${IMAGE_TYPE}/Memory_Game.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
+	${MP_LD} $(MP_EXTRA_LD_PRE)   -p$(MP_PROCESSOR_OPTION)  -w -x -u_DEBUG -z__ICD2RAM=1 -m"${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map"   -z__MPLAB_BUILD=1  -z__MPLAB_DEBUG=1 -z__MPLAB_DEBUGGER_ICD3=1 $(MP_LINKER_DEBUG_OPTION) -odist/${CND_CONF}/${IMAGE_TYPE}/Memory_Game.${IMAGE_TYPE}.${OUTPUT_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
 else
-dist/${CND_CONF}/${IMAGE_TYPE}/Memory_Game.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   
+dist/${CND_CONF}/${IMAGE_TYPE}/Memory_Game.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_LD} $(MP_EXTRA_LD_PRE)   -p$(MP_PROCESSOR_OPTION)  -w  -m"${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map"   -z__MPLAB_BUILD=1  -odist/${CND_CONF}/${IMAGE_TYPE}/Memory_Game.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
+	${MP_LD} $(MP_EXTRA_LD_PRE)   -p$(MP_PROCESSOR_OPTION)  -w  -m"${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map"   -z__MPLAB_BUILD=1  -odist/${CND_CONF}/${IMAGE_TYPE}/Memory_Game.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}     
 endif
 
 
