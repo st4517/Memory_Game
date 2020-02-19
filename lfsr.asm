@@ -22,11 +22,11 @@ setlfsr movlw	0x01
         call	setFSR
 	return	
 	
-setFSR	lfsr	FSR0, 0x140
+setFSR	lfsr	FSR1, 0x140
 	return
 	
 load    call	produce		    ;produces random number 0-3, stores in random
-        movff	random, POSTINC0    ;stored in FSR
+        movff	random, POSTINC1    ;stored in FSR1
         incf	LFSRCounter,1,0
         movlw	0x04
         cpfseq	LFSRCounter	    ;stops looping when sequence is length 4

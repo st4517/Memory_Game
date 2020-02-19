@@ -29,12 +29,12 @@ setflash clrf	TRISD	;PORTD all outputs
 	movwf	yellow
 	return
      
-read	clrf	flashcounter
-	call	compare
+read	call	compare
 	movff	signal, PORTD
-	movf	POSTINC0,W
+	movf	POSTINC1,W
+	call	delayreset
 	call	delay
-	clrf	PORTD
+	;clrf	PORTD
 	incf	flashcounter, 1,0
 	movlw	0x04
 	cpfseq	flashcounter
@@ -43,15 +43,15 @@ read	clrf	flashcounter
 
 compare	movff	red, signal
 	movlw	0x00 
-	cpfsgt  INDF0
+	cpfsgt  INDF1
 	return
 	movff	blue, signal
 	movlw	0x01
-	cpfsgt	INDF0
+	cpfsgt	INDF1
 	return
 	movff	violet, signal
 	movlw	0x02
-	cpfsgt	INDF0
+	cpfsgt	INDF1
 	return
 	movff	yellow, signal
 	return
@@ -60,7 +60,7 @@ allLEDS movlw	0x00
 	movwf	TRISD,ACCESS
 	movlw	0x0F
 	movwf	PORTD, ACCESS	
-	movff	POSTINC0,W
+	movff	POSTINC1,W
 	;goto	interpret	
 	
 delayreset movlw 0x20	;sets delay time

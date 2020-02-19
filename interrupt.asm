@@ -53,7 +53,7 @@ yellow	movlw	0x08
 	movlw	0x03
 	return	
 	
-compare cpfseq	POSTINC0
+compare cpfseq	POSTINC1
 	goto	errormess
 	call	success
 	return
