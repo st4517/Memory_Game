@@ -2,7 +2,8 @@
 
 	extern  LCD_Setup, LCD_Write_Message	    ; external LCD subroutines
 	
-	global writemessage
+	global greeting
+	global failure
 	global setup
 	extern Greeting
 	extern Length
@@ -11,6 +12,10 @@
 acs0	udata_acs   ; reserve data space in access ram
 counter	    res 1   ; reserve one byte for a counter variable
 delay_count res 1   ; reserve one byte for counter in the delay routine
+message	    res 10
+ 
+tables	udata	0x400		  ; reserve data anywhere in RAM (here at 0x400)
+TextLocation res 0x80			    ; reserve 128 bytes for message data
 
  
 
@@ -18,7 +23,13 @@ delay_count res 1   ; reserve one byte for counter in the delay routine
 	;goto	setup
 
 pdata	code    ; a section of programme memory for storing data
-
+	
+	
+initial data	    "Press any key\n"	; message, plus carriage return
+	constant greet_len = .14
+	
+wrong	data	    "lol thats wrong\n"	; message, plus carriage return
+	constant wrong_len = .16
 	
 main	code
 	
@@ -32,11 +43,11 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	
 	; ******* Main programme ****************************************
 writemessage 	lfsr	FSR0, TextLocation	; Load FSR0 with address in RAM	
-		movlw	upper(Greeting)	; address of data in PM
+		movlw	upper(message)	; address of data in PM
 		movwf	TBLPTRU		; load upper bits to TBLPTRU
-		movlw	high(Greeting)	; address of data in PM
+		movlw	high(message)	; address of data in PM
 		movwf	TBLPTRH		; load high byte to TBLPTRH
-		movlw	low(Greeting)	; address of data in PM
+		movlw	low(message)	; address of data in PM
 		movwf	TBLPTRL		; load low byte to TBLPTRL
 		movff	Length, counter
 loop 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
@@ -57,6 +68,18 @@ delay	decfsz	delay_count	; decrement until zero
 	bra delay
 	return
 
+greeting    movff   initial, message
+	movlw	greet_len
+	movwf	Length		    ;length of data
+	call writemessage
+	return
+	
+failure	movff	wrong, message
+	movlw	wrong_len
+	movwf	Length
+	call	writemessage
+	return
+	
 	end
 
 

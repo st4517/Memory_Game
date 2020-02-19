@@ -6,13 +6,12 @@ d1	res 1
 d2	res 1
 Length	res 1
 	
-tables	udata	0x400		  ; reserve data anywhere in RAM (here at 0x400)
-TextLocation res 0x80			    ; reserve 128 bytes for message data
+
 
  ;
 
 	extern  LCD_Setup, LCD_Write_Message	      ; external LCD subroutines
-	extern	setup, writemessage
+	extern	setup, greeting, failure
 	extern	setlfsr, load
 	extern	setflash, flashcounter, read
 	extern	int_on
@@ -24,25 +23,23 @@ TextLocation res 0x80			    ; reserve 128 bytes for message data
 rst	code	0						 ;reset vector
 	goto	start
 	
-pdata	 code
-	 ;	; ******* Greeting, data in programme memory, and its length *****
-Greeting data	    "Press any key\n"	; message, plus carriage return
-	constant greet_len = .14
+
 	
 main	code
 
-start	call	setup
-	call	setlfsr
-	call	setflash
-	movlw	greet_len
-	movwf	Length		   ;length of data
-	call	writemessage
+start	call	setup		    ;LCD setup
+	call	setlfsr		    ;LFSR setup
+	call	setflash	    ;LED setup
+	;movlw	greet_len
+	;movwf	Length		    ;length of data
+	call	greeting
+	call	failure
 	
 
-level	call	load		   ;produces and stores random sequence
-	clrf	flashcounter
-	call	read
-	call	int_on
+level	call	load		    ;produces and stores random sequence
+	clrf	flashcounter	    ;
+	call	read		    ;flashes sequence
+	call	int_on		    ;enables interrrupts
 
 
 	end

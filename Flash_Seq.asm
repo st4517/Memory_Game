@@ -34,11 +34,11 @@ read	call	compare
 	movf	POSTINC1,W
 	call	delayreset
 	call	delay
-	;clrf	PORTD
 	incf	flashcounter, 1,0
 	movlw	0x04
 	cpfseq	flashcounter
 	bra	read
+	clrf	PORTD
 	return
 
 compare	movff	red, signal
@@ -63,7 +63,7 @@ allLEDS movlw	0x00
 	movff	POSTINC1,W
 	;goto	interpret	
 	
-delayreset movlw 0x20	;sets delay time
+delayreset movlw 0x40	;sets delay time
 	movwf	d0
 	movwf	d1
 	movwf	d2
