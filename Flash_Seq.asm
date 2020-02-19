@@ -39,6 +39,7 @@ read	call	compare
 	cpfseq	flashcounter
 	bra	read
 	clrf	PORTD
+	lfsr	FSR1, 0x140		;restores FSR1
 	return
 
 compare	movff	red, signal

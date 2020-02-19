@@ -5,17 +5,17 @@
 	global greeting
 	global failure
 	global setup
-	extern Greeting
-	extern Length
-	extern TextLocation
+	;extern Greeting
+	;extern Length
 	
 acs0	udata_acs   ; reserve data space in access ram
 counter	    res 1   ; reserve one byte for a counter variable
 delay_count res 1   ; reserve one byte for counter in the delay routine
 message	    res 10
+length	res 1
  
 tables	udata	0x400		  ; reserve data anywhere in RAM (here at 0x400)
-TextLocation res 0x80			    ; reserve 128 bytes for message data
+TextLocation res 0x80		  ; reserve 128 bytes for message data
 
  
 
@@ -49,13 +49,13 @@ writemessage 	lfsr	FSR0, TextLocation	; Load FSR0 with address in RAM
 		movwf	TBLPTRH		; load high byte to TBLPTRH
 		movlw	low(message)	; address of data in PM
 		movwf	TBLPTRL		; load low byte to TBLPTRL
-		movff	Length, counter
-loop 	tblrd*+			; one byte from PM to TABLAT, increment TBLPRT
+		movff	length, counter
+loop 	tblrd*+			; one byte from PM to TABLA increment TBLPRT
 	movff	TABLAT, POSTINC0; move data from TABLAT to (FSR0), inc FSR0	
 	decfsz	counter		; count down to zero
 	bra	loop		; keep going until finished
 			
-	movff	Length, WREG	; output message to LCD (leave out "\n")
+	movff	length, WREG	; output message to LCD (leave out "\n")
 	decf	WREG
 	lfsr	FSR2, TextLocation
 	call	LCD_Write_Message
@@ -70,13 +70,13 @@ delay	decfsz	delay_count	; decrement until zero
 
 greeting    movff   initial, message
 	movlw	greet_len
-	movwf	Length		    ;length of data
+	movwf	length		    ;length of data
 	call writemessage
 	return
 	
 failure	movff	wrong, message
 	movlw	wrong_len
-	movwf	Length
+	movwf	length
 	call	writemessage
 	return
 	

@@ -4,20 +4,16 @@ acs0    udata_acs				; named variables in access ram
 d0	res 1				    ; reserve 1 byte for variable delay
 d1	res 1
 d2	res 1
-Length	res 1
+;length	res 1
 	
-
-
- ;
 
 	extern  LCD_Setup, LCD_Write_Message	      ; external LCD subroutines
 	extern	setup, greeting, failure
 	extern	setlfsr, load
 	extern	setflash, flashcounter, read
 	extern	int_on
-	global	TextLocation
-	global	Greeting
-	global	Length
+	;global	Greeting
+	;global	length
 	
 
 rst	code	0						 ;reset vector
@@ -31,7 +27,7 @@ start	call	setup		    ;LCD setup
 	call	setlfsr		    ;LFSR setup
 	call	setflash	    ;LED setup
 	;movlw	greet_len
-	;movwf	Length		    ;length of data
+	;movwf	length		    ;length of data
 	call	greeting
 	call	failure
 	
