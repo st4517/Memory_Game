@@ -1,3 +1,3 @@
 build/default/production/Flash_Seq.o:  \
-	H:/Year3/Microprocessors/Memory_Game.X/Flash_Seq.asm  \
+	C:/Users/Marta/Documents/Imperial/3RD_YEAR/Lab/Memory_Game/Flash_Seq.asm  \
 

@@ -4,8 +4,7 @@ acs0    udata_acs				; named variables in access ram
 d0	res 1				    ; reserve 1 byte for variable delay
 d1	res 1
 d2	res 1
-level	res 1
-Length res 1
+Length	res 1
 	
 tables	udata	0x400		  ; reserve data anywhere in RAM (here at 0x400)
 TextLocation res 0x80			    ; reserve 128 bytes for message data
@@ -13,12 +12,13 @@ TextLocation res 0x80			    ; reserve 128 bytes for message data
  ;
 
 	extern  LCD_Setup, LCD_Write_Message	      ; external LCD subroutines
-	extern writemessage
-	extern setup
-	extern flashcounter
-	global TextLocation
-	global Greeting
-	global Length
+	extern	setup, writemessage
+	extern	setlfsr, load
+	extern	setflash, flashcounter, read
+	extern	int_on
+	global	TextLocation
+	global	Greeting
+	global	Length
 	
 
 rst	code	0						 ;reset vector
