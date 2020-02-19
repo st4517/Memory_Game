@@ -35,11 +35,11 @@ start	call	setup
 	call	setlfsr
 	call	setflash
 	movlw	greet_len
-	movwf	Length ; length of data
+	movwf	Length		   ;length of data
 	call	writemessage
-	goto	$
+	
 
-level	call	load   ;produces and stores random sequence
+level	call	load		   ;produces and stores random sequence
 	clrf	flashcounter
 	call	read
 	call	int_on
