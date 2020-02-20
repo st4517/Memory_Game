@@ -6,10 +6,12 @@ global	int_on
 interrupt   code
    
   
-int_on	movlw	0x0F
+int_on	banksel PADCFG1		    ; PADCFG1 is not in Access Bank!!
+	bsf PADCFG1,REPU,BANKED	    ;enable pullup resistors
+	movlw	0x0F
 	movwf	TRISB		    ;lower nibble input, upper nibble output
-	movlw	0xF0
-	movwf	PORTB		    ;lower nibble clear, upper nibble set	
+	;call delay
+	clrf	PORTB		    ;drives outputs low	
 	bsf	INTCON, INT0IE	    ;enable INT0
 	bsf	INTCON3, INT1IE	    ;enable INT1
 	bsf	INTCON3, INT2IE	    ;enable INT2
