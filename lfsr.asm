@@ -9,7 +9,7 @@ s3  res 1
 random	res 1	;random number produced
 LFSRCounter res 1   ;sequence length
       
-global setlfsr, load, produce, shift 
+global setlfsr, load, produce, shift , LFSRCounter
 
 random	code
 

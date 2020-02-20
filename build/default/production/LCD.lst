@@ -1,4 +1,4 @@
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE  1
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -16,7 +16,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00009 
                       02986         LIST
                       00002 
-  0000                00003     global  LCD_Setup, LCD_Write_Message
+  0000                00003     global  LCD_Setup, LCD_Write_Message, LCD_Clear_Display
                       00004 
                       00005 acs0    udata_acs   ; named variables in access ram
 000000                00006 LCD_cnt_l   res 1   ; reserve 1 byte for variable LCD_cnt_l
@@ -57,7 +57,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 000042 0E02           00041         movlw   .2              ; wait 2ms
 000044 EC?? F???      00042         call    LCD_delay_ms
 000048 0E06           00043         movlw   b'00000110'     ; entry mode incr by 1 no shift
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE  2
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -67,102 +67,109 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 00004E 0E0A           00045         movlw   .10             ; wait 40us
 000050 EC?? F???      00046         call    LCD_delay_x4us
 000054 0012           00047         return
-                      00048 
-000056                00049 LCD_Write_Message           ; Message stored at FSR2, length stored in W
-000056 6E??           00050         movwf   LCD_counter
-000058                00051 LCD_Loop_message
-000058 50DE           00052         movf    POSTINC2, W
-00005A EC?? F???      00053         call    LCD_Send_Byte_D
-00005E 2E??           00054         decfsz  LCD_counter
-000060 D???           00055         bra     LCD_Loop_message
-000062 0012           00056         return
-                      00057 
-000064                00058 LCD_Send_Byte_I             ; Transmits byte stored in W to instruction reg
-000064 6E??           00059         movwf   LCD_tmp
-000066 38??           00060         swapf   LCD_tmp,W   ; swap nibbles, high nibble goes first
-000068 0B0F           00061         andlw   0x0f        ; select just low nibble
-00006A 6E8A           00062         movwf   LATB        ; output data bits to LCD
-00006C 988A           00063         bcf     LATB, LCD_RS    ; Instruction write clear RS bit
-00006E EC?? F???      00064         call    LCD_Enable  ; Pulse enable Bit 
-000072 50??           00065         movf    LCD_tmp,W   ; swap nibbles, now do low nibble
-000074 0B0F           00066         andlw   0x0f        ; select just low nibble
-000076 6E8A           00067         movwf   LATB        ; output data bits to LCD
-000078 988A           00068         bcf     LATB, LCD_RS    ; Instruction write clear RS bit
-00007A EC?? F???      00069         call    LCD_Enable  ; Pulse enable Bit 
-00007E 0012           00070         return
-                      00071 
-000080                00072 LCD_Send_Byte_D             ; Transmits byte stored in W to data reg
-000080 6E??           00073         movwf   LCD_tmp
-000082 38??           00074         swapf   LCD_tmp,W   ; swap nibbles, high nibble goes first
-000084 0B0F           00075         andlw   0x0f        ; select just low nibble
-000086 6E8A           00076         movwf   LATB        ; output data bits to LCD
-000088 888A           00077         bsf     LATB, LCD_RS    ; Data write set RS bit
-00008A EC?? F???      00078         call    LCD_Enable  ; Pulse enable Bit 
-00008E 50??           00079         movf    LCD_tmp,W   ; swap nibbles, now do low nibble
-000090 0B0F           00080         andlw   0x0f        ; select just low nibble
-000092 6E8A           00081         movwf   LATB        ; output data bits to LCD
-000094 888A           00082         bsf     LATB, LCD_RS    ; Data write set RS bit     
-000096 EC?? F???      00083         call    LCD_Enable  ; Pulse enable Bit 
-00009A 0E0A           00084         movlw   .10         ; delay 40us
-00009C EC?? F???      00085         call    LCD_delay_x4us
-0000A0 0012           00086         return
-                      00087 
-0000A2                00088 LCD_Enable          ; pulse enable bit LCD_E for 500ns
-0000A2 0000           00089         nop
-0000A4 0000           00090         nop
-0000A6 0000           00091         nop
-0000A8 0000           00092         nop
-0000AA 0000           00093         nop
-0000AC 0000           00094         nop
-0000AE 0000           00095         nop
+                      00048         
+000056                00049 LCD_Clear_Display
+000056 0E01           00050         movlw   b'00000001'     ;display clear
+000058 EC?? F???      00051         call    LCD_Send_Byte_I
+00005C 0E02           00052         movlw   .2              ;wait 2ms
+00005E EC?? F???      00053         call    LCD_delay_ms
+000062 0012           00054         return
+                      00055         
+000064                00056 LCD_Write_Message           ; Message stored at FSR2, length stored in W
+000064 6E??           00057         movwf   LCD_counter
+000066                00058 LCD_Loop_message
+000066 50DE           00059         movf    POSTINC2, W
+000068 EC?? F???      00060         call    LCD_Send_Byte_D
+00006C 2E??           00061         decfsz  LCD_counter
+00006E D???           00062         bra     LCD_Loop_message
+000070 0012           00063         return
+                      00064 
+000072                00065 LCD_Send_Byte_I             ; Transmits byte stored in W to instruction reg
+000072 6E??           00066         movwf   LCD_tmp
+000074 38??           00067         swapf   LCD_tmp,W   ; swap nibbles, high nibble goes first
+000076 0B0F           00068         andlw   0x0f        ; select just low nibble
+000078 6E8A           00069         movwf   LATB        ; output data bits to LCD
+00007A 988A           00070         bcf     LATB, LCD_RS    ; Instruction write clear RS bit
+00007C EC?? F???      00071         call    LCD_Enable  ; Pulse enable Bit 
+000080 50??           00072         movf    LCD_tmp,W   ; swap nibbles, now do low nibble
+000082 0B0F           00073         andlw   0x0f        ; select just low nibble
+000084 6E8A           00074         movwf   LATB        ; output data bits to LCD
+000086 988A           00075         bcf     LATB, LCD_RS    ; Instruction write clear RS bit
+000088 EC?? F???      00076         call    LCD_Enable  ; Pulse enable Bit 
+00008C 0012           00077         return
+                      00078 
+00008E                00079 LCD_Send_Byte_D             ; Transmits byte stored in W to data reg
+00008E 6E??           00080         movwf   LCD_tmp
+000090 38??           00081         swapf   LCD_tmp,W   ; swap nibbles, high nibble goes first
+000092 0B0F           00082         andlw   0x0f        ; select just low nibble
+000094 6E8A           00083         movwf   LATB        ; output data bits to LCD
+000096 888A           00084         bsf     LATB, LCD_RS    ; Data write set RS bit
+000098 EC?? F???      00085         call    LCD_Enable  ; Pulse enable Bit 
+00009C 50??           00086         movf    LCD_tmp,W   ; swap nibbles, now do low nibble
+00009E 0B0F           00087         andlw   0x0f        ; select just low nibble
+0000A0 6E8A           00088         movwf   LATB        ; output data bits to LCD
+0000A2 888A           00089         bsf     LATB, LCD_RS    ; Data write set RS bit     
+0000A4 EC?? F???      00090         call    LCD_Enable  ; Pulse enable Bit 
+0000A8 0E0A           00091         movlw   .10         ; delay 40us
+0000AA EC?? F???      00092         call    LCD_delay_x4us
+0000AE 0012           00093         return
+                      00094 
+0000B0                00095 LCD_Enable          ; pulse enable bit LCD_E for 500ns
 0000B0 0000           00096         nop
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE  3
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0000B2 8A8A           00097         bsf         LATB, LCD_E     ; Take enable high
+0000B2 0000           00097         nop
 0000B4 0000           00098         nop
 0000B6 0000           00099         nop
 0000B8 0000           00100         nop
 0000BA 0000           00101         nop
 0000BC 0000           00102         nop
 0000BE 0000           00103         nop
-0000C0 0000           00104         nop
-0000C2 9A8A           00105         bcf         LATB, LCD_E     ; Writes data to LCD
-0000C4 0012           00106         return
-                      00107     
-                      00108 ; ** a few delay routines below here as LCD timing can be quite critical ****
-0000C6                00109 LCD_delay_ms                ; delay given in ms in W
-0000C6 6E??           00110         movwf   LCD_cnt_ms
-0000C8 0EFA           00111 lcdlp2  movlw   .250        ; 1 ms delay
-0000CA EC?? F???      00112         call    LCD_delay_x4us  
-0000CE 2E??           00113         decfsz  LCD_cnt_ms
-0000D0 D???           00114         bra     lcdlp2
-0000D2 0012           00115         return
-                      00116     
-0000D4                00117 LCD_delay_x4us              ; delay given in chunks of 4 microsecond in W
-0000D4 6E??           00118         movwf   LCD_cnt_l   ; now need to multiply by 16
-0000D6 3A??           00119         swapf   LCD_cnt_l,F ; swap nibbles
-0000D8 0E0F           00120         movlw   0x0f        
-0000DA 14??           00121         andwf   LCD_cnt_l,W ; move low nibble to W
-0000DC 6E??           00122         movwf   LCD_cnt_h   ; then to LCD_cnt_h
-0000DE 0EF0           00123         movlw   0xf0        
-0000E0 16??           00124         andwf   LCD_cnt_l,F ; keep high nibble in LCD_cnt_l
-0000E2 EC?? F???      00125         call    LCD_delay
-0000E6 0012           00126         return
-                      00127 
-0000E8                00128 LCD_delay                       ; delay routine 4 instruction loop == 250ns         
-0000E8 0E00           00129         movlw   0x00            ; W=0
-0000EA 06??           00130 lcdlp1  decf    LCD_cnt_l,F     ; no carry when 0x00 -> 0xff
-0000EC 5A??           00131         subwfb  LCD_cnt_h,F     ; no carry when 0x00 -> 0xff
-0000EE E2??           00132         bc      lcdlp1          ; carry, then loop again
-0000F0 0012           00133         return                  ; carry reset so return
+0000C0 8A8A           00104         bsf         LATB, LCD_E     ; Take enable high
+0000C2 0000           00105         nop
+0000C4 0000           00106         nop
+0000C6 0000           00107         nop
+0000C8 0000           00108         nop
+0000CA 0000           00109         nop
+0000CC 0000           00110         nop
+0000CE 0000           00111         nop
+0000D0 9A8A           00112         bcf         LATB, LCD_E     ; Writes data to LCD
+0000D2 0012           00113         return
+                      00114     
+                      00115 ; ** a few delay routines below here as LCD timing can be quite critical ****
+0000D4                00116 LCD_delay_ms                ; delay given in ms in W
+0000D4 6E??           00117         movwf   LCD_cnt_ms
+0000D6 0EFA           00118 lcdlp2  movlw   .250        ; 1 ms delay
+0000D8 EC?? F???      00119         call    LCD_delay_x4us  
+0000DC 2E??           00120         decfsz  LCD_cnt_ms
+0000DE D???           00121         bra     lcdlp2
+0000E0 0012           00122         return
+                      00123     
+0000E2                00124 LCD_delay_x4us              ; delay given in chunks of 4 microsecond in W
+0000E2 6E??           00125         movwf   LCD_cnt_l   ; now need to multiply by 16
+0000E4 3A??           00126         swapf   LCD_cnt_l,F ; swap nibbles
+0000E6 0E0F           00127         movlw   0x0f        
+0000E8 14??           00128         andwf   LCD_cnt_l,W ; move low nibble to W
+0000EA 6E??           00129         movwf   LCD_cnt_h   ; then to LCD_cnt_h
+0000EC 0EF0           00130         movlw   0xf0        
+0000EE 16??           00131         andwf   LCD_cnt_l,F ; keep high nibble in LCD_cnt_l
+0000F0 EC?? F???      00132         call    LCD_delay
+0000F4 0012           00133         return
                       00134 
-                      00135 
-                      00136     end
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE  4
+0000F6                00135 LCD_delay                       ; delay routine 4 instruction loop == 250ns         
+0000F6 0E00           00136         movlw   0x00            ; W=0
+0000F8 06??           00137 lcdlp1  decf    LCD_cnt_l,F     ; no carry when 0x00 -> 0xff
+0000FA 5A??           00138         subwfb  LCD_cnt_h,F     ; no carry when 0x00 -> 0xff
+0000FC E2??           00139         bc      lcdlp1          ; carry, then loop again
+0000FE 0012           00140         return                  ; carry reset so return
+                      00141 
+                      00142 
+                      00143     end
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE  4
 
 
 SYMBOL TABLE
@@ -221,7 +228,7 @@ ADMSK5                            00000005
 ADON                              00000000
 ADRES                             00000FC3
 ADRESH                            00000FC4
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE  5
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE  5
 
 
 SYMBOL TABLE
@@ -280,7 +287,7 @@ ANSEL16                           00000000
 ANSEL17                           00000001
 ANSEL18                           00000002
 ANSEL19                           00000003
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE  6
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE  6
 
 
 SYMBOL TABLE
@@ -339,7 +346,7 @@ C1TSEL0                           00000000
 C1TSEL1                           00000001
 C1TSEL2                           00000002
 C2INA                             00000004
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE  7
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE  7
 
 
 SYMBOL TABLE
@@ -398,7 +405,7 @@ CCP1IP                            00000001
 CCP1M0                            00000000
 CCP1M1                            00000001
 CCP1M2                            00000002
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE  8
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE  8
 
 
 SYMBOL TABLE
@@ -457,7 +464,7 @@ CCP5M0                            00000000
 CCP5M1                            00000001
 CCP5M2                            00000002
 CCP5M3                            00000003
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE  9
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE  9
 
 
 SYMBOL TABLE
@@ -516,7 +523,7 @@ CCP9IP                            00000006
 CCP9M0                            00000000
 CCP9M1                            00000001
 CCP9M2                            00000002
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 10
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 10
 
 
 SYMBOL TABLE
@@ -575,7 +582,7 @@ CHSN1                             00000001
 CHSN2                             00000002
 CK1                               00000006
 CK2                               00000001
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 11
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 11
 
 
 SYMBOL TABLE
@@ -634,7 +641,7 @@ CTMUIE                            00000003
 CTMUIF                            00000003
 CTMUIP                            00000003
 CTMUMD                            00000006
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 12
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 12
 
 
 SYMBOL TABLE
@@ -693,7 +700,7 @@ ECCP1AS1                          00000005
 ECCP1AS2                          00000006
 ECCP1ASE                          00000007
 ECCP1CON                          00000FBB
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 13
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 13
 
 
 SYMBOL TABLE
@@ -752,7 +759,7 @@ FSR2H                             00000FDA
 FSR2L                             00000FD9
 GCEN                              00000007
 GIE                               00000007
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 14
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 14
 
 
 SYMBOL TABLE
@@ -811,7 +818,7 @@ INT3F                             00000002
 INT3IE                            00000005
 INT3IF                            00000002
 INT3IP                            00000001
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 15
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 15
 
 
 SYMBOL TABLE
@@ -870,7 +877,7 @@ LATB7                             00000007
 LATC                              00000F8B
 LATC0                             00000000
 LATC1                             00000001
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 16
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 16
 
 
 SYMBOL TABLE
@@ -929,7 +936,7 @@ LATJ1                             00000001
 LATJ2                             00000002
 LATJ3                             00000003
 LATJ4                             00000004
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 17
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 17
 
 
 SYMBOL TABLE
@@ -939,21 +946,22 @@ LATJ5                             00000005
 LATJ6                             00000006
 LATJ7                             00000007
 LB                                00000006
+LCD_Clear_Display                 00000056
 LCD_E                             00000005
-LCD_Enable                        000000A2
-LCD_Loop_message                  00000058
+LCD_Enable                        000000B0
+LCD_Loop_message                  00000066
 LCD_RS                            00000004
-LCD_Send_Byte_D                   00000080
-LCD_Send_Byte_I                   00000064
+LCD_Send_Byte_D                   0000008E
+LCD_Send_Byte_I                   00000072
 LCD_Setup                         00000000
-LCD_Write_Message                 00000056
+LCD_Write_Message                 00000064
 LCD_cnt_h                         00000001
 LCD_cnt_l                         00000000
 LCD_cnt_ms                        00000002
 LCD_counter                       00000004
-LCD_delay                         000000E8
-LCD_delay_ms                      000000C6
-LCD_delay_x4us                    000000D4
+LCD_delay                         000000F6
+LCD_delay_ms                      000000D4
+LCD_delay_x4us                    000000E2
 LCD_tmp                           00000003
 LVDIE                             00000002
 LVDIF                             00000002
@@ -987,13 +995,13 @@ NOT_T1DONE                        00000003
 NOT_T1SYNC                        00000002
 NOT_T3DONE                        00000003
 NOT_T3SYNC                        00000002
-NOT_T5DONE                        00000003
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 18
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 18
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+NOT_T5DONE                        00000003
 NOT_T5SYNC                        00000002
 NOT_T7DONE                        00000003
 NOT_T7SYNC                        00000002
@@ -1046,13 +1054,13 @@ P2DC3                             00000003
 P2DC4                             00000004
 P2DC5                             00000005
 P2DC6                             00000006
-P2M0                              00000006
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 19
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 19
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+P2M0                              00000006
 P2M1                              00000007
 P2RSEN                            00000007
 P3B                               00000004
@@ -1105,13 +1113,13 @@ PLUSW2                            00000FDB
 PMD0                              00000F19
 PMD1                              00000F18
 PMD2                              00000F17
-PMD3                              00000F16
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 20
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 20
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PMD3                              00000F16
 POR                               00000001
 PORTA                             00000F80
 PORTB                             00000F81
@@ -1164,13 +1172,13 @@ PSS2AC1                           00000003
 PSS2BD0                           00000000
 PSS2BD1                           00000001
 PSS3AC0                           00000002
-PSS3AC1                           00000003
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 21
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 21
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+PSS3AC1                           00000003
 PSS3BD0                           00000000
 PSS3BD1                           00000001
 PSTR1CON                          00000F9C
@@ -1223,13 +1231,13 @@ RCIF                              00000005
 RCIP                              00000005
 RCON                              00000FD0
 RCREG                             00000FAE
-RCREG1                            00000FAE
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 22
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 22
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+RCREG1                            00000FAE
 RCREG2                            00000F1D
 RCSTA                             00000FAB
 RCSTA1                            00000FAB
@@ -1282,13 +1290,13 @@ RH7                               00000007
 RI                                00000004
 RJ0                               00000000
 RJ1                               00000001
-RJ2                               00000002
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 23
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 23
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+RJ2                               00000002
 RJ3                               00000003
 RJ4                               00000004
 RJ5                               00000005
@@ -1341,13 +1349,13 @@ SCL1                              00000003
 SCL2                              00000006
 SCS0                              00000000
 SCS1                              00000001
-SDA1                              00000004
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 24
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 24
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+SDA1                              00000004
 SDA2                              00000005
 SDI1                              00000004
 SDI2                              00000005
@@ -1400,13 +1408,13 @@ SSP2CON2                          00000F66
 SSP2IE                            00000005
 SSP2IF                            00000005
 SSP2IP                            00000005
-SSP2MD                            00000002
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 25
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 25
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+SSP2MD                            00000002
 SSP2MSK                           00000F69
 SSP2STAT                          00000F68
 SSPADD                            00000FC8
@@ -1459,13 +1467,13 @@ T10OUTPS3                         00000006
 T12CKPS0                          00000000
 T12CKPS1                          00000001
 T12CON                            00000F30
-T12OUTPS0                         00000003
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 26
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 26
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+T12OUTPS0                         00000003
 T12OUTPS1                         00000004
 T12OUTPS2                         00000005
 T12OUTPS3                         00000006
@@ -1518,13 +1526,13 @@ T5CON                             00000F7B
 T5G                               00000004
 T5GCON                            00000F7A
 T5GGO                             00000003
-T5GGO_NOT_T5DONE                  00000003
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 27
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 27
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+T5GGO_NOT_T5DONE                  00000003
 T5GPOL                            00000006
 T5GSPM                            00000004
 T5GSS0                            00000000
@@ -1577,13 +1585,13 @@ TMR10                             00000F35
 TMR10IE                           00000005
 TMR10IF                           00000005
 TMR10IP                           00000005
-TMR10MD                           00000007
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 28
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 28
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TMR10MD                           00000007
 TMR10ON                           00000002
 TMR12                             00000F32
 TMR12IE                           00000006
@@ -1636,13 +1644,13 @@ TMR5CS1                           00000007
 TMR5GE                            00000007
 TMR5GIE                           00000007
 TMR5GIF                           00000007
-TMR5GIP                           00000007
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 29
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 29
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TMR5GIP                           00000007
 TMR5H                             00000F7D
 TMR5IE                            00000001
 TMR5IF                            00000001
@@ -1695,13 +1703,13 @@ TRISA7                            00000007
 TRISB                             00000F93
 TRISB0                            00000000
 TRISB1                            00000001
-TRISB2                            00000002
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 30
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 30
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TRISB2                            00000002
 TRISB3                            00000003
 TRISB4                            00000004
 TRISB5                            00000005
@@ -1754,13 +1762,13 @@ TRISH1                            00000001
 TRISH2                            00000002
 TRISH3                            00000003
 TRISH4                            00000004
-TRISH5                            00000005
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 31
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 31
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TRISH5                            00000005
 TRISH6                            00000006
 TRISH7                            00000007
 TRISJ                             00000F9A
@@ -1813,13 +1821,13 @@ TXSTA2                            00000F21
 U1OD                              00000006
 U2OD                              00000007
 UA                                00000001
-UART1MD                           00000003
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 32
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 32
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+UART1MD                           00000003
 UART2MD                           00000004
 UB                                00000007
 ULPEN                             00000002
@@ -1872,13 +1880,13 @@ _CCP2MX_PORTC_3H                  000000FF
 _CONFIG1H                         00300001
 _CONFIG1L                         00300000
 _CONFIG2H                         00300003
-_CONFIG2L                         00300002
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 33
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 33
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_CONFIG2L                         00300002
 _CONFIG3H                         00300005
 _CONFIG3L                         00300004
 _CONFIG4L                         00300006
@@ -1931,13 +1939,13 @@ _EBRT6_ON_7L                      000000BF
 _EBRT7_OFF_7L                     000000FF
 _EBRT7_ON_7L                      0000007F
 _EBRTB_OFF_7H                     000000FF
-_EBRTB_ON_7H                      000000BF
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 34
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 34
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_EBRTB_ON_7H                      000000BF
 _ECCPMX_PORTE_3H                  000000FF
 _ECCPMX_PORTH_3H                  000000FD
 _FCMEN_OFF_1H                     000000BF
@@ -1990,13 +1998,13 @@ _WAIT_ON_3L                       0000007F
 _WDTEN_NOSLP_2H                   000000FD
 _WDTEN_OFF_2H                     000000FC
 _WDTEN_ON_2H                      000000FE
-_WDTEN_SWDTDIS_2H                 000000FF
-MPASM 5.81                           LCD.ASM   2-20-2020  11:21:50         PAGE 35
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 35
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_WDTEN_SWDTDIS_2H                 000000FF
 _WDTPS_1024_2H                    000000AB
 _WDTPS_1048576_2H                 000000FF
 _WDTPS_128_2H                     0000009F
@@ -2043,8 +2051,14 @@ _WRTD_ON_6H                       0000007F
 _XINST_OFF_1L                     000000BF
 _XINST_ON_1L                      000000FF
 __18F87K22                        00000001
-lcdlp1                            000000EA
-lcdlp2                            000000C8
+lcdlp1                            000000F8
+lcdlp2                            000000D6
+
+MPASM 5.81                           LCD.ASM   2-20-2020  16:53:39         PAGE 36
+
+
+
+
 
 Errors   :     0
 Warnings :     0 reported,     0 suppressed

@@ -4,7 +4,7 @@ acs0    udata_acs   ; named variables in access ram
 d0	res 1   ; delay lengths
 d1	res 1
 d2	res 1
-flashcounter res 1
+flashcounter res 1	
 signal	res 1
 red   res 1
 blue  res 1

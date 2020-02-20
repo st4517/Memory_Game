@@ -1,10 +1,10 @@
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE  1
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00001         #include p18f87k22.inc
+                      00001 #include p18f87k22.inc
                       00001         LIST
                       00002 
                       00003 ;==========================================================================
@@ -16,70 +16,37 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00009 
                       02986         LIST
                       00002 
-                      00003 acs0    udata_acs                               ; named variables in access ram 
-000000                00004 d0      res 1                               ; reserve 1 byte for variable delay
-000001                00005 d1      res 1
-000002                00006 d2      res 1
-000003                00007 countdown   res 1
-000004                00008 no_buttons      res 1
-                      00009         
-                      00010 
-  0000                00011         extern  LCD_Clear_Display             ; external LCD subroutines
-  0000                00012         extern  setup, greeting, failure
-  0000                00013         extern  setlfsr, load, LFSRCounter
-  0000                00014         extern  setflash, flashcounter, read
-  0000                00015         extern  keypadsetup, keypadloop
-  0000                00016         extern  int_on
-  0000                00017         global  no_buttons
-  0000                00018         global  countdown
-                      00019         
-                      00020 
-                      00021 rst     code    0                                                ;reset vector
-000000 EF?? F???      00022         goto    start
-                      00023         
-                      00024 
-                      00025         
-                      00026 main    code
-                      00027 
-000000 EC?? F???      00028 start   call    setup               ;LCD setup
-000004 EC?? F???      00029         call    setlfsr             ;LFSR setup
-000008 EC?? F???      00030         call    setflash            ;LED setup
-00000C EC?? F???      00031         call    keypadsetup
-                      00032         ;movlw  greet_len
-                      00033         ;movwf  length              ;length of data
-000010 EC?? F???      00034         call    greeting
-000014 EC?? F???      00035         call    keypadloop
-000018 EC?? F???      00036         call    LCD_Clear_Display
-                      00037 
-                      00038 
-                      00039         
-                      00040 
-00001C EC?? F???      00041 level   call    load                ;produces and stores random sequence
-000020 6A??           00042         clrf    flashcounter        ;
-000022 EC?? F???      00043         call    read                ;flashes sequence
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE  2
-
-
-LOC  OBJECT CODE     LINE SOURCE TEXT
-  VALUE
-
-000026 EC?? F???      00044         call    int_on              ;enables interrrupts
-00002A                00045 hurryup
-00002A C??? FFE8      00046         movff   no_buttons, WREG
-00002E 60??           00047         cpfslt  LFSRCounter
-000030 EF?? F???      00048         goto    nextlevel
-000034 0E0B           00049         movlw   0xB
-000036 64??           00050         cpfsgt  countdown
-000038 D???           00051         bra     hurryup
-00003A EF?? F???      00052         goto    leave
-                      00053         
-00003E                00054 nextlevel
-00003E EF?? F???      00055         goto $
-                      00056         
-000042                00057 leave
-000042 EF?? F???      00058         goto $
-                      00059         end
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE  3
+                      00003         
+Warning[205]: Found directive in column 1. (global)
+  0000                00004 global  keypadsetup, keypadloop 
+                      00005         
+                      00006         
+                      00007         
+                      00008         
+                      00009 
+                      00010 keypad code                     ; let linker place main program
+                      00011 
+000000                00012 keypadsetup
+000000 010F           00013         banksel PADCFG1             ; PADCFG1 is not in Access Bank!!
+000002 8D53           00014         bsf PADCFG1,REPU,BANKED     ;enable pullup resistors
+000004 0E0F           00015         movlw   0x0F
+000006 6E96           00016         movwf   TRISE               ;lower nibble input, upper nibble output
+000008 0012           00017         return
+                      00018         
+00000A                00019 keypadloop
+00000A A084           00020         btfss   PORTE,RE0
+00000C 0012           00021         return
+00000E A284           00022         btfss   PORTE,RE1
+000010 0012           00023         return
+000012 A484           00024         btfss   PORTE,RE2
+000014 0012           00025         return
+000016 A684           00026         btfss   PORTE,RE3
+000018 0012           00027         return
+00001A D???           00028         bra keypadloop
+                      00029 
+                      00030 
+                      00031     end
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE  2
 
 
 SYMBOL TABLE
@@ -138,7 +105,7 @@ ADMSK5                            00000005
 ADON                              00000000
 ADRES                             00000FC3
 ADRESH                            00000FC4
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE  4
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE  3
 
 
 SYMBOL TABLE
@@ -197,7 +164,7 @@ ANSEL16                           00000000
 ANSEL17                           00000001
 ANSEL18                           00000002
 ANSEL19                           00000003
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE  5
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE  4
 
 
 SYMBOL TABLE
@@ -256,7 +223,7 @@ C1TSEL0                           00000000
 C1TSEL1                           00000001
 C1TSEL2                           00000002
 C2INA                             00000004
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE  6
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE  5
 
 
 SYMBOL TABLE
@@ -315,7 +282,7 @@ CCP1IP                            00000001
 CCP1M0                            00000000
 CCP1M1                            00000001
 CCP1M2                            00000002
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE  7
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE  6
 
 
 SYMBOL TABLE
@@ -374,7 +341,7 @@ CCP5M0                            00000000
 CCP5M1                            00000001
 CCP5M2                            00000002
 CCP5M3                            00000003
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE  8
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE  7
 
 
 SYMBOL TABLE
@@ -433,7 +400,7 @@ CCP9IP                            00000006
 CCP9M0                            00000000
 CCP9M1                            00000001
 CCP9M2                            00000002
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE  9
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE  8
 
 
 SYMBOL TABLE
@@ -492,7 +459,7 @@ CHSN1                             00000001
 CHSN2                             00000002
 CK1                               00000006
 CK2                               00000001
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 10
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE  9
 
 
 SYMBOL TABLE
@@ -551,7 +518,7 @@ CTMUIE                            00000003
 CTMUIF                            00000003
 CTMUIP                            00000003
 CTMUMD                            00000006
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 11
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 10
 
 
 SYMBOL TABLE
@@ -610,7 +577,7 @@ ECCP1AS1                          00000005
 ECCP1AS2                          00000006
 ECCP1ASE                          00000007
 ECCP1CON                          00000FBB
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 12
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 11
 
 
 SYMBOL TABLE
@@ -669,7 +636,7 @@ FSR2H                             00000FDA
 FSR2L                             00000FD9
 GCEN                              00000007
 GIE                               00000007
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 13
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 12
 
 
 SYMBOL TABLE
@@ -728,7 +695,7 @@ INT3F                             00000002
 INT3IE                            00000005
 INT3IF                            00000002
 INT3IP                            00000001
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 14
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 13
 
 
 SYMBOL TABLE
@@ -787,7 +754,7 @@ LATB7                             00000007
 LATC                              00000F8B
 LATC0                             00000000
 LATC1                             00000001
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 15
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 14
 
 
 SYMBOL TABLE
@@ -846,7 +813,7 @@ LATJ1                             00000001
 LATJ2                             00000002
 LATJ3                             00000003
 LATJ4                             00000004
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 16
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 15
 
 
 SYMBOL TABLE
@@ -856,8 +823,6 @@ LATJ5                             00000005
 LATJ6                             00000006
 LATJ7                             00000007
 LB                                00000006
-LCD_Clear_Display                 00000000
-LFSRCounter                       00000000
 LVDIE                             00000002
 LVDIF                             00000002
 LVDIP                             00000002
@@ -905,14 +870,14 @@ ODCON2                            00000F28
 ODCON3                            00000F27
 OE                                00000001
 OERR                              00000001
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 17
+OERR1                             00000001
+OERR2                             00000001
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 16
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-OERR1                             00000001
-OERR2                             00000001
 OSC1                              00000007
 OSC2                              00000006
 OSCCON                            00000FD3
@@ -964,14 +929,14 @@ P3DC6                             00000006
 P3M0                              00000006
 P3M1                              00000007
 P3RSEN                            00000007
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 18
+PA3                               00000000
+PADCFG1                           00000F53
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 17
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-PA3                               00000000
-PADCFG1                           00000F53
 PB1                               00000007
 PB3                               00000005
 PC                                00000FF9
@@ -1023,14 +988,14 @@ POSTDEC0                          00000FED
 POSTDEC1                          00000FE5
 POSTDEC2                          00000FDD
 POSTINC0                          00000FEE
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 19
+POSTINC1                          00000FE6
+POSTINC2                          00000FDE
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 18
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-POSTINC1                          00000FE6
-POSTINC2                          00000FDE
 PR10                              00000F34
 PR12                              00000F31
 PR2                               00000FCB
@@ -1082,14 +1047,14 @@ RA2                               00000002
 RA3                               00000003
 RA4                               00000004
 RA5                               00000005
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 20
+RA6                               00000006
+RA7                               00000007
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 19
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-RA6                               00000006
-RA7                               00000007
 RB0                               00000000
 RB1                               00000001
 RB2                               00000002
@@ -1141,14 +1106,14 @@ RD4                               00000004
 RD5                               00000005
 RD6                               00000006
 RD7                               00000007
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 21
+RDPU                              00000007
+RE0                               00000000
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 20
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-RDPU                              00000007
-RE0                               00000000
 RE1                               00000001
 RE2                               00000002
 RE3                               00000003
@@ -1200,14 +1165,14 @@ ROON                              00000007
 ROSEL                             00000004
 ROSSLP                            00000005
 RSEN                              00000001
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 22
+RTCC                              00000004
+RTCCAL                            00000F5E
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 21
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-RTCC                              00000004
-RTCCAL                            00000F5E
 RTCCFG                            00000F5F
 RTCCIE                            00000000
 RTCCIF                            00000000
@@ -1259,14 +1224,14 @@ SOSCEN                            00000003
 SOSCGO                            00000003
 SOSCI                             00000001
 SOSCO                             00000000
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 23
+SOSCRUN                           00000006
+SP0                               00000000
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 22
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-SOSCRUN                           00000006
-SP0                               00000000
 SP1                               00000001
 SP2                               00000002
 SP3                               00000003
@@ -1318,14 +1283,14 @@ SSPM0                             00000000
 SSPM1                             00000001
 SSPM2                             00000002
 SSPM3                             00000003
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 24
+SSPOV                             00000006
+SSPSTAT                           00000FC7
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 23
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-SSPOV                             00000006
-SSPSTAT                           00000FC7
 STATUS                            00000FD8
 STKFUL                            00000007
 STKOVF                            00000007
@@ -1377,14 +1342,14 @@ T1GGO_NOT_T1DONE                  00000003
 T1GPOL                            00000006
 T1GSPM                            00000004
 T1GSS0                            00000000
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 25
+T1GSS1                            00000001
+T1GTM                             00000005
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 24
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-T1GSS1                            00000001
-T1GTM                             00000005
 T1GVAL                            00000002
 T2CKPS0                           00000000
 T2CKPS1                           00000001
@@ -1436,14 +1401,14 @@ T6OUTPS1                          00000004
 T6OUTPS2                          00000005
 T6OUTPS3                          00000006
 T7CKI                             00000004
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 26
+T7CKPS0                           00000004
+T7CKPS1                           00000005
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 25
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-T7CKPS0                           00000004
-T7CKPS1                           00000005
 T7CON                             00000F3D
 T7G                               00000001
 T7GCON                            00000F3C
@@ -1495,14 +1460,14 @@ TMR1GIE                           00000002
 TMR1GIF                           00000002
 TMR1GIP                           00000002
 TMR1H                             00000FCF
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 27
+TMR1IE                            00000000
+TMR1IF                            00000000
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 26
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-TMR1IE                            00000000
-TMR1IF                            00000000
 TMR1IP                            00000000
 TMR1L                             00000FCE
 TMR1MD                            00000001
@@ -1554,14 +1519,14 @@ TMR6IP                            00000002
 TMR6MD                            00000004
 TMR6ON                            00000002
 TMR7                              00000F3E
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 28
+TMR7CS0                           00000006
+TMR7CS1                           00000007
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 27
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-TMR7CS0                           00000006
-TMR7CS1                           00000007
 TMR7GE                            00000007
 TMR7GIE                           00000007
 TMR7GIF                           00000007
@@ -1613,14 +1578,14 @@ TRISC4                            00000004
 TRISC5                            00000005
 TRISC6                            00000006
 TRISC7                            00000007
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 29
+TRISD                             00000F95
+TRISD0                            00000000
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 28
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-TRISD                             00000F95
-TRISD0                            00000000
 TRISD1                            00000001
 TRISD2                            00000002
 TRISD3                            00000003
@@ -1672,14 +1637,14 @@ TRISJ7                            00000007
 TRMT                              00000001
 TRMT1                             00000001
 TRMT2                             00000001
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 30
+TUN0                              00000000
+TUN1                              00000001
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 29
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-TUN0                              00000000
-TUN1                              00000001
 TUN2                              00000002
 TUN3                              00000003
 TUN4                              00000004
@@ -1731,14 +1696,14 @@ VREF_MINUS                        00000002
 VREF_PLUS                         00000003
 W                                 00000000
 WAIT0                             00000004
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 31
+WAIT1                             00000005
+WCOL                              00000007
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 30
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-WAIT1                             00000005
-WCOL                              00000007
 WDTCON                            00000FD1
 WM0                               00000000
 WM1                               00000001
@@ -1790,14 +1755,14 @@ _CP0_ON_5L                        000000FE
 _CP1_OFF_5L                       000000FF
 _CP1_ON_5L                        000000FD
 _CP2_OFF_5L                       000000FF
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 32
+_CP2_ON_5L                        000000FB
+_CP3_OFF_5L                       000000FF
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 31
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-_CP2_ON_5L                        000000FB
-_CP3_OFF_5L                       000000FF
 _CP3_ON_5L                        000000F7
 _CP4_OFF_5L                       000000FF
 _CP4_ON_5L                        000000EF
@@ -1849,14 +1814,14 @@ _FOSC_HS1_1H                      000000F3
 _FOSC_HS2_1H                      000000F2
 _FOSC_INTIO1_1H                   000000F9
 _FOSC_INTIO2_1H                   000000F8
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 33
+_FOSC_LP_1H                       000000F0
+_FOSC_RCIO_1H                     000000F7
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 32
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-_FOSC_LP_1H                       000000F0
-_FOSC_RCIO_1H                     000000F7
 _FOSC_RC_1H                       000000F6
 _FOSC_XT_1H                       000000F1
 _IDLOC0                           00200000
@@ -1908,14 +1873,14 @@ _WDTPS_2_2H                       00000087
 _WDTPS_32768_2H                   000000BF
 _WDTPS_32_2H                      00000097
 _WDTPS_4096_2H                    000000B3
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 34
+_WDTPS_4_2H                       0000008B
+_WDTPS_512_2H                     000000A7
+MPASM 5.81                        KEYPAD.ASM   2-20-2020  16:53:56         PAGE 33
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-_WDTPS_4_2H                       0000008B
-_WDTPS_512_2H                     000000A7
 _WDTPS_524288_2H                  000000CF
 _WDTPS_64_2H                      0000009B
 _WDTPS_65536_2H                   000000C3
@@ -1948,38 +1913,11 @@ _XINST_ON_1L                      000000FF
 __18F87K22                        00000001
 __DEBUG                           
 __MPLAB_DEBUGGER_ICD3             1
-_main_003E                        0000003E
-_main_0042                        00000042
-countdown                         00000003
-d0                                00000000
-d1                                00000001
-d2                                00000002
-failure                           00000000
-flashcounter                      00000000
-greeting                          00000000
-hurryup                           0000002A
-int_on                            00000000
-keypadloop                        00000000
+keypadloop                        0000000A
 keypadsetup                       00000000
-leave                             00000042
-level                             0000001C
-load                              00000000
-nextlevel                         0000003E
-no_buttons                        00000004
-read                              00000000
-MPASM 5.81                          MAIN.ASM   2-20-2020  16:53:56         PAGE 35
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
-setflash                          00000000
-setlfsr                           00000000
-setup                             00000000
-start                             00000000
 
 Errors   :     0
-Warnings :     0 reported,     0 suppressed
+Warnings :     1 reported,     0 suppressed
 Messages :     0 reported,     0 suppressed
 
 

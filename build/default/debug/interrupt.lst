@@ -1,4 +1,4 @@
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE  1
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -18,76 +18,98 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00002 
                       00003 
 Warning[205]: Found directive in column 1. (global)
-  0000                00004 global  int_on  
-                      00005         
-                      00006 interrupt   code
-                      00007    
-                      00008   
-000000 0E0F           00009 int_on  movlw   0x0F
-000002 6E93           00010         movwf   TRISB               ;lower nibble input, upper nibble output
-000004 0EF0           00011         movlw   0xF0
-000006 6E81           00012         movwf   PORTB               ;lower nibble clear, upper nibble set       
-000008 88F2           00013         bsf     INTCON, INT0IE      ;enable INT0
-00000A 86F0           00014         bsf     INTCON3, INT1IE     ;enable INT1
-00000C 88F0           00015         bsf     INTCON3, INT2IE     ;enable INT2
-00000E 8AF0           00016         bsf     INTCON3, INT3IE     ;enable INT3
-000010 8EF2           00017         bsf     INTCON, GIE         ;enable all interrupts
-000012 0012           00018         return
-                      00019    
-                      00020 hi_int  code 0x0008
-000008 B2F2           00021         btfsc   INTCON,INT0IF
-00000A EC?? F???      00022         call    red
-00000E B0F0           00023         btfsc   INTCON3,INT1IF
-000010 EC?? F???      00024         call    blue
-000014 B2F0           00025         btfsc   INTCON3,INT2IF
-000016 EC?? F???      00026         call    violet
-00001A B4F0           00027         btfsc   INTCON3,INT3IF
-00001C EC?? F???      00028         call    yellow
-000020 EC?? F???      00029         call    compare
-000024 0011           00030         retfie  FAST
-                      00031         
-000026 0E01           00032 red     movlw   0x01
-000028 6E83           00033         movwf   PORTD
-00002A 92F2           00034         bcf     INTCON,INT0IF
-00002C 0E00           00035         movlw   0x00
-00002E 0012           00036         return
-                      00037         
-000030 0E02           00038 blue    movlw   0x02
-000032 6E83           00039         movwf   PORTD
-000034 90F0           00040         bcf     INTCON3,INT1IF
-000036 0E01           00041         movlw   0x01
-000038 0012           00042         return
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE  2
+  0000                00004 global  int_on
+Warning[205]: Found directive in column 1. (extern)
+  0000                00005 extern  countdown
+Warning[205]: Found directive in column 1. (extern)
+  0000                00006 extern failure
+Warning[205]: Found directive in column 1. (extern)
+  0000                00007 extern no_buttons
+                      00008 interrupt   code
+                      00009    
+                      00010   
+000000                00011 int_on  
+000000 010F           00012         banksel PADCFG1             ; PADCFG1 is not in Access Bank!!
+000002 8D53           00013         bsf PADCFG1,REPU,BANKED     ;enable pullup resistors
+000004 0E0F           00014         movlw   0x0F
+000006 6E96           00015         movwf   TRISE               ;lower nibble input, upper nibble output
+000008 6E93           00016         movwf   TRISB
+                      00017         ;call delay
+00000A 6A84           00018         clrf    PORTE               ;drives outputs low 
+00000C 6A81           00019         clrf    PORTB
+00000E 88F2           00020         bsf     INTCON, INT0IE      ;enable INT0
+000010 86F0           00021         bsf     INTCON3, INT1IE     ;enable INT1
+000012 88F0           00022         bsf     INTCON3, INT2IE     ;enable INT2
+000014 8AF0           00023         bsf     INTCON3, INT3IE     ;enable INT3
+000016 0E87           00024         movlw   b'10000111'         ; Set timer0 to 16-bit, Fosc/4/256
+000018 6ED5           00025         movwf   T0CON               ; = 62.5KHz clock rate, approx 1sec rollover
+00001A 8AF2           00026         bsf     INTCON,TMR0IE       ; Enable timer0 interrupt
+00001C 8EF2           00027         bsf     INTCON,GIE          ; Enable all interrupts
+00001E 0012           00028         return
+                      00029    
+                      00030 hi_int  code 0x0008
+000008 B2F2           00031         btfsc   INTCON,INT0IF
+00000A EC?? F???      00032         call    red
+00000E B0F0           00033         btfsc   INTCON3,INT1IF
+000010 EC?? F???      00034         call    blue
+000014 B2F0           00035         btfsc   INTCON3,INT2IF
+000016 EC?? F???      00036         call    violet
+00001A B4F0           00037         btfsc   INTCON3,INT3IF
+00001C EC?? F???      00038         call    yellow
+000020 A4F2           00039         btfss   INTCON,TMR0IF       ; check that this is timer0 interrupt
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00043         
-00003A 0E04           00044 violet  movlw   0x04
-00003C 6E83           00045         movwf   PORTD
-00003E 92F0           00046         bcf     INTCON3,INT2IF
-000040 0E02           00047         movlw   0x02
-000042 0012           00048         return
-                      00049         
-000044 0E08           00050 yellow  movlw   0x08
-000046 6E83           00051         movwf   PORTD
-000048 94F0           00052         bcf     INTCON3,INT3IF
-00004A 0E03           00053         movlw   0x03
-00004C 0012           00054         return  
-                      00055         
-00004E 62E6           00056 compare cpfseq  POSTINC1
-000050 EF?? F???      00057         goto    errormess
-000054 EC?? F???      00058         call    success
-000058 0012           00059         return
-                      00060         
-00005A EF?? F???      00061 errormess   goto $
+000022 EC?? F???      00040         call    compare
+000026 B4F2           00041         btfsc   INTCON,TMR0IF
+000028 EC?? F???      00042         call    clock   
+00002C 0011           00043         retfie  FAST
+                      00044         
+00002E 0E01           00045 red     movlw   0x01
+000030 6E83           00046         movwf   PORTD
+000032 92F2           00047         bcf     INTCON,INT0IF
+000034 0E00           00048         movlw   0x00
+000036 0012           00049         return
+                      00050         
+000038 0E02           00051 blue    movlw   0x02
+00003A 6E83           00052         movwf   PORTD
+00003C 90F0           00053         bcf     INTCON3,INT1IF
+00003E 0E01           00054         movlw   0x01
+000040 0012           00055         return
+                      00056         
+000042 0E04           00057 violet  movlw   0x04
+000044 6E83           00058         movwf   PORTD
+000046 92F0           00059         bcf     INTCON3,INT2IF
+000048 0E02           00060         movlw   0x02
+00004A 0012           00061         return
                       00062         
-00005E EF?? F???      00063 success     goto $
-                      00064         
-                      00065         
-                      00066   end
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE  3
+00004C 0E08           00063 yellow  movlw   0x08
+00004E 6E83           00064         movwf   PORTD
+000050 94F0           00065         bcf     INTCON3,INT3IF
+000052 0E03           00066         movlw   0x03
+000054 0012           00067         return  
+                      00068         
+000056 62E6           00069 compare cpfseq  POSTINC1
+000058 EF?? F???      00070         goto    errormess
+00005C 2A??           00071         incf    no_buttons          ;posssibly include success message here
+00005E 0012           00072         return
+                      00073         
+000060 2A00           00074 clock   incf    countdown,1
+000062 94F2           00075         bcf     INTCON,TMR0IF       ; clear interrupt flag
+000064 0012           00076         return
+                      00077         
+000066 EC?? F???      00078 errormess call failure
+00006A EF?? F???      00079             goto $
+                      00080         
+                      00081            
+                      00082            
+                      00083         
+                      00084         
+                      00085   end
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE  3
 
 
 SYMBOL TABLE
@@ -146,7 +168,7 @@ ADMSK5                            00000005
 ADON                              00000000
 ADRES                             00000FC3
 ADRESH                            00000FC4
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE  4
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE  4
 
 
 SYMBOL TABLE
@@ -205,7 +227,7 @@ ANSEL16                           00000000
 ANSEL17                           00000001
 ANSEL18                           00000002
 ANSEL19                           00000003
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE  5
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE  5
 
 
 SYMBOL TABLE
@@ -264,7 +286,7 @@ C1TSEL0                           00000000
 C1TSEL1                           00000001
 C1TSEL2                           00000002
 C2INA                             00000004
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE  6
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE  6
 
 
 SYMBOL TABLE
@@ -323,7 +345,7 @@ CCP1IP                            00000001
 CCP1M0                            00000000
 CCP1M1                            00000001
 CCP1M2                            00000002
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE  7
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE  7
 
 
 SYMBOL TABLE
@@ -382,7 +404,7 @@ CCP5M0                            00000000
 CCP5M1                            00000001
 CCP5M2                            00000002
 CCP5M3                            00000003
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE  8
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE  8
 
 
 SYMBOL TABLE
@@ -441,7 +463,7 @@ CCP9IP                            00000006
 CCP9M0                            00000000
 CCP9M1                            00000001
 CCP9M2                            00000002
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE  9
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE  9
 
 
 SYMBOL TABLE
@@ -500,7 +522,7 @@ CHSN1                             00000001
 CHSN2                             00000002
 CK1                               00000006
 CK2                               00000001
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 10
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 10
 
 
 SYMBOL TABLE
@@ -559,7 +581,7 @@ CTMUIE                            00000003
 CTMUIF                            00000003
 CTMUIP                            00000003
 CTMUMD                            00000006
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 11
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 11
 
 
 SYMBOL TABLE
@@ -618,7 +640,7 @@ ECCP1AS1                          00000005
 ECCP1AS2                          00000006
 ECCP1ASE                          00000007
 ECCP1CON                          00000FBB
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 12
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 12
 
 
 SYMBOL TABLE
@@ -677,7 +699,7 @@ FSR2H                             00000FDA
 FSR2L                             00000FD9
 GCEN                              00000007
 GIE                               00000007
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 13
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 13
 
 
 SYMBOL TABLE
@@ -736,7 +758,7 @@ INT3F                             00000002
 INT3IE                            00000005
 INT3IF                            00000002
 INT3IP                            00000001
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 14
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 14
 
 
 SYMBOL TABLE
@@ -795,7 +817,7 @@ LATB7                             00000007
 LATC                              00000F8B
 LATC0                             00000000
 LATC1                             00000001
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 15
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 15
 
 
 SYMBOL TABLE
@@ -854,7 +876,7 @@ LATJ1                             00000001
 LATJ2                             00000002
 LATJ3                             00000003
 LATJ4                             00000004
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 16
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 16
 
 
 SYMBOL TABLE
@@ -913,7 +935,7 @@ OE                                00000001
 OERR                              00000001
 OERR1                             00000001
 OERR2                             00000001
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 17
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 17
 
 
 SYMBOL TABLE
@@ -972,7 +994,7 @@ P3M1                              00000007
 P3RSEN                            00000007
 PA3                               00000000
 PADCFG1                           00000F53
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 18
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 18
 
 
 SYMBOL TABLE
@@ -1031,7 +1053,7 @@ POSTDEC2                          00000FDD
 POSTINC0                          00000FEE
 POSTINC1                          00000FE6
 POSTINC2                          00000FDE
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 19
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 19
 
 
 SYMBOL TABLE
@@ -1090,7 +1112,7 @@ RA4                               00000004
 RA5                               00000005
 RA6                               00000006
 RA7                               00000007
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 20
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 20
 
 
 SYMBOL TABLE
@@ -1149,7 +1171,7 @@ RD6                               00000006
 RD7                               00000007
 RDPU                              00000007
 RE0                               00000000
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 21
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 21
 
 
 SYMBOL TABLE
@@ -1208,7 +1230,7 @@ ROSSLP                            00000005
 RSEN                              00000001
 RTCC                              00000004
 RTCCAL                            00000F5E
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 22
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 22
 
 
 SYMBOL TABLE
@@ -1267,7 +1289,7 @@ SOSCI                             00000001
 SOSCO                             00000000
 SOSCRUN                           00000006
 SP0                               00000000
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 23
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 23
 
 
 SYMBOL TABLE
@@ -1326,7 +1348,7 @@ SSPM2                             00000002
 SSPM3                             00000003
 SSPOV                             00000006
 SSPSTAT                           00000FC7
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 24
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 24
 
 
 SYMBOL TABLE
@@ -1385,7 +1407,7 @@ T1GSPM                            00000004
 T1GSS0                            00000000
 T1GSS1                            00000001
 T1GTM                             00000005
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 25
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 25
 
 
 SYMBOL TABLE
@@ -1444,7 +1466,7 @@ T6OUTPS3                          00000006
 T7CKI                             00000004
 T7CKPS0                           00000004
 T7CKPS1                           00000005
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 26
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 26
 
 
 SYMBOL TABLE
@@ -1503,7 +1525,7 @@ TMR1GIP                           00000002
 TMR1H                             00000FCF
 TMR1IE                            00000000
 TMR1IF                            00000000
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 27
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 27
 
 
 SYMBOL TABLE
@@ -1562,7 +1584,7 @@ TMR6ON                            00000002
 TMR7                              00000F3E
 TMR7CS0                           00000006
 TMR7CS1                           00000007
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 28
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 28
 
 
 SYMBOL TABLE
@@ -1621,7 +1643,7 @@ TRISC6                            00000006
 TRISC7                            00000007
 TRISD                             00000F95
 TRISD0                            00000000
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 29
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 29
 
 
 SYMBOL TABLE
@@ -1680,7 +1702,7 @@ TRMT1                             00000001
 TRMT2                             00000001
 TUN0                              00000000
 TUN1                              00000001
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 30
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 30
 
 
 SYMBOL TABLE
@@ -1739,7 +1761,7 @@ W                                 00000000
 WAIT0                             00000004
 WAIT1                             00000005
 WCOL                              00000007
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 31
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 31
 
 
 SYMBOL TABLE
@@ -1798,7 +1820,7 @@ _CP1_ON_5L                        000000FD
 _CP2_OFF_5L                       000000FF
 _CP2_ON_5L                        000000FB
 _CP3_OFF_5L                       000000FF
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 32
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 32
 
 
 SYMBOL TABLE
@@ -1857,7 +1879,7 @@ _FOSC_INTIO1_1H                   000000F9
 _FOSC_INTIO2_1H                   000000F8
 _FOSC_LP_1H                       000000F0
 _FOSC_RCIO_1H                     000000F7
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 33
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 33
 
 
 SYMBOL TABLE
@@ -1916,7 +1938,7 @@ _WDTPS_32_2H                      00000097
 _WDTPS_4096_2H                    000000B3
 _WDTPS_4_2H                       0000008B
 _WDTPS_512_2H                     000000A7
-MPASM 5.81                     INTERRUPT.ASM   2-20-2020  11:25:40         PAGE 34
+MPASM 5.81                     INTERRUPT.ASM   2-20-2020  16:53:56         PAGE 34
 
 
 SYMBOL TABLE
@@ -1954,19 +1976,21 @@ _XINST_ON_1L                      000000FF
 __18F87K22                        00000001
 __DEBUG                           
 __MPLAB_DEBUGGER_ICD3             1
-_hi_int_005A                      0000005A
-_hi_int_005E                      0000005E
-blue                              00000030
-compare                           0000004E
-errormess                         0000005A
+_hi_int_006A                      0000006A
+blue                              00000038
+clock                             00000060
+compare                           00000056
+countdown                         00000000
+errormess                         00000066
+failure                           00000000
 int_on                            00000000
-red                               00000026
-success                           0000005E
-violet                            0000003A
-yellow                            00000044
+no_buttons                        00000000
+red                               0000002E
+violet                            00000042
+yellow                            0000004C
 
 Errors   :     0
-Warnings :     1 reported,     0 suppressed
+Warnings :     4 reported,     0 suppressed
 Messages :     0 reported,     0 suppressed
 
 
