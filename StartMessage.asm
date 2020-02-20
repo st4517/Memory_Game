@@ -42,14 +42,31 @@ setup	bcf	EECON1, CFGS	; point to Flash program memory
 	;goto	start
 	
 	; ******* Main programme ****************************************
-writemessage 	lfsr	FSR0, TextLocation	; Load FSR0 with address in RAM	
-		movlw	upper(message)	; address of data in PM
+greeting	lfsr	FSR0, TextLocation	; Load FSR0 with address in RAM
+		movlw	greet_len
+		movwf	length		    ;length of data
+		movlw	upper(initial)	; address of data in PM
 		movwf	TBLPTRU		; load upper bits to TBLPTRU
-		movlw	high(message)	; address of data in PM
+		movlw	high(initial)	; address of data in PM
 		movwf	TBLPTRH		; load high byte to TBLPTRH
-		movlw	low(message)	; address of data in PM
+		movlw	low(initial)	; address of data in PM
 		movwf	TBLPTRL		; load low byte to TBLPTRL
 		movff	length, counter
+		call	loop
+		return
+		
+failure	    	lfsr	FSR0, TextLocation	; Load FSR0 with address in RAM
+		movlw	wrong_len
+		movwf	length
+		movlw	upper(wrong)	; address of data in PM
+		movwf	TBLPTRU		; load upper bits to TBLPTRU
+		movlw	high(wrong)	; address of data in PM
+		movwf	TBLPTRH		; load high byte to TBLPTRH
+		movlw	low(wrong)	; address of data in PM
+		movwf	TBLPTRL		; load low byte to TBLPTRL
+		movff	length, counter
+		call	loop
+		return
 loop 	tblrd*+			; one byte from PM to TABLA increment TBLPRT
 	movff	TABLAT, POSTINC0; move data from TABLAT to (FSR0), inc FSR0	
 	decfsz	counter		; count down to zero
@@ -66,18 +83,6 @@ loop 	tblrd*+			; one byte from PM to TABLA increment TBLPRT
 	; a delay subroutine if you need one, times around loop in delay_count
 delay	decfsz	delay_count	; decrement until zero
 	bra delay
-	return
-
-greeting    movff   initial, message
-	movlw	greet_len
-	movwf	length		    ;length of data
-	call writemessage
-	return
-	
-failure	movff	wrong, message
-	movlw	wrong_len
-	movwf	length
-	call	writemessage
 	return
 	
 	end

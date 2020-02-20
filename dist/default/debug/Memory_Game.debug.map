@@ -1,5 +1,5 @@
 MPLINK 5.09, LINKER
-Linker Map File - Created Thu Feb 20 11:21:53 2020
+Linker Map File - Created Thu Feb 20 12:04:28 2020
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
@@ -7,25 +7,25 @@ Linker Map File - Created Thu Feb 20 11:21:53 2020
                       rst       code   0x000000    program   0x000004
                    .cinit    romdata   0x000004    program   0x000002
                    hi_int       code   0x000008    program   0x00005a
-                      LCD       code   0x000062    program   0x0000f2
-                    flash       code   0x000154    program   0x00008a
-                     main       code   0x0001de    program   0x00007c
-                   random       code   0x00025a    program   0x000054
-                    pdata       code   0x0002ae    program   0x00001e
-                interrupt       code   0x0002cc    program   0x000014
-.config_300000_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300000    program   0x000001
-.config_300001_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300001    program   0x000001
-.config_300002_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300002    program   0x000001
-.config_300003_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300003    program   0x000001
-.config_300004_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300004    program   0x000001
-.config_300005_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300005    program   0x000001
-.config_300006_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300006    program   0x000001
-.config_300008_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300008    program   0x000001
-.config_300009_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300009    program   0x000001
-.config_30000A_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x30000a    program   0x000001
-.config_30000B_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x30000b    program   0x000001
-.config_30000C_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x30000c    program   0x000001
-.config_30000D_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x30000d    program   0x000001
+                      LCD       code   0x000062    program   0x000100
+                     main       code   0x000162    program   0x00008c
+                    flash       code   0x0001ee    program   0x00008a
+                   random       code   0x000278    program   0x000054
+                    pdata       code   0x0002cc    program   0x00001e
+                interrupt       code   0x0002ea    program   0x000014
+.config_300000_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300000    program   0x000001
+.config_300001_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300001    program   0x000001
+.config_300002_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300002    program   0x000001
+.config_300003_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300003    program   0x000001
+.config_300004_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300004    program   0x000001
+.config_300005_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300005    program   0x000001
+.config_300006_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300006    program   0x000001
+.config_300008_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300008    program   0x000001
+.config_300009_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300009    program   0x000001
+.config_30000A_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x30000a    program   0x000001
+.config_30000B_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x30000b    program   0x000001
+.config_30000C_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x30000c    program   0x000001
+.config_30000D_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x30000d    program   0x000001
                      acs0      udata   0x000000       data   0x00002a
                    tables      udata   0x000400       data   0x000080
 
@@ -35,58 +35,58 @@ Linker Map File - Created Thu Feb 20 11:21:53 2020
                                Start         End      
                            ---------   ---------      
                             0x000000    0x000005      
-                            0x000008    0x0002df      
+                            0x000008    0x0002fd      
                             0x300000    0x300006      
                             0x300008    0x30000d      
-            747 out of 132120 program addresses used, program memory utilization is 0%
+            777 out of 132120 program addresses used, program memory utilization is 0%
 
 
 
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-               LCD_Enable   0x000104    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-         LCD_Loop_message   0x0000ba    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-          LCD_Send_Byte_D   0x0000e2    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-          LCD_Send_Byte_I   0x0000c6    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+        LCD_Clear_Display   0x0000b8    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+               LCD_Enable   0x000112    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+         LCD_Loop_message   0x0000c8    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+          LCD_Send_Byte_D   0x0000f0    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+          LCD_Send_Byte_I   0x0000d4    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
                 LCD_Setup   0x000062    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-        LCD_Write_Message   0x0000b8    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-                LCD_delay   0x00014a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-             LCD_delay_ms   0x000128    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-           LCD_delay_x4us   0x000136    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+        LCD_Write_Message   0x0000c6    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+                LCD_delay   0x000158    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+             LCD_delay_ms   0x000136    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+           LCD_delay_x4us   0x000144    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
              _hi_int_005A   0x00005a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
              _hi_int_005E   0x00005e    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
-                  allLEDS   0x0001ae    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+                  allLEDS   0x000248    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
                      blue   0x000030    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
                   compare   0x00004e    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
-                  compare   0x00018a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
-                    delay   0x0001c4    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
-                    delay   0x000216    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-                   delay1   0x0001ce    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
-                   delay2   0x0001d8    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
-               delayreset   0x0001ba    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+                  compare   0x000224    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+                    delay   0x00025e    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+                    delay   0x0001c2    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
+                   delay1   0x000268    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+                   delay2   0x000272    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+               delayreset   0x000254    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
                 errormess   0x00005a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
-                  failure   0x00022a    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-                 greeting   0x00021c    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-                  initial   0x0002ae    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-                   int_on   0x0002cc    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
-                   lcdlp1   0x00014c    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-                   lcdlp2   0x00012a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-                    level   0x00024c    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Main.asm
-                     load   0x00026c    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
-                     loop   0x0001fc    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-                  produce   0x000282    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
-                     read   0x000168    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+                  failure   0x00018a    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
+                 greeting   0x00016c    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
+                  initial   0x0002cc    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
+                   int_on   0x0002ea    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
+                   lcdlp1   0x00015a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+                   lcdlp2   0x000138    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+                    level   0x0001e0    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Main.asm
+                     load   0x00028a    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
+                     loop   0x0001a8    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
+                  produce   0x0002a0    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
+                     read   0x000202    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
                       red   0x000026    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
-                 setflash   0x000154    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
-                  setlfsr   0x00025a    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
-                    setup   0x0001de    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-                    shift   0x000298    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
-                    start   0x000238    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Main.asm
+                 setflash   0x0001ee    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+                  setlfsr   0x000278    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
+                    setup   0x000162    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
+                    shift   0x0002b6    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
+                    start   0x0001c8    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Main.asm
                   success   0x00005e    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
                    violet   0x00003a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
-             writemessage   0x0001e8    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-                    wrong   0x0002bc    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
+                    wrong   0x0002da    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
                    yellow   0x000044    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
                 LCD_cnt_h   0x000014       data     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
                 LCD_cnt_l   0x000013       data     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
@@ -127,44 +127,44 @@ Linker Map File - Created Thu Feb 20 11:21:53 2020
                    violet   0x00003a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
                    yellow   0x000044    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
                   compare   0x00004e    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
-             _hi_int_005A   0x00005a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
                 errormess   0x00005a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
-                  success   0x00005e    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
+             _hi_int_005A   0x00005a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
              _hi_int_005E   0x00005e    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
+                  success   0x00005e    program     static H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
                 LCD_Setup   0x000062    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-        LCD_Write_Message   0x0000b8    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-         LCD_Loop_message   0x0000ba    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-          LCD_Send_Byte_I   0x0000c6    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-          LCD_Send_Byte_D   0x0000e2    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-               LCD_Enable   0x000104    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-             LCD_delay_ms   0x000128    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-                   lcdlp2   0x00012a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-           LCD_delay_x4us   0x000136    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-                LCD_delay   0x00014a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-                   lcdlp1   0x00014c    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
-                 setflash   0x000154    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
-                     read   0x000168    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
-                  compare   0x00018a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
-                  allLEDS   0x0001ae    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
-               delayreset   0x0001ba    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
-                    delay   0x0001c4    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
-                   delay1   0x0001ce    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
-                   delay2   0x0001d8    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
-                    setup   0x0001de    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-             writemessage   0x0001e8    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-                     loop   0x0001fc    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-                    delay   0x000216    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-                 greeting   0x00021c    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-                  failure   0x00022a    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-                    start   0x000238    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Main.asm
-                    level   0x00024c    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Main.asm
-                  setlfsr   0x00025a    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
-                     load   0x00026c    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
-                  produce   0x000282    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
-                    shift   0x000298    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
-                  initial   0x0002ae    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-                    wrong   0x0002bc    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
-                   int_on   0x0002cc    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
+        LCD_Clear_Display   0x0000b8    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+        LCD_Write_Message   0x0000c6    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+         LCD_Loop_message   0x0000c8    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+          LCD_Send_Byte_I   0x0000d4    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+          LCD_Send_Byte_D   0x0000f0    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+               LCD_Enable   0x000112    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+             LCD_delay_ms   0x000136    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+                   lcdlp2   0x000138    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+           LCD_delay_x4us   0x000144    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+                LCD_delay   0x000158    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+                   lcdlp1   0x00015a    program     static H:\Y3\Labs\Microprocessors\Memory_Game\LCD.asm
+                    setup   0x000162    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
+                 greeting   0x00016c    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
+                  failure   0x00018a    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
+                     loop   0x0001a8    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
+                    delay   0x0001c2    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
+                    start   0x0001c8    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Main.asm
+                    level   0x0001e0    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Main.asm
+                 setflash   0x0001ee    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+                     read   0x000202    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+                  compare   0x000224    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+                  allLEDS   0x000248    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+               delayreset   0x000254    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+                    delay   0x00025e    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+                   delay1   0x000268    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+                   delay2   0x000272    program     static H:\Y3\Labs\Microprocessors\Memory_Game\Flash_Seq.asm
+                  setlfsr   0x000278    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
+                     load   0x00028a    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
+                  produce   0x0002a0    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
+                    shift   0x0002b6    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\lfsr.asm
+                  initial   0x0002cc    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
+                    wrong   0x0002da    program     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
+                   int_on   0x0002ea    program     extern H:\Y3\Labs\Microprocessors\Memory_Game\interrupt.asm
                   counter   0x000000       data     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
               delay_count   0x000001       data     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm
                   message   0x000002       data     static H:\Y3\Labs\Microprocessors\Memory_Game\StartMessage.asm

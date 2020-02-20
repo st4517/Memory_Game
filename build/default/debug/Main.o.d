@@ -1,3 +1,3 @@
-build/default/production/Main.o:  \
+build/default/debug/Main.o:  \
 	H:/Y3/Labs/Microprocessors/Memory_Game/Main.asm  \
 

@@ -7,7 +7,7 @@ d2	res 1
 ;length	res 1
 	
 
-	extern  LCD_Setup, LCD_Write_Message	      ; external LCD subroutines
+	extern  LCD_Clear_Display	      ; external LCD subroutines
 	extern	setup, greeting, failure
 	extern	setlfsr, load
 	extern	setflash, flashcounter, read
@@ -29,6 +29,7 @@ start	call	setup		    ;LCD setup
 	;movlw	greet_len
 	;movwf	length		    ;length of data
 	call	greeting
+	call	LCD_Clear_Display
 	call	failure
 	
 
