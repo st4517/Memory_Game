@@ -14,6 +14,7 @@ keypadsetup
 	bsf PADCFG1,REPU,BANKED	    ;enable pullup resistors
 	movlw	0x0F
 	movwf	TRISE		    ;lower nibble input, upper nibble output
+	clrf	PORTE
 	return
 	
 keypadloop

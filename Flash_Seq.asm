@@ -11,7 +11,7 @@ blue  res 1
 violet	res 1
 yellow	res 1
 	
-global	read, setflash, flashcounter
+global	read, setflash, flashcounter, delay
 
 	
 	

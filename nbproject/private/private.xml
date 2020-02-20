@@ -5,6 +5,7 @@
         <group>
             <file>file:/H:/Y3/Labs/Microprocessors/Memory_Game/Flash_Seq.asm</file>
             <file>file:/H:/Y3/Labs/Microprocessors/Memory_Game/LCD.asm</file>
+            <file>file:/H:/Y3/Labs/Microprocessors/Memory_Game/keypad.asm</file>
             <file>file:/H:/Y3/Labs/Microprocessors/Memory_Game/Main.asm</file>
             <file>file:/H:/Y3/Labs/Microprocessors/Memory_Game/config.asm</file>
             <file>file:/H:/Y3/Labs/Microprocessors/Memory_Game/interrupt.asm</file>

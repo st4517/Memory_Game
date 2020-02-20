@@ -37,7 +37,7 @@ hi_int	code 0x0008
 	btfsc	INTCON3,INT3IF
 	call	yellow
 	btfss	INTCON,TMR0IF	    ; check that this is timer0 interrupt
-	call	compare
+	call	check
 	btfsc	INTCON,TMR0IF
 	call	clock	
 	retfie	FAST
@@ -66,7 +66,7 @@ yellow	movlw	0x08
 	movlw	0x03
 	return	
 	
-compare cpfseq	POSTINC1
+check cpfseq	POSTINC1
 	goto	errormess
 	incf	no_buttons	    ;posssibly include success message here
 	return

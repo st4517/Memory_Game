@@ -11,7 +11,7 @@ no_buttons	res 1
 	extern  LCD_Clear_Display	      ; external LCD subroutines
 	extern	setup, greeting, failure
 	extern	setlfsr, load, LFSRCounter
-	extern	setflash, flashcounter, read
+	extern	setflash, flashcounter, read, delay
 	extern	keypadsetup, keypadloop
 	extern	int_on
 	global	no_buttons
@@ -32,8 +32,10 @@ start	call	setup		    ;LCD setup
 	;movlw	greet_len
 	;movwf	length		    ;length of data
 	call	greeting
+	call	delay
 	call	keypadloop
 	call	LCD_Clear_Display
+	call	delay
 
 
 	
@@ -56,4 +58,7 @@ nextlevel
 	
 leave
 	goto $
+	
+	
+delayy	
 	end
