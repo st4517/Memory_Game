@@ -1,19 +1,19 @@
 	#include p18f87k22.inc
 
-acs0    udata_acs				; named variables in access ram	
-d0	res 1				    ; reserve 1 byte for variable delay
-d1	res 1
-d2	res 1
-countdown   res 1
+acs0		udata_acs			; named variables in access ram	
+d0		res 1				; reserve 1 byte for variable
+d1		res 1
+d2		res 1
+countdown	res 1
 no_buttons	res 1
-sequence    res 1
+sequence	res 1
 
 	
 
-	extern  LCD_Clear_Display	      ; external LCD subroutines
+	extern  LCD_Clear_Display	      
 	extern	setup, greeting, failure,levelmessage
 	extern	setlfsr, load, LFSRCounter
-	extern	setflash, flashcounter, read, delay, delayreset, bigdelay
+	extern	setflash, flashcounter, read, meddelay, bigdelay
 	extern	keypadsetup, keypadloop, readinput,pressed
 	extern	int_on
 	global	leave, nextlevel, no_buttons, countdown, sequence
@@ -28,17 +28,13 @@ main	code
 
 start	call	setup		    ;LCD setup
 	call	setflash	    ;LED setup
-	call	keypadsetup
-	call	greeting
-	call	delayreset
-	call	delay
-	call	keypadloop
+	call	keypadsetup	    ;keypad setup
+	call	greeting	    ;displays 'Press any key'
+	call	meddelay	    ;medium delay
+	call	keypadloop	    ;waits until key is pressed
 	call	setlfsr		    ;LFSR setup
 	call	LCD_Clear_Display
-	call	delay
-	movlw	0x04
-	movwf	sequence
-	clrf	countdown
+	call	meddelay
 	bcf	INTCON,GIE	    ; Disable all interrupts
 
 	
@@ -53,9 +49,8 @@ level	call	load		    ;produces and stores random sequence
 
 	
 nextlevel
-	
 	call	levelmessage	    ;displays next level
-	incf	sequence, 1,0
+	incf	sequence, 1,0	    ;increases sequence length
 	lfsr	FSR1, 0x140
 	clrf	countdown
 	call	bigdelay
@@ -66,6 +61,4 @@ nextlevel
 leave	call	toolate
 	goto $
 	
-	
-delayy	
 	end

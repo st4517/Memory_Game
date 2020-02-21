@@ -21,6 +21,8 @@ setlfsr movlw	0x01		    ;inputs seed
         movwf	s3
         clrf	LFSRCounter
         lfsr	FSR1, 0x140	    ;sets FSR1
+	movlw	0x04
+	movwf	sequence
 	return	
 	
 	

@@ -11,7 +11,7 @@ blue  res 1
 violet	res 1
 yellow	res 1
 	
-global	read, setflash, flashcounter, delay, delayreset, shortdelay, bigdelay
+global	read, setflash, flashcounter, meddelay, lildelay, bigdelay
 extern	sequence
 
 
@@ -67,22 +67,25 @@ allLEDS movlw	0x00
 	movff	POSTINC1,W
 	;goto	interpret	
 	
-delayreset movlw 0x40	;sets delay time
+meddelay movlw 0x40	;sets delay time
 	movwf	d0
 	movwf	d1
 	movwf	d2
+	call	delay
 	return
 	
 bigdelay movlw 0xF0	;sets delay time
 	movwf	d0
 	movwf	d1
 	movwf	d2
+	call	delay
 	return
 	
-shortdelay movlw 0x10	;sets delay time
+lildelay movlw 0x10	;sets delay time
 	movwf	d0
 	movwf	d1
 	movwf	d2
+	call	delay
 	return
 	
 delay	call	delay1

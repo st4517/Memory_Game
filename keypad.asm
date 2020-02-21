@@ -4,7 +4,7 @@ acs0    udata_acs				; named variables in access ram
 pressed res 1
 	
 global	keypadsetup, keypadloop	, readinput, pressed
-extern	leave, nextlevel, no_buttons, sequence,countdown, delay, shortdelay, failure
+extern	leave, nextlevel, no_buttons, sequence,countdown,lildelay, failure
 	
 	
 	
@@ -18,6 +18,7 @@ keypadsetup
 	movlw	0x0F
 	movwf	TRISE		    ;lower nibble input, upper nibble output
 	clrf	PORTE
+	clrf	countdown
 	return
 	
 keypadloop
