@@ -5,8 +5,8 @@
 	global greeting
 	global failure
 	global setup
-	global levelmessage	;extern Greeting
-	;extern Length
+	global levelmessage	
+	global toolate
 	
 acs0	udata_acs   ; reserve data space in access ram
 counter	    res 1   ; reserve one byte for a counter variable
@@ -33,6 +33,9 @@ wrong	data	    "lol thats wrong\n"	; message, plus carriage return
 	
 next	data	    "Next level\n"
 	constant next_len = .11
+	
+late	data	    "too late m8\n"
+	constant late_len = .12
 	
 main	code
 	
@@ -83,6 +86,19 @@ levelmessage	lfsr	FSR0, TextLocation	; Load FSR0 with address in RAM
 		movff	length, counter
 		call	loop
 		return
+		
+toolate	lfsr	FSR0, TextLocation	; Load FSR0 with address in RAM
+		movlw	late_len
+		movwf	length
+		movlw	upper(late)	; address of data in PM
+		movwf	TBLPTRU		; load upper bits to TBLPTRU
+		movlw	high(late)	; address of data in PM
+		movwf	TBLPTRH		; load high byte to TBLPTRH
+		movlw	low(late)	; address of data in PM
+		movwf	TBLPTRL		; load low byte to TBLPTRL
+		movff	length, counter
+		call	loop
+		return
 loop 	tblrd*+			; one byte from PM to TABLA increment TBLPRT
 	movff	TABLAT, POSTINC0; move data from TABLAT to (FSR0), inc FSR0	
 	decfsz	counter		; count down to zero
@@ -94,12 +110,7 @@ loop 	tblrd*+			; one byte from PM to TABLA increment TBLPRT
 	call	LCD_Write_Message
 	
 	return
-	;goto	$		; goto current line in code
 
-	; a delay subroutine if you need one, times around loop in delay_count
-delay	decfsz	delay_count	; decrement until zero
-	bra delay
-	return
 	
 	end
 

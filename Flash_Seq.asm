@@ -35,6 +35,9 @@ read	call	compare
 	call	delayreset
 	call	delay
 	incf	flashcounter, 1,0
+	clrf	PORTD
+	call	delayreset
+	call	delay	
 	movff	sequence, WREG
 	cpfseq	flashcounter
 	bra	read
@@ -76,7 +79,7 @@ bigdelay movlw 0xF0	;sets delay time
 	movwf	d2
 	return
 	
-shortdelay movlw 0x15	;sets delay time
+shortdelay movlw 0x10	;sets delay time
 	movwf	d0
 	movwf	d1
 	movwf	d2

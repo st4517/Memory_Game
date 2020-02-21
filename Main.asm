@@ -39,6 +39,7 @@ start	call	setup		    ;LCD setup
 	movlw	0x04
 	movwf	sequence
 	clrf	countdown
+	bcf	INTCON,GIE	    ; Disable all interrupts
 
 	
 
@@ -59,6 +60,7 @@ nextlevel
 	clrf	countdown
 	call	bigdelay
 	call	delay
+	call	LCD_Clear_Display
 	goto	level
 	
 leave

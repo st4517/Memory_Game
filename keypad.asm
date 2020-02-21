@@ -21,18 +21,14 @@ keypadsetup
 	return
 	
 keypadloop
-	movlw	0x00
 	btfss	PORTE,RE0
-	return
-	movlw	0x01
+	retlw	0x00
 	btfss	PORTE,RE1
-	return
-	movlw	0x02
+	retlw	0x01
 	btfss	PORTE,RE2
-	return
-	movlw	0x03
+	retlw	0x02
 	btfss	PORTE,RE3
-	return
+	retlw	0x03
 	bra	keypadloop
 	
 readinput
@@ -49,13 +45,15 @@ readinput
 	clrf	pressed
 	call	shortdelay
 	call	delay
+	clrf	PORTD
 	movff	no_buttons, WREG
 	cpfsgt	sequence
 	goto	nextlevel
 	movlw	0x59
 	cpfsgt	countdown
-	goto	leave
 	bra	readinput
+	goto	leave
+	
 
 
 	
