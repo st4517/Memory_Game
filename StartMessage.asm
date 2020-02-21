@@ -5,7 +5,7 @@
 	global greeting
 	global failure
 	global setup
-	;extern Greeting
+	global levelmessage	;extern Greeting
 	;extern Length
 	
 acs0	udata_acs   ; reserve data space in access ram
@@ -30,6 +30,9 @@ initial data	    "Press any key\n"	; message, plus carriage return
 	
 wrong	data	    "lol thats wrong\n"	; message, plus carriage return
 	constant wrong_len = .16
+	
+next	data	    "Next level\n"
+	constant next_len = .11
 	
 main	code
 	
@@ -63,6 +66,19 @@ failure	    	lfsr	FSR0, TextLocation	; Load FSR0 with address in RAM
 		movlw	high(wrong)	; address of data in PM
 		movwf	TBLPTRH		; load high byte to TBLPTRH
 		movlw	low(wrong)	; address of data in PM
+		movwf	TBLPTRL		; load low byte to TBLPTRL
+		movff	length, counter
+		call	loop
+		return
+		
+levelmessage	lfsr	FSR0, TextLocation	; Load FSR0 with address in RAM
+		movlw	next_len
+		movwf	length
+		movlw	upper(next)	; address of data in PM
+		movwf	TBLPTRU		; load upper bits to TBLPTRU
+		movlw	high(next)	; address of data in PM
+		movwf	TBLPTRH		; load high byte to TBLPTRH
+		movlw	low(next)	; address of data in PM
 		movwf	TBLPTRL		; load low byte to TBLPTRL
 		movff	length, counter
 		call	loop

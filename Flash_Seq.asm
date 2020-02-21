@@ -11,10 +11,10 @@ blue  res 1
 violet	res 1
 yellow	res 1
 	
-global	read, setflash, flashcounter, delay
+global	read, setflash, flashcounter, delay, delayreset, shortdelay, bigdelay
+extern	sequence
 
-	
-	
+
 flash   code
    
    
@@ -35,7 +35,7 @@ read	call	compare
 	call	delayreset
 	call	delay
 	incf	flashcounter, 1,0
-	movlw	0x04
+	movff	sequence, WREG
 	cpfseq	flashcounter
 	bra	read
 	clrf	PORTD
@@ -65,6 +65,18 @@ allLEDS movlw	0x00
 	;goto	interpret	
 	
 delayreset movlw 0x40	;sets delay time
+	movwf	d0
+	movwf	d1
+	movwf	d2
+	return
+	
+bigdelay movlw 0xF0	;sets delay time
+	movwf	d0
+	movwf	d1
+	movwf	d2
+	return
+	
+shortdelay movlw 0x15	;sets delay time
 	movwf	d0
 	movwf	d1
 	movwf	d2

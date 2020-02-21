@@ -1,3 +1,3 @@
 build/default/debug/Main.o:  \
-	C:/Users/Marta/Documents/Imperial/3RD_YEAR/Lab/Memory_Game/Main.asm  \
+	H:/Y3/Labs/Microprocessors/Memory_Game/Main.asm  \
 

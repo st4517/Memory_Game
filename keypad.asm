@@ -1,7 +1,10 @@
 #include p18f87k22.inc
 
+acs0    udata_acs				; named variables in access ram	
+pressed res 1
 	
-global	keypadsetup, keypadloop	
+global	keypadsetup, keypadloop	, readinput, pressed
+extern	leave, nextlevel, no_buttons, sequence,countdown, delay, shortdelay, failure
 	
 	
 	
@@ -30,7 +33,64 @@ keypadloop
 	movlw	0x03
 	btfss	PORTE,RE3
 	return
-	bra keypadloop
+	bra	keypadloop
+	
+readinput
+	btfss	PORTE,RE0
+	call	red
+	btfss	PORTE,RE1
+	call	blue
+	btfss	PORTE,RE2
+	call	violet
+	btfss	PORTE,RE3
+	call	yellow
+	tstfsz	pressed
+	call	check
+	clrf	pressed
+	call	shortdelay
+	call	delay
+	movff	no_buttons, WREG
+	cpfsgt	sequence
+	goto	nextlevel
+	movlw	0x59
+	cpfsgt	countdown
+	goto	leave
+	bra	readinput
 
+
+	
+red	movlw	0x01
+	movwf	PORTD
+	setf	pressed
+	movlw	0x00
+	return
+	
+blue	movlw	0x02
+	movwf	PORTD
+	setf	pressed
+	movlw	0x01
+	return
+	
+violet	movlw	0x04
+	movwf	PORTD
+	setf	pressed
+	movlw	0x02
+	return
+	
+yellow	movlw	0x08
+	movwf	PORTD
+	setf	pressed
+	movlw	0x03
+	return	
+	
+check	cpfseq	POSTINC1
+	goto	errormess
+	incf	no_buttons	    ;posssibly include success message here
+	return
+	
+errormess   call failure
+	goto $
+
+	
 
     end

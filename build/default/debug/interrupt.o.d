@@ -1,3 +1,3 @@
 build/default/debug/interrupt.o:  \
-	C:/Users/Marta/Documents/Imperial/3RD_YEAR/Lab/Memory_Game/interrupt.asm  \
+	H:/Y3/Labs/Microprocessors/Memory_Game/interrupt.asm  \
 

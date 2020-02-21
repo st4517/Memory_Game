@@ -6,16 +6,17 @@ d1	res 1
 d2	res 1
 countdown   res 1
 no_buttons	res 1
+sequence    res 1
+
 	
 
 	extern  LCD_Clear_Display	      ; external LCD subroutines
-	extern	setup, greeting, failure
+	extern	setup, greeting, failure,levelmessage
 	extern	setlfsr, load, LFSRCounter
-	extern	setflash, flashcounter, read, delay
-	extern	keypadsetup, keypadloop
+	extern	setflash, flashcounter, read, delay, delayreset, bigdelay
+	extern	keypadsetup, keypadloop, readinput,pressed
 	extern	int_on
-	global	no_buttons
-	global	countdown
+	global	leave, nextlevel, no_buttons, countdown, sequence
 	
 
 rst	code	0						 ;reset vector
@@ -29,30 +30,36 @@ start	call	setup		    ;LCD setup
 	call	setflash	    ;LED setup
 	call	keypadsetup
 	call	greeting
+	call	delayreset
 	call	delay
 	call	keypadloop
 	call	setlfsr		    ;LFSR setup
 	call	LCD_Clear_Display
 	call	delay
-
+	movlw	0x04
+	movwf	sequence
+	clrf	countdown
 
 	
 
 level	call	load		    ;produces and stores random sequence
 	clrf	flashcounter	    ;
 	call	read		    ;flashes sequence
-	call	int_on		    ;enables interrrupts
-hurryup
-	movff	no_buttons, WREG
-	cpfslt	LFSRCounter
-	goto	nextlevel
-	movlw	0xB
-	cpfsgt	countdown
-	bra	hurryup
-	goto	leave
+	call	int_on		    ;enables timer interrupts
+	clrf	no_buttons
+	clrf	pressed
+	call	readinput
+
 	
 nextlevel
-	goto $
+	
+	call	levelmessage	    ;displays next level
+	incf	sequence, 1,0
+	lfsr	FSR1, 0x140
+	clrf	countdown
+	call	bigdelay
+	call	delay
+	goto	level
 	
 leave
 	goto $
