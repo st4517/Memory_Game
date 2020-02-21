@@ -1,3 +1,3 @@
 build/default/debug/StartMessage.o:  \
-	H:/Y3/Labs/Microprocessors/Memory_Game/StartMessage.asm  \
+	C:/Users/Marta/Documents/Imperial/3RD_YEAR/Lab/Memory_Game/StartMessage.asm  \
 

@@ -26,14 +26,12 @@ rst	code	0						 ;reset vector
 main	code
 
 start	call	setup		    ;LCD setup
-	call	setlfsr		    ;LFSR setup
 	call	setflash	    ;LED setup
 	call	keypadsetup
-	;movlw	greet_len
-	;movwf	length		    ;length of data
 	call	greeting
 	call	delay
 	call	keypadloop
+	call	setlfsr		    ;LFSR setup
 	call	LCD_Clear_Display
 	call	delay
 

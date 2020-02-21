@@ -1,3 +1,3 @@
 build/default/production/LCD.o:  \
-	H:/Y3/Labs/Microprocessors/Memory_Game/LCD.asm  \
+	C:/Users/Marta/Documents/Imperial/3RD_YEAR/Lab/Memory_Game/LCD.asm  \
 
