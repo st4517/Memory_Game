@@ -63,7 +63,7 @@ nextlevel
 	call	LCD_Clear_Display
 	goto	level
 	
-leave
+leave	call	toolate
 	goto $
 	
 	
