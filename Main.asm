@@ -11,7 +11,7 @@ sequence	res 1
 	
 
 	extern  LCD_Clear_Display	      
-	extern	setup, greeting, failure,levelmessage
+	extern	setup, greeting, failure,levelmessage, toolate
 	extern	setlfsr, load, LFSRCounter
 	extern	setflash, flashcounter, read, meddelay, bigdelay
 	extern	keypadsetup, keypadloop, readinput,pressed
@@ -54,7 +54,6 @@ nextlevel
 	lfsr	FSR1, 0x140
 	clrf	countdown
 	call	bigdelay
-	call	delay
 	call	LCD_Clear_Display
 	goto	level
 	

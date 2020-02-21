@@ -32,12 +32,10 @@ setflash clrf	TRISD	;PORTD all outputs
 read	call	compare
 	movff	signal, PORTD
 	movf	POSTINC1,W
-	call	delayreset
-	call	delay
+	call	meddelay
 	incf	flashcounter, 1,0
 	clrf	PORTD
-	call	delayreset
-	call	delay	
+	call	meddelay	
 	movff	sequence, WREG
 	cpfseq	flashcounter
 	bra	read

@@ -1,4 +1,4 @@
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE  1
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -16,20 +16,20 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00009 
                       02986         LIST
                       00002 
-                      00003 acs0    udata_acs                               ; named variables in access ram 
-000000                00004 d0      res 1                               ; reserve 1 byte for variable delay
-000001                00005 d1      res 1
-000002                00006 d2      res 1
-000003                00007 countdown   res 1
+                      00003 acs0            udata_acs                       ; named variables in access ram 
+000000                00004 d0              res 1                           ; reserve 1 byte for variable
+000001                00005 d1              res 1
+000002                00006 d2              res 1
+000003                00007 countdown       res 1
 000004                00008 no_buttons      res 1
-000005                00009 sequence    res 1
+000005                00009 sequence        res 1
                       00010 
                       00011         
                       00012 
-  0000                00013         extern  LCD_Clear_Display             ; external LCD subroutines
-  0000                00014         extern  setup, greeting, failure,levelmessage
+  0000                00013         extern  LCD_Clear_Display             
+  0000                00014         extern  setup, greeting, failure,levelmessage, toolate
   0000                00015         extern  setlfsr, load, LFSRCounter
-  0000                00016         extern  setflash, flashcounter, read, delay, delayreset, bigdelay
+  0000                00016         extern  setflash, flashcounter, read, meddelay, bigdelay
   0000                00017         extern  keypadsetup, keypadloop, readinput,pressed
   0000                00018         extern  int_on
   0000                00019         global  leave, nextlevel, no_buttons, countdown, sequence
@@ -44,55 +44,46 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00028 
 000000 EC?? F???      00029 start   call    setup               ;LCD setup
 000004 EC?? F???      00030         call    setflash            ;LED setup
-000008 EC?? F???      00031         call    keypadsetup
-00000C EC?? F???      00032         call    greeting
-000010 EC?? F???      00033         call    delayreset
-000014 EC?? F???      00034         call    delay
-000018 EC?? F???      00035         call    keypadloop
-00001C EC?? F???      00036         call    setlfsr             ;LFSR setup
-000020 EC?? F???      00037         call    LCD_Clear_Display
-000024 EC?? F???      00038         call    delay
-000028 0E04           00039         movlw   0x04
-00002A 6E??           00040         movwf   sequence
-00002C 6A??           00041         clrf    countdown
-00002E 9EF2           00042         bcf     INTCON,GIE          ; Disable all interrupts
-                      00043 
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE  2
+000008 EC?? F???      00031         call    keypadsetup         ;keypad setup
+00000C EC?? F???      00032         call    greeting            ;displays 'Press any key'
+000010 EC?? F???      00033         call    meddelay            ;medium delay
+000014 EC?? F???      00034         call    keypadloop          ;waits until key is pressed
+000018 EC?? F???      00035         call    setlfsr             ;LFSR setup
+00001C EC?? F???      00036         call    LCD_Clear_Display
+000020 EC?? F???      00037         call    meddelay
+000024 9EF2           00038         bcf     INTCON,GIE          ; Disable all interrupts
+                      00039 
+                      00040         
+                      00041 
+000026 EC?? F???      00042 level   call    load                ;produces and stores random sequence
+00002A 6A??           00043         clrf    flashcounter        ;
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00044         
-                      00045 
-000030 EC?? F???      00046 level   call    load                ;produces and stores random sequence
-000034 6A??           00047         clrf    flashcounter        ;
-000036 EC?? F???      00048         call    read                ;flashes sequence
-00003A EC?? F???      00049         call    int_on              ;enables timer interrupts
-00003E 6A??           00050         clrf    no_buttons
-000040 6A??           00051         clrf    pressed
-000042 EC?? F???      00052         call    readinput
-                      00053 
-                      00054         
-000046                00055 nextlevel
-                      00056         
-000046 EC?? F???      00057         call    levelmessage        ;displays next level
-00004A 2A00           00058         incf    sequence, 1,0
-00004C EE11 F040      00059         lfsr    FSR1, 0x140
-000050 6A??           00060         clrf    countdown
-000052 EC?? F???      00061         call    bigdelay
-000056 EC?? F???      00062         call    delay
-00005A EC?? F???      00063         call    LCD_Clear_Display
-00005E EF?? F???      00064         goto    level
-                      00065         
-Error[113]  : Symbol not previously defined (toolate)
-000062 EC00 F000      00066 leave   call    toolate
-000066 EF?? F???      00067         goto $
-                      00068         
-                      00069         
-00006A                00070 delayy  
-                      00071         end
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE  3
+00002C EC?? F???      00044         call    read                ;flashes sequence
+000030 EC?? F???      00045         call    int_on              ;enables timer interrupts
+000034 6A??           00046         clrf    no_buttons
+000036 6A??           00047         clrf    pressed
+000038 EC?? F???      00048         call    readinput
+                      00049 
+                      00050         
+00003C                00051 nextlevel
+00003C EC?? F???      00052         call    levelmessage        ;displays next level
+000040 2A00           00053         incf    sequence, 1,0       ;increases sequence length
+000042 EE11 F040      00054         lfsr    FSR1, 0x140
+000046 6A??           00055         clrf    countdown
+000048 EC?? F???      00056         call    bigdelay
+00004C EC?? F???      00057         call    LCD_Clear_Display
+000050 EF?? F???      00058         goto    level
+                      00059         
+000054 EC?? F???      00060 leave   call    toolate
+000058 EF?? F???      00061         goto $
+                      00062         
+                      00063         end
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE  3
 
 
 SYMBOL TABLE
@@ -151,7 +142,7 @@ ADMSK5                            00000005
 ADON                              00000000
 ADRES                             00000FC3
 ADRESH                            00000FC4
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE  4
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE  4
 
 
 SYMBOL TABLE
@@ -210,7 +201,7 @@ ANSEL16                           00000000
 ANSEL17                           00000001
 ANSEL18                           00000002
 ANSEL19                           00000003
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE  5
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE  5
 
 
 SYMBOL TABLE
@@ -269,7 +260,7 @@ C1TSEL0                           00000000
 C1TSEL1                           00000001
 C1TSEL2                           00000002
 C2INA                             00000004
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE  6
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE  6
 
 
 SYMBOL TABLE
@@ -328,7 +319,7 @@ CCP1IP                            00000001
 CCP1M0                            00000000
 CCP1M1                            00000001
 CCP1M2                            00000002
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE  7
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE  7
 
 
 SYMBOL TABLE
@@ -387,7 +378,7 @@ CCP5M0                            00000000
 CCP5M1                            00000001
 CCP5M2                            00000002
 CCP5M3                            00000003
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE  8
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE  8
 
 
 SYMBOL TABLE
@@ -446,7 +437,7 @@ CCP9IP                            00000006
 CCP9M0                            00000000
 CCP9M1                            00000001
 CCP9M2                            00000002
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE  9
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE  9
 
 
 SYMBOL TABLE
@@ -505,7 +496,7 @@ CHSN1                             00000001
 CHSN2                             00000002
 CK1                               00000006
 CK2                               00000001
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 10
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 10
 
 
 SYMBOL TABLE
@@ -564,7 +555,7 @@ CTMUIE                            00000003
 CTMUIF                            00000003
 CTMUIP                            00000003
 CTMUMD                            00000006
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 11
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 11
 
 
 SYMBOL TABLE
@@ -623,7 +614,7 @@ ECCP1AS1                          00000005
 ECCP1AS2                          00000006
 ECCP1ASE                          00000007
 ECCP1CON                          00000FBB
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 12
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 12
 
 
 SYMBOL TABLE
@@ -682,7 +673,7 @@ FSR2H                             00000FDA
 FSR2L                             00000FD9
 GCEN                              00000007
 GIE                               00000007
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 13
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 13
 
 
 SYMBOL TABLE
@@ -741,7 +732,7 @@ INT3F                             00000002
 INT3IE                            00000005
 INT3IF                            00000002
 INT3IP                            00000001
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 14
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 14
 
 
 SYMBOL TABLE
@@ -800,7 +791,7 @@ LATB7                             00000007
 LATC                              00000F8B
 LATC0                             00000000
 LATC1                             00000001
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 15
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 15
 
 
 SYMBOL TABLE
@@ -859,7 +850,7 @@ LATJ1                             00000001
 LATJ2                             00000002
 LATJ3                             00000003
 LATJ4                             00000004
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 16
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 16
 
 
 SYMBOL TABLE
@@ -918,7 +909,7 @@ ODCON2                            00000F28
 ODCON3                            00000F27
 OE                                00000001
 OERR                              00000001
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 17
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 17
 
 
 SYMBOL TABLE
@@ -977,7 +968,7 @@ P3DC6                             00000006
 P3M0                              00000006
 P3M1                              00000007
 P3RSEN                            00000007
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 18
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 18
 
 
 SYMBOL TABLE
@@ -1036,7 +1027,7 @@ POSTDEC0                          00000FED
 POSTDEC1                          00000FE5
 POSTDEC2                          00000FDD
 POSTINC0                          00000FEE
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 19
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 19
 
 
 SYMBOL TABLE
@@ -1095,7 +1086,7 @@ RA2                               00000002
 RA3                               00000003
 RA4                               00000004
 RA5                               00000005
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 20
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 20
 
 
 SYMBOL TABLE
@@ -1154,7 +1145,7 @@ RD4                               00000004
 RD5                               00000005
 RD6                               00000006
 RD7                               00000007
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 21
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 21
 
 
 SYMBOL TABLE
@@ -1213,7 +1204,7 @@ ROON                              00000007
 ROSEL                             00000004
 ROSSLP                            00000005
 RSEN                              00000001
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 22
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 22
 
 
 SYMBOL TABLE
@@ -1272,7 +1263,7 @@ SOSCEN                            00000003
 SOSCGO                            00000003
 SOSCI                             00000001
 SOSCO                             00000000
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 23
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 23
 
 
 SYMBOL TABLE
@@ -1331,7 +1322,7 @@ SSPM0                             00000000
 SSPM1                             00000001
 SSPM2                             00000002
 SSPM3                             00000003
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 24
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 24
 
 
 SYMBOL TABLE
@@ -1390,7 +1381,7 @@ T1GGO_NOT_T1DONE                  00000003
 T1GPOL                            00000006
 T1GSPM                            00000004
 T1GSS0                            00000000
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 25
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 25
 
 
 SYMBOL TABLE
@@ -1449,7 +1440,7 @@ T6OUTPS1                          00000004
 T6OUTPS2                          00000005
 T6OUTPS3                          00000006
 T7CKI                             00000004
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 26
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 26
 
 
 SYMBOL TABLE
@@ -1508,7 +1499,7 @@ TMR1GIE                           00000002
 TMR1GIF                           00000002
 TMR1GIP                           00000002
 TMR1H                             00000FCF
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 27
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 27
 
 
 SYMBOL TABLE
@@ -1567,7 +1558,7 @@ TMR6IP                            00000002
 TMR6MD                            00000004
 TMR6ON                            00000002
 TMR7                              00000F3E
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 28
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 28
 
 
 SYMBOL TABLE
@@ -1626,7 +1617,7 @@ TRISC4                            00000004
 TRISC5                            00000005
 TRISC6                            00000006
 TRISC7                            00000007
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 29
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 29
 
 
 SYMBOL TABLE
@@ -1685,7 +1676,7 @@ TRISJ7                            00000007
 TRMT                              00000001
 TRMT1                             00000001
 TRMT2                             00000001
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 30
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 30
 
 
 SYMBOL TABLE
@@ -1744,7 +1735,7 @@ VREF_MINUS                        00000002
 VREF_PLUS                         00000003
 W                                 00000000
 WAIT0                             00000004
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 31
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 31
 
 
 SYMBOL TABLE
@@ -1803,7 +1794,7 @@ _CP0_ON_5L                        000000FE
 _CP1_OFF_5L                       000000FF
 _CP1_ON_5L                        000000FD
 _CP2_OFF_5L                       000000FF
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 32
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 32
 
 
 SYMBOL TABLE
@@ -1862,7 +1853,7 @@ _FOSC_HS1_1H                      000000F3
 _FOSC_HS2_1H                      000000F2
 _FOSC_INTIO1_1H                   000000F9
 _FOSC_INTIO2_1H                   000000F8
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 33
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 33
 
 
 SYMBOL TABLE
@@ -1921,7 +1912,7 @@ _WDTPS_2_2H                       00000087
 _WDTPS_32768_2H                   000000BF
 _WDTPS_32_2H                      00000097
 _WDTPS_4096_2H                    000000B3
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 34
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 34
 
 
 SYMBOL TABLE
@@ -1961,33 +1952,31 @@ _XINST_ON_1L                      000000FF
 __18F87K22                        00000001
 __DEBUG                           
 __MPLAB_DEBUGGER_ICD3             1
-_main_0066                        00000066
+_main_0058                        00000058
 bigdelay                          00000000
 countdown                         00000003
 d0                                00000000
 d1                                00000001
 d2                                00000002
-delay                             00000000
-delayreset                        00000000
-delayy                            0000006A
 failure                           00000000
 flashcounter                      00000000
 greeting                          00000000
 int_on                            00000000
 keypadloop                        00000000
 keypadsetup                       00000000
-leave                             00000062
-level                             00000030
+leave                             00000054
+level                             00000026
 levelmessage                      00000000
 load                              00000000
-MPASM 5.81                          MAIN.ASM   2-21-2020  16:14:41         PAGE 35
+meddelay                          00000000
+nextlevel                         0000003C
+no_buttons                        00000004
+MPASM 5.81                          MAIN.ASM   2-21-2020  18:12:22         PAGE 35
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-nextlevel                         00000046
-no_buttons                        00000004
 pressed                           00000000
 read                              00000000
 readinput                         00000000
@@ -1996,8 +1985,9 @@ setflash                          00000000
 setlfsr                           00000000
 setup                             00000000
 start                             00000000
+toolate                           00000000
 
-Errors   :     1
+Errors   :     0
 Warnings :     0 reported,     0 suppressed
 Messages :     0 reported,     0 suppressed
 

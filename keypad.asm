@@ -44,8 +44,7 @@ readinput
 	tstfsz	pressed
 	call	check
 	clrf	pressed
-	call	shortdelay
-	call	delay
+	call	lildelay
 	clrf	PORTD
 	movff	no_buttons, WREG
 	cpfsgt	sequence
