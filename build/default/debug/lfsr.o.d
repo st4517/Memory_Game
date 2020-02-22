@@ -1,3 +1,3 @@
 build/default/debug/lfsr.o:  \
-	H:/Y3/Labs/Microprocessors/Memory_Game/lfsr.asm  \
+	C:/Users/Marta/Documents/Imperial/3RD_YEAR/Lab/Memory_Game/lfsr.asm  \
 

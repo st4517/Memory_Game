@@ -14,7 +14,7 @@ sequence	res 1
 	extern	setup, greeting, failure,levelmessage, toolate
 	extern	setlfsr, load, LFSRCounter
 	extern	setflash, flashcounter, read, meddelay, bigdelay
-	extern	keypadsetup, keypadloop, readinput,pressed
+	extern	keypadsetup, keypadloop, readinput
 	extern	int_on
 	global	leave, nextlevel, no_buttons, countdown, sequence
 	
@@ -44,7 +44,6 @@ level	call	load		    ;produces and stores random sequence
 	call	read		    ;flashes sequence
 	call	int_on		    ;enables timer interrupts
 	clrf	no_buttons
-	clrf	pressed
 	call	readinput
 
 	

@@ -41,14 +41,6 @@ readinput
 	call	violet
 	btfss	PORTE,RE3
 	call	yellow
-	tstfsz	pressed
-	call	check
-	clrf	pressed
-	call	lildelay
-	clrf	PORTD
-	movff	no_buttons, WREG
-	cpfsgt	sequence
-	goto	nextlevel
 	movlw	0x59
 	cpfsgt	countdown
 	bra	readinput
@@ -59,26 +51,46 @@ readinput
 	
 red	movlw	0x01
 	movwf	PORTD
-	setf	pressed
 	movlw	0x00
+	call	check
+	call	lildelay
+	clrf	PORTD
+	movff	no_buttons, WREG
+	cpfsgt	sequence
+	goto	nextlevel
 	return
 	
 blue	movlw	0x02
 	movwf	PORTD
-	setf	pressed
 	movlw	0x01
+	call	check
+	call	lildelay
+	clrf	PORTD
+	movff	no_buttons, WREG
+	cpfsgt	sequence
+	goto	nextlevel
 	return
 	
 violet	movlw	0x04
 	movwf	PORTD
-	setf	pressed
 	movlw	0x02
+	call	check
+	call	lildelay
+	clrf	PORTD
+	movff	no_buttons, WREG
+	cpfsgt	sequence
+	goto	nextlevel
 	return
 	
 yellow	movlw	0x08
 	movwf	PORTD
-	setf	pressed
 	movlw	0x03
+	call	check
+	call	lildelay
+	clrf	PORTD
+	movff	no_buttons, WREG
+	cpfsgt	sequence
+	goto	nextlevel
 	return	
 	
 check	cpfseq	POSTINC1

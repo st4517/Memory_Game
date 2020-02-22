@@ -1,3 +1,3 @@
 build/default/production/config.o:  \
-	H:/Y3/Labs/Microprocessors/Memory_Game/config.asm  \
+	C:/Users/Marta/Documents/Imperial/3RD_YEAR/Lab/Memory_Game/config.asm  \
 
