@@ -10,9 +10,10 @@ shiftregister	res 1
 temp	res 1
 random	res 1	;random number produced
 LFSRCounter res 1   ;sequence length
+seed	res 1
       
 global setlfsr, load, LFSRCounter
-extern	sequence
+extern	sequence, shiftregister
 
 random	code
 
@@ -25,6 +26,8 @@ setlfsr ;movlw	0x01		    ;inputs seed
         lfsr	FSR1, 0x140	    ;sets FSR1
 	movlw	0x04
 	movwf	sequence
+	movlw	0x0F
+	cpfsgt	shiftregister
 	setf	shiftregister
 	return	
 	
