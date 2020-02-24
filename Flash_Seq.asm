@@ -4,6 +4,7 @@ acs0    udata_acs   ; named variables in access ram
 d0	res 1   ; delay lengths
 d1	res 1
 d2	res 1
+variabledelay	res 1
 flashcounter res 1	
 signal	res 1
 red   res 1
@@ -11,7 +12,7 @@ blue  res 1
 violet	res 1
 yellow	res 1
 	
-global	read, setflash, flashcounter, meddelay, lildelay, bigdelay, allLEDS
+global	read, setflash, flashcounter, meddelay, lildelay, bigdelay, allLEDS, variabledelay
 extern	sequence
 
 
@@ -33,10 +34,10 @@ setflash clrf	TRISD	;PORTD all outputs
 read	call	compare
 	movff	signal, PORTD
 	movf	POSTINC1,W
-	call	meddelay
+	call	flashdelay
 	incf	flashcounter, 1,0
 	clrf	PORTD
-	call	meddelay	
+	call	flashdelay	
 	movff	sequence, WREG
 	cpfseq	flashcounter
 	bra	read
@@ -67,7 +68,7 @@ allLEDS movlw	0x00
 	return
 	;goto	interpret	
 	
-meddelay movlw 0x40	;sets delay time
+meddelay movlw 0x20	;sets delay time
 	movwf	d0
 	movwf	d1
 	movwf	d2
@@ -82,6 +83,13 @@ bigdelay movlw 0xF0	;sets delay time
 	return
 	
 lildelay movlw 0x10	;sets delay time
+	movwf	d0
+	movwf	d1
+	movwf	d2
+	call	delay
+	return
+	
+flashdelay  movff  variabledelay, WREG
 	movwf	d0
 	movwf	d1
 	movwf	d2

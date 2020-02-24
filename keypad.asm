@@ -4,7 +4,7 @@ acs0    udata_acs				; named variables in access ram
 
 	
 global	keypadsetup, keypadloop	, readinput
-extern	leave, nextlevel, no_buttons, sequence, countdown, lildelay, failure, shiftregister, errormess
+extern	nextlevel, no_buttons, sequence, countdown, lildelay, failure, shiftregister, errormess, leave
  
 	
 	
@@ -24,7 +24,7 @@ keypadsetup
 	return
 	
 keypadloop
-	btfss	PORTE, RE0
+.	btfss	PORTE, RE0
 	retlw	0x00
 	btfss	PORTE, RE1
 	retlw	0x01
@@ -44,7 +44,7 @@ readinput
 	call	violet
 	btfss	PORTE, RE3
 	call	yellow
-	movlw	0x59
+	movlw	0x15
 	cpfsgt	countdown
 	bra	readinput
 	goto	leave

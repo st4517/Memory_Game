@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=StartMessage.asm LCD.asm lfsr.asm Flash_Seq.asm interrupt.asm Main.asm config.asm keypad.asm
+SOURCEFILES_QUOTED_IF_SPACED=StartMessage.asm LCD.asm lfsr.asm Flash_Seq.asm interrupt.asm Main.asm config.asm keypad.asm ADC.asm
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/StartMessage.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/lfsr.o ${OBJECTDIR}/Flash_Seq.o ${OBJECTDIR}/interrupt.o ${OBJECTDIR}/Main.o ${OBJECTDIR}/config.o ${OBJECTDIR}/keypad.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/StartMessage.o.d ${OBJECTDIR}/LCD.o.d ${OBJECTDIR}/lfsr.o.d ${OBJECTDIR}/Flash_Seq.o.d ${OBJECTDIR}/interrupt.o.d ${OBJECTDIR}/Main.o.d ${OBJECTDIR}/config.o.d ${OBJECTDIR}/keypad.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/StartMessage.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/lfsr.o ${OBJECTDIR}/Flash_Seq.o ${OBJECTDIR}/interrupt.o ${OBJECTDIR}/Main.o ${OBJECTDIR}/config.o ${OBJECTDIR}/keypad.o ${OBJECTDIR}/ADC.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/StartMessage.o.d ${OBJECTDIR}/LCD.o.d ${OBJECTDIR}/lfsr.o.d ${OBJECTDIR}/Flash_Seq.o.d ${OBJECTDIR}/interrupt.o.d ${OBJECTDIR}/Main.o.d ${OBJECTDIR}/config.o.d ${OBJECTDIR}/keypad.o.d ${OBJECTDIR}/ADC.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/StartMessage.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/lfsr.o ${OBJECTDIR}/Flash_Seq.o ${OBJECTDIR}/interrupt.o ${OBJECTDIR}/Main.o ${OBJECTDIR}/config.o ${OBJECTDIR}/keypad.o
+OBJECTFILES=${OBJECTDIR}/StartMessage.o ${OBJECTDIR}/LCD.o ${OBJECTDIR}/lfsr.o ${OBJECTDIR}/Flash_Seq.o ${OBJECTDIR}/interrupt.o ${OBJECTDIR}/Main.o ${OBJECTDIR}/config.o ${OBJECTDIR}/keypad.o ${OBJECTDIR}/ADC.o
 
 # Source Files
-SOURCEFILES=StartMessage.asm LCD.asm lfsr.asm Flash_Seq.asm interrupt.asm Main.asm config.asm keypad.asm
+SOURCEFILES=StartMessage.asm LCD.asm lfsr.asm Flash_Seq.asm interrupt.asm Main.asm config.asm keypad.asm ADC.asm
 
 
 CFLAGS=
@@ -158,6 +158,14 @@ ${OBJECTDIR}/keypad.o: keypad.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${DEP_GEN} -d "${OBJECTDIR}/keypad.o"
 	@${FIXDEPS} "${OBJECTDIR}/keypad.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
+${OBJECTDIR}/ADC.o: ADC.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/ADC.o.d 
+	@${RM} ${OBJECTDIR}/ADC.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/ADC.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_ICD3=1 -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/ADC.lst\" -e\"${OBJECTDIR}/ADC.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/ADC.o\" \"ADC.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/ADC.o"
+	@${FIXDEPS} "${OBJECTDIR}/ADC.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
 else
 ${OBJECTDIR}/StartMessage.o: StartMessage.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
@@ -222,6 +230,14 @@ ${OBJECTDIR}/keypad.o: keypad.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/keypad.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/keypad.lst\" -e\"${OBJECTDIR}/keypad.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/keypad.o\" \"keypad.asm\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/keypad.o"
 	@${FIXDEPS} "${OBJECTDIR}/keypad.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
+	
+${OBJECTDIR}/ADC.o: ADC.asm  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/ADC.o.d 
+	@${RM} ${OBJECTDIR}/ADC.o 
+	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/ADC.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION)  -l\"${OBJECTDIR}/ADC.lst\" -e\"${OBJECTDIR}/ADC.err\" $(ASM_OPTIONS)    -o\"${OBJECTDIR}/ADC.o\" \"ADC.asm\" 
+	@${DEP_GEN} -d "${OBJECTDIR}/ADC.o"
+	@${FIXDEPS} "${OBJECTDIR}/ADC.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
 endif
 

@@ -1,4 +1,4 @@
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE  1
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -16,132 +16,99 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00009 
                       02986         LIST
                       00002 
-                      00003 acs0    udata_acs   ; named variables in access ram     
-000000                00004 d0      res 1   ; delay lengths
-000001                00005 d1      res 1
-000002                00006 d2      res 1
-000003                00007 variabledelay   res 1
-000004                00008 flashcounter res 1      
-000005                00009 signal  res 1
-000006                00010 red   res 1
-000007                00011 blue  res 1
-000008                00012 violet  res 1
-000009                00013 yellow  res 1
-                      00014         
-Warning[205]: Found directive in column 1. (global)
-  0000                00015 global  read, setflash, flashcounter, meddelay, lildelay, bigdelay, allLEDS, variabledelay
-Warning[205]: Found directive in column 1. (extern)
-  0000                00016 extern  sequence
-                      00017 
-                      00018 
-                      00019 flash   code
-                      00020    
-                      00021    
-000000 6A95           00022 setflash clrf   TRISD   ;PORTD all outputs
-000002 6A83           00023         clrf    PORTD
-000004 0E01           00024         movlw   0x01
-000006 6E??           00025         movwf   red
-000008 0E02           00026         movlw   0x02
-00000A 6E??           00027         movwf   blue
-00000C 0E04           00028         movlw   0x04
-00000E 6E??           00029         movwf   violet
-000010 0E08           00030         movlw   0x08
-000012 6E??           00031         movwf   yellow
-000014 0012           00032         return
-                      00033      
-000016 EC?? F???      00034 read    call    compare
-00001A C??? FF83      00035         movff   signal, PORTD
-00001E 50E6           00036         movf    POSTINC1,W
-000020 EC?? F???      00037         call    flashdelay
-000024 2A00           00038         incf    flashcounter, 1,0
-000026 6A83           00039         clrf    PORTD
-000028 EC?? F???      00040         call    flashdelay      
-00002C C??? FFE8      00041         movff   sequence, WREG
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE  2
+                      00003 acs0            udata_acs                       ; named variables in access ram 
+000000                00004 d0              res 1                           ; reserve 1 byte for variable
+000001                00005 d1              res 1
+000002                00006 d2              res 1
+000003                00007 countdown       res 1
+000004                00008 no_buttons      res 1
+000005                00009 sequence        res 1
+                      00010 
+                      00011         
+                      00012 
+  0000                00013         extern  LCD_Clear_Display             
+  0000                00014         extern  setup, greeting, failure,levelmessage, toolate, playagain
+  0000                00015         extern  setlfsr, load, LFSRCounter, shiftregister
+  0000                00016         extern  setflash, flashcounter, read, meddelay, bigdelay, allLEDS,variabledelay
+  0000                00017         extern  keypadsetup, keypadloop, readinput
+  0000                00018         extern  int_on
+  0000                00019         extern  ADCsetup, ADC_Read
+  0000                00020         global  leave, nextlevel, no_buttons, countdown, sequence, errormess
+                      00021         
+                      00022 
+                      00023 rst     code    0                                                ;reset vector
+000000 EF?? F???      00024         goto    start
+                      00025         
+                      00026 
+                      00027         
+                      00028 main    code
+                      00029 
+000000 EC?? F???      00030 start   call    setup               ;LCD setup
+000004 EC?? F???      00031         call    setflash            ;LED setup
+000008 EC?? F???      00032         call    keypadsetup         ;keypad setup
+00000C EC?? F???      00033         call    ADCsetup
+000010 EC?? F???      00034         call    greeting            ;displays 'Press any key'
+000014 EC?? F???      00035         call    meddelay            ;medium delay
+000018 EC?? F???      00036         call    keypadloop          ;waits until key is pressed
+00001C EC?? F???      00037         call    setlfsr             ;LFSR setup
+000020 EC?? F???      00038         call    LCD_Clear_Display
+000024 EC?? F???      00039         call    bigdelay
+000028 9EF2           00040         bcf     INTCON,GIE          ; Disable all interrupts
+                      00041 
+                      00042         
+                      00043 
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-000030 62??           00042         cpfseq  flashcounter
-000032 D???           00043         bra     read
-000034 6A83           00044         clrf    PORTD
-000036 EE11 F040      00045         lfsr    FSR1, 0x140             ;restores FSR1
-00003A 0012           00046         return
-                      00047 
-00003C C??? F???      00048 compare movff   red, signal
-000040 0E00           00049         movlw   0x00 
-000042 64E7           00050         cpfsgt  INDF1
-000044 0012           00051         return
-000046 C??? F???      00052         movff   blue, signal
-00004A 0E01           00053         movlw   0x01
-00004C 64E7           00054         cpfsgt  INDF1
-00004E 0012           00055         return
-000050 C??? F???      00056         movff   violet, signal
-000054 0E02           00057         movlw   0x02
-000056 64E7           00058         cpfsgt  INDF1
-000058 0012           00059         return
-00005A C??? F???      00060         movff   yellow, signal
-00005E 0012           00061         return
-                      00062                                 
-000060 0E00           00063 allLEDS movlw   0x00
-000062 6E95           00064         movwf   TRISD,ACCESS
-000064 0E0F           00065         movlw   0x0F
-000066 6E83           00066         movwf   PORTD, ACCESS   
-000068 CFE6 F000      00067         movff   POSTINC1,W
-00006C 0012           00068         return
-                      00069         ;goto   interpret       
-                      00070         
-00006E 0E20           00071 meddelay movlw 0x20     ;sets delay time
-000070 6E??           00072         movwf   d0
-000072 6E??           00073         movwf   d1
-000074 6E??           00074         movwf   d2
-000076 EC?? F???      00075         call    delay
-00007A 0012           00076         return
-                      00077         
-00007C 0EF0           00078 bigdelay movlw 0xF0     ;sets delay time
-00007E 6E??           00079         movwf   d0
-000080 6E??           00080         movwf   d1
-000082 6E??           00081         movwf   d2
-000084 EC?? F???      00082         call    delay
-000088 0012           00083         return
-                      00084         
-00008A 0E10           00085 lildelay movlw 0x10     ;sets delay time
-00008C 6E??           00086         movwf   d0
-00008E 6E??           00087         movwf   d1
-000090 6E??           00088         movwf   d2
-000092 EC?? F???      00089         call    delay
-000096 0012           00090         return
-                      00091         
-000098 C??? FFE8      00092 flashdelay  movff  variabledelay, WREG
-00009C 6E??           00093         movwf   d0
-00009E 6E??           00094         movwf   d1
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE  3
-
-
-LOC  OBJECT CODE     LINE SOURCE TEXT
-  VALUE
-
-0000A0 6E??           00095         movwf   d2
-0000A2 EC?? F???      00096         call    delay
-0000A6 0012           00097         return
-                      00098         
-0000A8 EC?? F???      00099 delay   call    delay1
-0000AC 2E??           00100         decfsz  d0
-0000AE D???           00101         bra     delay
-0000B0 0012           00102         return
-                      00103         
-0000B2 EC?? F???      00104 delay1  call    delay2
-0000B6 2E??           00105         decfsz  d1
-0000B8 D???           00106         bra     delay1
-0000BA 0012           00107         return
-                      00108         
-0000BC 2E??           00109 delay2  decfsz  d2
-0000BE D???           00110         bra     delay2
-0000C0 0012           00111         return
-                      00112          
-                      00113         end
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE  4
+00002A EC?? F???      00044 level   call    load                ;produces and stores random sequence
+00002E 6A??           00045         clrf    flashcounter        ;
+000030 EC?? F???      00046         call    ADC_Read
+000034 6E??           00047         movwf   variabledelay
+000036 EC?? F???      00048         call    read                ;flashes sequence
+00003A EC?? F???      00049         call    int_on              ;enables timer interrupts
+00003E 6A??           00050         clrf    no_buttons
+000040 EC?? F???      00051         call    readinput
+                      00052 
+                      00053         
+000044                00054 nextlevel
+000044 EC?? F???      00055         call    levelmessage        ;displays next level
+000048 EC?? F???      00056         call    meddelay
+00004C EC?? F???      00057         call    LCD_Clear_Display
+000050 EC?? F???      00058         call    greeting            ;displays 'Press any key'
+000054 EC?? F???      00059         call    meddelay            ;medium delay
+000058 EC?? F???      00060         call    keypadloop          ;waits until key is pressed
+00005C 0E0F           00061         movlw   0x0F                ;ensures seed is not 0000
+00005E 64??           00062         cpfsgt  shiftregister
+000060 68??           00063         setf    shiftregister
+000062 EC?? F???      00064         call    LCD_Clear_Display
+000066 2A00           00065         incf    sequence, 1,0       ;increases sequence length
+000068 EE11 F040      00066         lfsr    FSR1, 0x140
+00006C 6A??           00067         clrf    countdown
+00006E EC?? F???      00068         call    bigdelay
+000072 EC?? F???      00069         call    LCD_Clear_Display
+000076 EF?? F???      00070         goto    level
+                      00071         
+00007A EC?? F???      00072 leave   call    toolate
+00007E EC?? F???      00073         call    bigdelay
+000082 EC?? F???      00074         call    LCD_Clear_Display
+000086 EC?? F???      00075         call    playagain
+00008A EC?? F???      00076         call    meddelay            ;medium delay
+00008E EC?? F???      00077         call    keypadloop          ;waits until key is pressed
+000092 EF?? F???      00078         goto    start
+                      00079         
+000096 EC?? F???      00080 errormess   call failure
+00009A EC?? F???      00081         call    bigdelay
+00009E EC?? F???      00082         call    LCD_Clear_Display
+0000A2 EC?? F???      00083         call    playagain
+0000A6 EC?? F???      00084         call    meddelay            ;medium delay
+0000AA EC?? F???      00085         call    keypadloop          ;waits until key is pressed
+0000AE EF?? F???      00086         goto    start
+                      00087 
+                      00088         end
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE  3
 
 
 SYMBOL TABLE
@@ -184,6 +151,8 @@ ADCON2                            00000FC0
 ADCS0                             00000000
 ADCS1                             00000001
 ADCS2                             00000002
+ADC_Read                          00000000
+ADCsetup                          00000000
 ADDEN                             00000003
 ADDEN1                            00000003
 ADDEN2                            00000003
@@ -198,14 +167,14 @@ ADMSK3                            00000003
 ADMSK4                            00000004
 ADMSK5                            00000005
 ADON                              00000000
-ADRES                             00000FC3
-ADRESH                            00000FC4
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE  5
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE  4
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+ADRES                             00000FC3
+ADRESH                            00000FC4
 ADRESL                            00000FC3
 ALE                               00000000
 ALRMCFG                           00000F5B
@@ -257,14 +226,14 @@ ANSEL14                           00000006
 ANSEL15                           00000007
 ANSEL16                           00000000
 ANSEL17                           00000001
-ANSEL18                           00000002
-ANSEL19                           00000003
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE  6
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE  5
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+ANSEL18                           00000002
+ANSEL19                           00000003
 ANSEL2                            00000002
 ANSEL20                           00000004
 ANSEL21                           00000005
@@ -316,14 +285,14 @@ C1INC                             00000006
 C1OUT                             00000002
 C1TSEL0                           00000000
 C1TSEL1                           00000001
-C1TSEL2                           00000002
-C2INA                             00000004
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE  7
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE  6
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+C1TSEL2                           00000002
+C2INA                             00000004
 C2INB                             00000003
 C2INC                             00000004
 C2IND                             00000005
@@ -375,14 +344,14 @@ CCP1IE                            00000001
 CCP1IF                            00000001
 CCP1IP                            00000001
 CCP1M0                            00000000
-CCP1M1                            00000001
-CCP1M2                            00000002
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE  8
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE  7
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+CCP1M1                            00000001
+CCP1M2                            00000002
 CCP1M3                            00000003
 CCP1MD                            00000005
 CCP1OD                            00000005
@@ -434,14 +403,14 @@ CCP5IF                            00000002
 CCP5IP                            00000002
 CCP5M0                            00000000
 CCP5M1                            00000001
-CCP5M2                            00000002
-CCP5M3                            00000003
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE  9
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE  8
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+CCP5M2                            00000002
+CCP5M3                            00000003
 CCP5MD                            00000002
 CCP5OD                            00000002
 CCP5X                             00000005
@@ -493,14 +462,14 @@ CCP9IE                            00000006
 CCP9IF                            00000006
 CCP9IP                            00000006
 CCP9M0                            00000000
-CCP9M1                            00000001
-CCP9M2                            00000002
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 10
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE  9
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+CCP9M1                            00000001
+CCP9M2                            00000002
 CCP9M3                            00000003
 CCP9MD                            00000006
 CCP9OD                            00000006
@@ -552,14 +521,14 @@ CHS4                              00000006
 CHSN0                             00000000
 CHSN1                             00000001
 CHSN2                             00000002
-CK1                               00000006
-CK2                               00000001
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 11
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 10
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+CK1                               00000006
+CK2                               00000001
 CKE                               00000006
 CKP                               00000004
 CLKI                              00000007
@@ -611,14 +580,14 @@ CTMUI                             00000003
 CTMUICON                          00000F55
 CTMUIE                            00000003
 CTMUIF                            00000003
-CTMUIP                            00000003
-CTMUMD                            00000006
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 12
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 11
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+CTMUIP                            00000003
+CTMUMD                            00000006
 CTMUSIDL                          00000005
 CTPLS                             00000000
 CTTRIG                            00000000
@@ -670,14 +639,14 @@ ECCP1AS                           00000FBF
 ECCP1AS0                          00000004
 ECCP1AS1                          00000005
 ECCP1AS2                          00000006
-ECCP1ASE                          00000007
-ECCP1CON                          00000FBB
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 13
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 12
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+ECCP1ASE                          00000007
+ECCP1CON                          00000FBB
 ECCP1DEL                          00000FBE
 ECCP2AS                           00000F52
 ECCP2AS0                          00000004
@@ -729,14 +698,14 @@ FSR1L                             00000FE1
 FSR2                              00000002
 FSR2H                             00000FDA
 FSR2L                             00000FD9
-GCEN                              00000007
-GIE                               00000007
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 14
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 13
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+GCEN                              00000007
+GIE                               00000007
 GIEH                              00000007
 GIEL                              00000006
 GIE_GIEH                          00000007
@@ -788,14 +757,14 @@ INT3                              00000003
 INT3E                             00000005
 INT3F                             00000002
 INT3IE                            00000005
-INT3IF                            00000002
-INT3IP                            00000001
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 15
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 14
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+INT3IF                            00000002
+INT3IP                            00000001
 INT3P                             00000001
 INTCON                            00000FF2
 INTCON2                           00000FF1
@@ -847,14 +816,14 @@ LATB5                             00000005
 LATB6                             00000006
 LATB7                             00000007
 LATC                              00000F8B
-LATC0                             00000000
-LATC1                             00000001
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 16
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 15
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+LATC0                             00000000
+LATC1                             00000001
 LATC2                             00000002
 LATC3                             00000003
 LATC4                             00000004
@@ -906,18 +875,20 @@ LATJ                              00000F91
 LATJ0                             00000000
 LATJ1                             00000001
 LATJ2                             00000002
-LATJ3                             00000003
-LATJ4                             00000004
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 17
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 16
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+LATJ3                             00000003
+LATJ4                             00000004
 LATJ5                             00000005
 LATJ6                             00000006
 LATJ7                             00000007
 LB                                00000006
+LCD_Clear_Display                 00000000
+LFSRCounter                       00000000
 LVDIE                             00000002
 LVDIF                             00000002
 LVDIP                             00000002
@@ -963,16 +934,16 @@ OBF                               00000006
 ODCON1                            00000F29
 ODCON2                            00000F28
 ODCON3                            00000F27
-OE                                00000001
-OERR                              00000001
-OERR1                             00000001
-OERR2                             00000001
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 18
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 17
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+OE                                00000001
+OERR                              00000001
+OERR1                             00000001
+OERR2                             00000001
 OSC1                              00000007
 OSC2                              00000006
 OSCCON                            00000FD3
@@ -1022,16 +993,16 @@ P3DC4                             00000004
 P3DC5                             00000005
 P3DC6                             00000006
 P3M0                              00000006
-P3M1                              00000007
-P3RSEN                            00000007
-PA3                               00000000
-PADCFG1                           00000F53
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 19
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 18
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+P3M1                              00000007
+P3RSEN                            00000007
+PA3                               00000000
+PADCFG1                           00000F53
 PB1                               00000007
 PB3                               00000005
 PC                                00000FF9
@@ -1081,16 +1052,16 @@ PORTH                             00000F87
 PORTJ                             00000F88
 POSTDEC0                          00000FED
 POSTDEC1                          00000FE5
-POSTDEC2                          00000FDD
-POSTINC0                          00000FEE
-POSTINC1                          00000FE6
-POSTINC2                          00000FDE
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 20
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 19
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+POSTDEC2                          00000FDD
+POSTINC0                          00000FEE
+POSTINC1                          00000FE6
+POSTINC2                          00000FDE
 PR10                              00000F34
 PR12                              00000F31
 PR2                               00000FCB
@@ -1140,16 +1111,16 @@ RA0                               00000000
 RA1                               00000001
 RA2                               00000002
 RA3                               00000003
-RA4                               00000004
-RA5                               00000005
-RA6                               00000006
-RA7                               00000007
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 21
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 20
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+RA4                               00000004
+RA5                               00000005
+RA6                               00000006
+RA7                               00000007
 RB0                               00000000
 RB1                               00000001
 RB2                               00000002
@@ -1199,16 +1170,16 @@ RD2                               00000002
 RD3                               00000003
 RD4                               00000004
 RD5                               00000005
-RD6                               00000006
-RD7                               00000007
-RDPU                              00000007
-RE0                               00000000
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 22
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 21
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+RD6                               00000006
+RD7                               00000007
+RDPU                              00000007
+RE0                               00000000
 RE1                               00000001
 RE2                               00000002
 RE3                               00000003
@@ -1258,16 +1229,16 @@ RODIV2                            00000002
 RODIV3                            00000003
 ROON                              00000007
 ROSEL                             00000004
-ROSSLP                            00000005
-RSEN                              00000001
-RTCC                              00000004
-RTCCAL                            00000F5E
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 23
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 22
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+ROSSLP                            00000005
+RSEN                              00000001
+RTCC                              00000004
+RTCCAL                            00000F5E
 RTCCFG                            00000F5F
 RTCCIE                            00000000
 RTCCIF                            00000000
@@ -1317,16 +1288,16 @@ SENDB2                            00000003
 SMP                               00000007
 SOSCEN                            00000003
 SOSCGO                            00000003
-SOSCI                             00000001
-SOSCO                             00000000
-SOSCRUN                           00000006
-SP0                               00000000
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 24
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 23
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+SOSCI                             00000001
+SOSCO                             00000000
+SOSCRUN                           00000006
+SP0                               00000000
 SP1                               00000001
 SP2                               00000002
 SP3                               00000003
@@ -1376,16 +1347,16 @@ SSPIF                             00000003
 SSPIP                             00000003
 SSPM0                             00000000
 SSPM1                             00000001
-SSPM2                             00000002
-SSPM3                             00000003
-SSPOV                             00000006
-SSPSTAT                           00000FC7
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 25
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 24
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+SSPM2                             00000002
+SSPM3                             00000003
+SSPOV                             00000006
+SSPSTAT                           00000FC7
 STATUS                            00000FD8
 STKFUL                            00000007
 STKOVF                            00000007
@@ -1435,16 +1406,16 @@ T1GCON                            00000FAA
 T1GGO                             00000003
 T1GGO_NOT_T1DONE                  00000003
 T1GPOL                            00000006
-T1GSPM                            00000004
-T1GSS0                            00000000
-T1GSS1                            00000001
-T1GTM                             00000005
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 26
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 25
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+T1GSPM                            00000004
+T1GSS0                            00000000
+T1GSS1                            00000001
+T1GTM                             00000005
 T1GVAL                            00000002
 T2CKPS0                           00000000
 T2CKPS1                           00000001
@@ -1494,16 +1465,16 @@ T6CON                             00000F39
 T6OUTPS0                          00000003
 T6OUTPS1                          00000004
 T6OUTPS2                          00000005
-T6OUTPS3                          00000006
-T7CKI                             00000004
-T7CKPS0                           00000004
-T7CKPS1                           00000005
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 27
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 26
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+T6OUTPS3                          00000006
+T7CKI                             00000004
+T7CKPS0                           00000004
+T7CKPS1                           00000005
 T7CON                             00000F3D
 T7G                               00000001
 T7GCON                            00000F3C
@@ -1553,16 +1524,16 @@ TMR1CS1                           00000007
 TMR1GE                            00000007
 TMR1GIE                           00000002
 TMR1GIF                           00000002
-TMR1GIP                           00000002
-TMR1H                             00000FCF
-TMR1IE                            00000000
-TMR1IF                            00000000
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 28
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 27
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TMR1GIP                           00000002
+TMR1H                             00000FCF
+TMR1IE                            00000000
+TMR1IF                            00000000
 TMR1IP                            00000000
 TMR1L                             00000FCE
 TMR1MD                            00000001
@@ -1612,16 +1583,16 @@ TMR6IE                            00000002
 TMR6IF                            00000002
 TMR6IP                            00000002
 TMR6MD                            00000004
-TMR6ON                            00000002
-TMR7                              00000F3E
-TMR7CS0                           00000006
-TMR7CS1                           00000007
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 29
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 28
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TMR6ON                            00000002
+TMR7                              00000F3E
+TMR7CS0                           00000006
+TMR7CS1                           00000007
 TMR7GE                            00000007
 TMR7GIE                           00000007
 TMR7GIF                           00000007
@@ -1671,16 +1642,16 @@ TRISC2                            00000002
 TRISC3                            00000003
 TRISC4                            00000004
 TRISC5                            00000005
-TRISC6                            00000006
-TRISC7                            00000007
-TRISD                             00000F95
-TRISD0                            00000000
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 30
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 29
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000F95
+TRISD0                            00000000
 TRISD1                            00000001
 TRISD2                            00000002
 TRISD3                            00000003
@@ -1730,16 +1701,16 @@ TRISJ5                            00000005
 TRISJ6                            00000006
 TRISJ7                            00000007
 TRMT                              00000001
-TRMT1                             00000001
-TRMT2                             00000001
-TUN0                              00000000
-TUN1                              00000001
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 31
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 30
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TRMT1                             00000001
+TRMT2                             00000001
+TUN0                              00000000
+TUN1                              00000001
 TUN2                              00000002
 TUN3                              00000003
 TUN4                              00000004
@@ -1789,16 +1760,16 @@ VDIRMAG                           00000007
 VNCFG                             00000003
 VREF_MINUS                        00000002
 VREF_PLUS                         00000003
-W                                 00000000
-WAIT0                             00000004
-WAIT1                             00000005
-WCOL                              00000007
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 32
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 31
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+W                                 00000000
+WAIT0                             00000004
+WAIT1                             00000005
+WCOL                              00000007
 WDTCON                            00000FD1
 WM0                               00000000
 WM1                               00000001
@@ -1848,16 +1819,16 @@ _CONFIG7L                         0030000C
 _CP0_OFF_5L                       000000FF
 _CP0_ON_5L                        000000FE
 _CP1_OFF_5L                       000000FF
-_CP1_ON_5L                        000000FD
-_CP2_OFF_5L                       000000FF
-_CP2_ON_5L                        000000FB
-_CP3_OFF_5L                       000000FF
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 33
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 32
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_CP1_ON_5L                        000000FD
+_CP2_OFF_5L                       000000FF
+_CP2_ON_5L                        000000FB
+_CP3_OFF_5L                       000000FF
 _CP3_ON_5L                        000000F7
 _CP4_OFF_5L                       000000FF
 _CP4_ON_5L                        000000EF
@@ -1907,16 +1878,16 @@ _FOSC_EC3IO_1H                    000000F4
 _FOSC_EC3_1H                      000000F5
 _FOSC_HS1_1H                      000000F3
 _FOSC_HS2_1H                      000000F2
-_FOSC_INTIO1_1H                   000000F9
-_FOSC_INTIO2_1H                   000000F8
-_FOSC_LP_1H                       000000F0
-_FOSC_RCIO_1H                     000000F7
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 34
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 33
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_FOSC_INTIO1_1H                   000000F9
+_FOSC_INTIO2_1H                   000000F8
+_FOSC_LP_1H                       000000F0
+_FOSC_RCIO_1H                     000000F7
 _FOSC_RC_1H                       000000F6
 _FOSC_XT_1H                       000000F1
 _IDLOC0                           00200000
@@ -1966,16 +1937,16 @@ _WDTPS_256_2H                     000000A3
 _WDTPS_262144_2H                  000000CB
 _WDTPS_2_2H                       00000087
 _WDTPS_32768_2H                   000000BF
-_WDTPS_32_2H                      00000097
-_WDTPS_4096_2H                    000000B3
-_WDTPS_4_2H                       0000008B
-_WDTPS_512_2H                     000000A7
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 35
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 34
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_WDTPS_32_2H                      00000097
+_WDTPS_4096_2H                    000000B3
+_WDTPS_4_2H                       0000008B
+_WDTPS_512_2H                     000000A7
 _WDTPS_524288_2H                  000000CF
 _WDTPS_64_2H                      0000009B
 _WDTPS_65536_2H                   000000C3
@@ -2006,37 +1977,48 @@ _WRTD_ON_6H                       0000007F
 _XINST_OFF_1L                     000000BF
 _XINST_ON_1L                      000000FF
 __18F87K22                        00000001
-allLEDS                           00000060
-bigdelay                          0000007C
-blue                              00000007
-compare                           0000003C
+__DEBUG                           
+__MPLAB_DEBUGGER_ICD3             1
+allLEDS                           00000000
+bigdelay                          00000000
+countdown                         00000003
 d0                                00000000
 d1                                00000001
 d2                                00000002
-delay                             000000A8
-delay1                            000000B2
-delay2                            000000BC
-flashcounter                      00000004
-flashdelay                        00000098
-lildelay                          0000008A
-meddelay                          0000006E
-read                              00000016
-red                               00000006
-sequence                          00000000
+errormess                         00000096
+failure                           00000000
+flashcounter                      00000000
+greeting                          00000000
+int_on                            00000000
+keypadloop                        00000000
+keypadsetup                       00000000
+leave                             0000007A
+level                             0000002A
+levelmessage                      00000000
+load                              00000000
+MPASM 5.81                          MAIN.ASM   2-24-2020  16:09:41         PAGE 35
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+meddelay                          00000000
+nextlevel                         00000044
+no_buttons                        00000004
+playagain                         00000000
+read                              00000000
+readinput                         00000000
+sequence                          00000005
 setflash                          00000000
-signal                            00000005
-variabledelay                     00000003
-violet                            00000008
-yellow                            00000009
-
-MPASM 5.81                     FLASH_SEQ.ASM   2-24-2020  16:09:30         PAGE 36
-
-
-
-
+setlfsr                           00000000
+setup                             00000000
+shiftregister                     00000000
+start                             00000000
+toolate                           00000000
+variabledelay                     00000000
 
 Errors   :     0
-Warnings :     2 reported,     0 suppressed
+Warnings :     0 reported,     0 suppressed
 Messages :     0 reported,     0 suppressed
 
 

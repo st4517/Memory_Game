@@ -29,14 +29,14 @@ pdata	code    ; a section of programme memory for storing data
 initial data	    "Press any key\n"	; message, plus carriage return
 	constant greet_len = .14
 	
-wrong	data	    "lol thats wrong\n"	; message, plus carriage return
-	constant wrong_len = .16
+wrong	data	    "WRONG! GAME OVER\n"	; message, plus carriage return
+	constant wrong_len = .17
 	
 next	data	    "Next level\n"
 	constant next_len = .11
 	
-late	data	    "too late m8\n"
-	constant late_len = .12
+late	data	    "Took too long\n"
+	constant late_len = .14
 	
 restart data	    "Press to restart\n"	; message, plus carriage return
 	constant again_len = .17

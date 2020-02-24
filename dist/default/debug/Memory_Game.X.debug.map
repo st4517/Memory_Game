@@ -1,5 +1,5 @@
 MPLINK 5.09, LINKER
-Linker Map File - Created Mon Feb 24 16:09:33 2020
+Linker Map File - Created Mon Feb 24 16:16:42 2020
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
@@ -15,19 +15,19 @@ Linker Map File - Created Mon Feb 24 16:09:33 2020
                     pdata       code   0x000454    program   0x00004c
                       adc       code   0x0004a0    program   0x000032
                 interrupt       code   0x0004d2    program   0x00000a
-.config_300000_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300000    program   0x000001
-.config_300001_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300001    program   0x000001
-.config_300002_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300002    program   0x000001
-.config_300003_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300003    program   0x000001
-.config_300004_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300004    program   0x000001
-.config_300005_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300005    program   0x000001
-.config_300006_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300006    program   0x000001
-.config_300008_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300008    program   0x000001
-.config_300009_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x300009    program   0x000001
-.config_30000A_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x30000a    program   0x000001
-.config_30000B_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x30000b    program   0x000001
-.config_30000C_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x30000c    program   0x000001
-.config_30000D_BUILD/DEFAULT/PRODUCTION/CONFIG.    romdata   0x30000d    program   0x000001
+.config_300000_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300000    program   0x000001
+.config_300001_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300001    program   0x000001
+.config_300002_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300002    program   0x000001
+.config_300003_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300003    program   0x000001
+.config_300004_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300004    program   0x000001
+.config_300005_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300005    program   0x000001
+.config_300006_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300006    program   0x000001
+.config_300008_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300008    program   0x000001
+.config_300009_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x300009    program   0x000001
+.config_30000A_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x30000a    program   0x000001
+.config_30000B_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x30000b    program   0x000001
+.config_30000C_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x30000c    program   0x000001
+.config_30000D_BUILD/DEFAULT/DEBUG/CONFIG.O    romdata   0x30000d    program   0x000001
                      acs0      udata   0x000000       data   0x00002d
                    tables      udata   0x000400       data   0x000080
 
@@ -47,6 +47,7 @@ Linker Map File - Created Mon Feb 24 16:09:33 2020
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
+                        .   0x000350    program     static H:\Year3\Microprocessors\Memory_Game.X\keypad.asm
                  ADC_Read   0x0004b2    program     extern H:\Year3\Microprocessors\Memory_Game.X\ADC.asm
                  ADCsetup   0x0004a0    program     extern H:\Year3\Microprocessors\Memory_Game.X\ADC.asm
         LCD_Clear_Display   0x0001d4    program     extern H:\Year3\Microprocessors\Memory_Game.X\LCD.asm
@@ -177,6 +178,7 @@ Linker Map File - Created Mon Feb 24 16:09:33 2020
                    delay2   0x00033a    program     static H:\Year3\Microprocessors\Memory_Game.X\Flash_Seq.asm
               keypadsetup   0x000340    program     extern H:\Year3\Microprocessors\Memory_Game.X\keypad.asm
                keypadloop   0x000350    program     extern H:\Year3\Microprocessors\Memory_Game.X\keypad.asm
+                        .   0x000350    program     static H:\Year3\Microprocessors\Memory_Game.X\keypad.asm
                 readinput   0x000364    program     extern H:\Year3\Microprocessors\Memory_Game.X\keypad.asm
                       red   0x000386    program     static H:\Year3\Microprocessors\Memory_Game.X\keypad.asm
                      blue   0x0003a2    program     static H:\Year3\Microprocessors\Memory_Game.X\keypad.asm

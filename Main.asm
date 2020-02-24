@@ -13,9 +13,10 @@ sequence	res 1
 	extern  LCD_Clear_Display	      
 	extern	setup, greeting, failure,levelmessage, toolate, playagain
 	extern	setlfsr, load, LFSRCounter, shiftregister
-	extern	setflash, flashcounter, read, meddelay, bigdelay, allLEDS
+	extern	setflash, flashcounter, read, meddelay, bigdelay, allLEDS,variabledelay
 	extern	keypadsetup, keypadloop, readinput
 	extern	int_on
+	extern	ADCsetup, ADC_Read
 	global	leave, nextlevel, no_buttons, countdown, sequence, errormess
 	
 
@@ -29,18 +30,21 @@ main	code
 start	call	setup		    ;LCD setup
 	call	setflash	    ;LED setup
 	call	keypadsetup	    ;keypad setup
+	call	ADCsetup
 	call	greeting	    ;displays 'Press any key'
 	call	meddelay	    ;medium delay
 	call	keypadloop	    ;waits until key is pressed
 	call	setlfsr		    ;LFSR setup
 	call	LCD_Clear_Display
-	call	meddelay
+	call	bigdelay
 	bcf	INTCON,GIE	    ; Disable all interrupts
 
 	
 
 level	call	load		    ;produces and stores random sequence
 	clrf	flashcounter	    ;
+	call	ADC_Read
+	movwf	variabledelay
 	call	read		    ;flashes sequence
 	call	int_on		    ;enables timer interrupts
 	clrf	no_buttons
@@ -66,11 +70,15 @@ nextlevel
 	goto	level
 	
 leave	call	toolate
-	goto $
-	
+	call	bigdelay
+	call	LCD_Clear_Display
+	call	playagain
+	call	meddelay	    ;medium delay
+	call	keypadloop	    ;waits until key is pressed
+	goto	start
 	
 errormess   call failure
-	call	meddelay
+	call	bigdelay
 	call	LCD_Clear_Display
 	call	playagain
 	call	meddelay	    ;medium delay
