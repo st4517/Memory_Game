@@ -12,8 +12,8 @@ random	res 1	;random number produced
 LFSRCounter res 1   ;sequence length
 seed	res 1
       
-global setlfsr, load, LFSRCounter
-extern	sequence, shiftregister
+global setlfsr, load, LFSRCounter, shiftregister
+extern	sequence
 
 random	code
 
@@ -69,6 +69,6 @@ shift	movlw	0x01
 	tstfsz	WREG
 	bsf	STATUS, C
 	rrcf	shiftregister
-	bra	test
+	bra	shift
 	
 	end
