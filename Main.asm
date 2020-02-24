@@ -11,12 +11,12 @@ sequence	res 1
 	
 
 	extern  LCD_Clear_Display	      
-	extern	setup, greeting, failure,levelmessage, toolate
-	extern	setlfsr, load, LFSRCounter
-	extern	setflash, flashcounter, read, meddelay, bigdelay
+	extern	setup, greeting, failure,levelmessage, toolate, playagain
+	extern	setlfsr, load, LFSRCounter, shiftregister
+	extern	setflash, flashcounter, read, meddelay, bigdelay, allLEDS
 	extern	keypadsetup, keypadloop, readinput
 	extern	int_on
-	global	leave, nextlevel, no_buttons, countdown, sequence
+	global	leave, nextlevel, no_buttons, countdown, sequence, errormess
 	
 
 rst	code	0						 ;reset vector
@@ -49,6 +49,15 @@ level	call	load		    ;produces and stores random sequence
 	
 nextlevel
 	call	levelmessage	    ;displays next level
+	call	meddelay
+	call	LCD_Clear_Display
+	call	greeting	    ;displays 'Press any key'
+	call	meddelay	    ;medium delay
+	call	keypadloop	    ;waits until key is pressed
+	movlw	0x0F		    ;ensures seed is not 0000
+	cpfsgt	shiftregister
+	setf	shiftregister
+	call	LCD_Clear_Display
 	incf	sequence, 1,0	    ;increases sequence length
 	lfsr	FSR1, 0x140
 	clrf	countdown
@@ -59,4 +68,13 @@ nextlevel
 leave	call	toolate
 	goto $
 	
+	
+errormess   call failure
+	call	meddelay
+	call	LCD_Clear_Display
+	call	playagain
+	call	meddelay	    ;medium delay
+	call	keypadloop	    ;waits until key is pressed
+	goto	start
+
 	end

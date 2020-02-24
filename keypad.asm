@@ -4,7 +4,7 @@ acs0    udata_acs				; named variables in access ram
 
 	
 global	keypadsetup, keypadloop	, readinput
-extern	leave, nextlevel, no_buttons, sequence, countdown, lildelay, failure, shiftregister
+extern	leave, nextlevel, no_buttons, sequence, countdown, lildelay, failure, shiftregister, errormess
  
 	
 	
@@ -99,8 +99,7 @@ check	cpfseq	POSTINC1
 	incf	no_buttons	    ;posssibly include success message here
 	return
 	
-errormess   call failure
-	goto $
+
 
 	
 

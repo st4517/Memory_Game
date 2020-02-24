@@ -1,4 +1,4 @@
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE  1
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -8,10 +8,10 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00001         LIST
                       00002 
                       00003 ;==========================================================================
-                      00004 ; Build date : Oct 24 2019
+                      00004 ; Build date : Jul 23 2018
                       00005 ;  MPASM PIC18F87K22 processor include
                       00006 ; 
-                      00007 ;  (c) Copyright 1999-2019 Microchip Technology, All rights reserved
+                      00007 ;  (c) Copyright 1999-2018 Microchip Technology, All rights reserved
                       00008 ;==========================================================================
                       00009 
                       02986         LIST
@@ -23,131 +23,151 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
   0000                00007         global setup
   0000                00008         global levelmessage     
   0000                00009         global toolate
-                      00010         
-                      00011 acs0    udata_acs   ; reserve data space in access ram
-000000                00012 counter     res 1   ; reserve one byte for a counter variable
-000001                00013 delay_count res 1   ; reserve one byte for counter in the delay routine
-000002                00014 message     res 10
-000012                00015 length  res 1
-                      00016  
-                      00017 tables  udata   0x400             ; reserve data anywhere in RAM (here at 0x400)
-000400                00018 TextLocation res 0x80             ; reserve 128 bytes for message data
-                      00019 
-                      00020  
-                      00021 
-                      00022 ;rst    code    0    ; reset vector
-                      00023         ;goto   setup
-                      00024 
-                      00025 pdata   code    ; a section of programme memory for storing data
-                      00026         
+  0000                00010         global playagain
+                      00011         
+                      00012 acs0    udata_acs   ; reserve data space in access ram
+000000                00013 counter     res 1   ; reserve one byte for a counter variable
+000001                00014 delay_count res 1   ; reserve one byte for counter in the delay routine
+000002                00015 message     res 10
+000012                00016 length  res 1
+                      00017  
+                      00018 tables  udata   0x400             ; reserve data anywhere in RAM (here at 0x400)
+000400                00019 TextLocation res 0x80             ; reserve 128 bytes for message data
+                      00020 
+                      00021  
+                      00022 
+                      00023 ;rst    code    0    ; reset vector
+                      00024         ;goto   setup
+                      00025 
+                      00026 pdata   code    ; a section of programme memory for storing data
                       00027         
-000000 7250 7365 2073 00028 initial data        "Press any key\n"   ; message, plus carriage return
+                      00028         
+000000 7250 7365 2073 00029 initial data        "Press any key\n"   ; message, plus carriage return
        6E61 2079 656B 
        0A79 
-  000E                00029         constant greet_len = .14
-                      00030         
-00000E 6F6C 206C 6874 00031 wrong   data        "lol thats wrong\n" ; message, plus carriage return
+  000E                00030         constant greet_len = .14
+                      00031         
+00000E 6F6C 206C 6874 00032 wrong   data        "lol thats wrong\n" ; message, plus carriage return
        7461 2073 7277 
        6E6F 0A67 
-  0010                00032         constant wrong_len = .16
-                      00033         
-00001E 654E 7478 6C20 00034 next    data        "Next level\n"
+  0010                00033         constant wrong_len = .16
+                      00034         
+00001E 654E 7478 6C20 00035 next    data        "Next level\n"
        7665 6C65 000A 
-  000B                00035         constant next_len = .11
-                      00036         
-00002A 6F74 206F 616C 00037 late    data        "too late m8\n"
+  000B                00036         constant next_len = .11
+                      00037         
+00002A 6F74 206F 616C 00038 late    data        "too late m8\n"
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
        6574 6D20 0A38 
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE  2
+  000C                00039         constant late_len = .12
+                      00040         
+000036 7250 7365 2073 00041 restart data        "Press to restart\n"        ; message, plus carriage return
+       6F74 7220 7365 
+       6174 7472 000A 
+  0011                00042         constant again_len = .17
+                      00043         
+                      00044 main    code
+                      00045         
+                      00046         
+                      00047         ; ******* Programme FLASH read Setup Code ***********************
+000000 9C7F           00048 setup   bcf     EECON1, CFGS    ; point to Flash program memory  
+000002 8E7F           00049         bsf     EECON1, EEPGD   ; access Flash program memory
+000004 EC?? F???      00050         call    LCD_Setup       ; setup LCD
+000008 0012           00051         return
+                      00052         ;goto   start
+                      00053         
+                      00054         ; ******* Main programme ****************************************
+00000A EE?? F0??      00055 greeting        lfsr    FSR0, TextLocation      ; Load FSR0 with address in RAM
+00000E 0E0E           00056                 movlw   greet_len
+000010 6E??           00057                 movwf   length              ;length of data
+000012 0E??           00058                 movlw   upper(initial)  ; address of data in PM
+000014 6EF8           00059                 movwf   TBLPTRU         ; load upper bits to TBLPTRU
+000016 0E??           00060                 movlw   high(initial)   ; address of data in PM
+000018 6EF7           00061                 movwf   TBLPTRH         ; load high byte to TBLPTRH
+00001A 0E??           00062                 movlw   low(initial)    ; address of data in PM
+00001C 6EF6           00063                 movwf   TBLPTRL         ; load low byte to TBLPTRL
+00001E C??? F???      00064                 movff   length, counter
+000022 EC?? F???      00065                 call    loop
+000026 0012           00066                 return
+                      00067                 
+000028 EE?? F0??      00068 failure         lfsr    FSR0, TextLocation      ; Load FSR0 with address in RAM
+00002C 0E10           00069                 movlw   wrong_len
+00002E 6E??           00070                 movwf   length
+000030 0E??           00071                 movlw   upper(wrong)    ; address of data in PM
+000032 6EF8           00072                 movwf   TBLPTRU         ; load upper bits to TBLPTRU
+000034 0E??           00073                 movlw   high(wrong)     ; address of data in PM
+000036 6EF7           00074                 movwf   TBLPTRH         ; load high byte to TBLPTRH
+000038 0E??           00075                 movlw   low(wrong)      ; address of data in PM
+00003A 6EF6           00076                 movwf   TBLPTRL         ; load low byte to TBLPTRL
+00003C C??? F???      00077                 movff   length, counter
+000040 EC?? F???      00078                 call    loop
+000044 0012           00079                 return
+                      00080                 
+000046 EE?? F0??      00081 levelmessage    lfsr    FSR0, TextLocation      ; Load FSR0 with address in RAM
+00004A 0E0B           00082                 movlw   next_len
+00004C 6E??           00083                 movwf   length
+00004E 0E??           00084                 movlw   upper(next)     ; address of data in PM
+000050 6EF8           00085                 movwf   TBLPTRU         ; load upper bits to TBLPTRU
+000052 0E??           00086                 movlw   high(next)      ; address of data in PM
+000054 6EF7           00087                 movwf   TBLPTRH         ; load high byte to TBLPTRH
+000056 0E??           00088                 movlw   low(next)       ; address of data in PM
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-  000C                00038         constant late_len = .12
-                      00039         
-                      00040 main    code
-                      00041         
-                      00042         
-                      00043         ; ******* Programme FLASH read Setup Code ***********************
-000000 9C7F           00044 setup   bcf     EECON1, CFGS    ; point to Flash program memory  
-000002 8E7F           00045         bsf     EECON1, EEPGD   ; access Flash program memory
-000004 EC?? F???      00046         call    LCD_Setup       ; setup LCD
-000008 0012           00047         return
-                      00048         ;goto   start
-                      00049         
-                      00050         ; ******* Main programme ****************************************
-00000A EE?? F0??      00051 greeting        lfsr    FSR0, TextLocation      ; Load FSR0 with address in RAM
-00000E 0E0E           00052                 movlw   greet_len
-000010 6E??           00053                 movwf   length              ;length of data
-000012 0E??           00054                 movlw   upper(initial)  ; address of data in PM
-000014 6EF8           00055                 movwf   TBLPTRU         ; load upper bits to TBLPTRU
-000016 0E??           00056                 movlw   high(initial)   ; address of data in PM
-000018 6EF7           00057                 movwf   TBLPTRH         ; load high byte to TBLPTRH
-00001A 0E??           00058                 movlw   low(initial)    ; address of data in PM
-00001C 6EF6           00059                 movwf   TBLPTRL         ; load low byte to TBLPTRL
-00001E C??? F???      00060                 movff   length, counter
-000022 EC?? F???      00061                 call    loop
-000026 0012           00062                 return
-                      00063                 
-000028 EE?? F0??      00064 failure         lfsr    FSR0, TextLocation      ; Load FSR0 with address in RAM
-00002C 0E10           00065                 movlw   wrong_len
-00002E 6E??           00066                 movwf   length
-000030 0E??           00067                 movlw   upper(wrong)    ; address of data in PM
-000032 6EF8           00068                 movwf   TBLPTRU         ; load upper bits to TBLPTRU
-000034 0E??           00069                 movlw   high(wrong)     ; address of data in PM
-000036 6EF7           00070                 movwf   TBLPTRH         ; load high byte to TBLPTRH
-000038 0E??           00071                 movlw   low(wrong)      ; address of data in PM
-00003A 6EF6           00072                 movwf   TBLPTRL         ; load low byte to TBLPTRL
-00003C C??? F???      00073                 movff   length, counter
-000040 EC?? F???      00074                 call    loop
-000044 0012           00075                 return
-                      00076                 
-000046 EE?? F0??      00077 levelmessage    lfsr    FSR0, TextLocation      ; Load FSR0 with address in RAM
-00004A 0E0B           00078                 movlw   next_len
-00004C 6E??           00079                 movwf   length
-00004E 0E??           00080                 movlw   upper(next)     ; address of data in PM
-000050 6EF8           00081                 movwf   TBLPTRU         ; load upper bits to TBLPTRU
-000052 0E??           00082                 movlw   high(next)      ; address of data in PM
-000054 6EF7           00083                 movwf   TBLPTRH         ; load high byte to TBLPTRH
-000056 0E??           00084                 movlw   low(next)       ; address of data in PM
-000058 6EF6           00085                 movwf   TBLPTRL         ; load low byte to TBLPTRL
-00005A C??? F???      00086                 movff   length, counter
-00005E EC?? F???      00087                 call    loop
-000062 0012           00088                 return
-                      00089                 
-000064 EE?? F0??      00090 toolate lfsr    FSR0, TextLocation      ; Load FSR0 with address in RAM
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE  3
-
-
-LOC  OBJECT CODE     LINE SOURCE TEXT
-  VALUE
-
-000068 0E0C           00091                 movlw   late_len
-00006A 6E??           00092                 movwf   length
-00006C 0E??           00093                 movlw   upper(late)     ; address of data in PM
-00006E 6EF8           00094                 movwf   TBLPTRU         ; load upper bits to TBLPTRU
-000070 0E??           00095                 movlw   high(late)      ; address of data in PM
-000072 6EF7           00096                 movwf   TBLPTRH         ; load high byte to TBLPTRH
-000074 0E??           00097                 movlw   low(late)       ; address of data in PM
-000076 6EF6           00098                 movwf   TBLPTRL         ; load low byte to TBLPTRL
-000078 C??? F???      00099                 movff   length, counter
-00007C EC?? F???      00100                 call    loop
-000080 0012           00101                 return
-000082 0009           00102 loop    tblrd*+                 ; one byte from PM to TABLA increment TBLPRT
-000084 CFF5 FFEE      00103         movff   TABLAT, POSTINC0; move data from TABLAT to (FSR0), inc FSR0     
-000088 2E??           00104         decfsz  counter         ; count down to zero
-00008A D???           00105         bra     loop            ; keep going until finished
-                      00106                         
-00008C C??? FFE8      00107         movff   length, WREG    ; output message to LCD (leave out "\n")
-000090 06E8           00108         decf    WREG
-000092 EE?? F0??      00109         lfsr    FSR2, TextLocation
-000096 EC?? F???      00110         call    LCD_Write_Message
-                      00111         
-00009A 0012           00112         return
-                      00113 
-                      00114         
-                      00115         end
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE  4
+000058 6EF6           00089                 movwf   TBLPTRL         ; load low byte to TBLPTRL
+00005A C??? F???      00090                 movff   length, counter
+00005E EC?? F???      00091                 call    loop
+000062 0012           00092                 return
+                      00093                 
+000064 EE?? F0??      00094 toolate lfsr    FSR0, TextLocation      ; Load FSR0 with address in RAM
+000068 0E0C           00095                 movlw   late_len
+00006A 6E??           00096                 movwf   length
+00006C 0E??           00097                 movlw   upper(late)     ; address of data in PM
+00006E 6EF8           00098                 movwf   TBLPTRU         ; load upper bits to TBLPTRU
+000070 0E??           00099                 movlw   high(late)      ; address of data in PM
+000072 6EF7           00100                 movwf   TBLPTRH         ; load high byte to TBLPTRH
+000074 0E??           00101                 movlw   low(late)       ; address of data in PM
+000076 6EF6           00102                 movwf   TBLPTRL         ; load low byte to TBLPTRL
+000078 C??? F???      00103                 movff   length, counter
+00007C EC?? F???      00104                 call    loop
+000080 0012           00105                 return
+                      00106                 
+000082 EE?? F0??      00107 playagain       lfsr    FSR0, TextLocation      ; Load FSR0 with address in RAM
+000086 0E11           00108                 movlw   again_len
+000088 6E??           00109                 movwf   length
+00008A 0E??           00110                 movlw   upper(restart)  ; address of data in PM
+00008C 6EF8           00111                 movwf   TBLPTRU         ; load upper bits to TBLPTRU
+00008E 0E??           00112                 movlw   high(restart)   ; address of data in PM
+000090 6EF7           00113                 movwf   TBLPTRH         ; load high byte to TBLPTRH
+000092 0E??           00114                 movlw   low(restart)    ; address of data in PM
+000094 6EF6           00115                 movwf   TBLPTRL         ; load low byte to TBLPTRL
+000096 C??? F???      00116                 movff   length, counter
+00009A EC?? F???      00117                 call    loop
+00009E 0012           00118                 return
+                      00119                 
+0000A0 0009           00120 loop    tblrd*+                 ; one byte from PM to TABLA increment TBLPRT
+0000A2 CFF5 FFEE      00121         movff   TABLAT, POSTINC0; move data from TABLAT to (FSR0), inc FSR0     
+0000A6 2E??           00122         decfsz  counter         ; count down to zero
+0000A8 D???           00123         bra     loop            ; keep going until finished
+                      00124                         
+0000AA C??? FFE8      00125         movff   length, WREG    ; output message to LCD (leave out "\n")
+0000AE 06E8           00126         decf    WREG
+0000B0 EE?? F0??      00127         lfsr    FSR2, TextLocation
+0000B4 EC?? F???      00128         call    LCD_Write_Message
+                      00129         
+0000B8 0012           00130         return
+                      00131 
+                      00132         
+                      00133         end
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE  4
 
 
 SYMBOL TABLE
@@ -206,7 +226,7 @@ ADMSK5                            00000005
 ADON                              00000000
 ADRES                             00000FC3
 ADRESH                            00000FC4
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE  5
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE  5
 
 
 SYMBOL TABLE
@@ -265,7 +285,7 @@ ANSEL16                           00000000
 ANSEL17                           00000001
 ANSEL18                           00000002
 ANSEL19                           00000003
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE  6
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE  6
 
 
 SYMBOL TABLE
@@ -324,7 +344,7 @@ C1TSEL0                           00000000
 C1TSEL1                           00000001
 C1TSEL2                           00000002
 C2INA                             00000004
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE  7
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE  7
 
 
 SYMBOL TABLE
@@ -383,7 +403,7 @@ CCP1IP                            00000001
 CCP1M0                            00000000
 CCP1M1                            00000001
 CCP1M2                            00000002
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE  8
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE  8
 
 
 SYMBOL TABLE
@@ -442,7 +462,7 @@ CCP5M0                            00000000
 CCP5M1                            00000001
 CCP5M2                            00000002
 CCP5M3                            00000003
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE  9
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE  9
 
 
 SYMBOL TABLE
@@ -501,7 +521,7 @@ CCP9IP                            00000006
 CCP9M0                            00000000
 CCP9M1                            00000001
 CCP9M2                            00000002
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 10
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 10
 
 
 SYMBOL TABLE
@@ -560,7 +580,7 @@ CHSN1                             00000001
 CHSN2                             00000002
 CK1                               00000006
 CK2                               00000001
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 11
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 11
 
 
 SYMBOL TABLE
@@ -619,7 +639,7 @@ CTMUIE                            00000003
 CTMUIF                            00000003
 CTMUIP                            00000003
 CTMUMD                            00000006
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 12
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 12
 
 
 SYMBOL TABLE
@@ -678,7 +698,7 @@ ECCP1AS1                          00000005
 ECCP1AS2                          00000006
 ECCP1ASE                          00000007
 ECCP1CON                          00000FBB
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 13
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 13
 
 
 SYMBOL TABLE
@@ -737,7 +757,7 @@ FSR2H                             00000FDA
 FSR2L                             00000FD9
 GCEN                              00000007
 GIE                               00000007
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 14
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 14
 
 
 SYMBOL TABLE
@@ -796,7 +816,7 @@ INT3F                             00000002
 INT3IE                            00000005
 INT3IF                            00000002
 INT3IP                            00000001
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 15
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 15
 
 
 SYMBOL TABLE
@@ -855,7 +875,7 @@ LATB7                             00000007
 LATC                              00000F8B
 LATC0                             00000000
 LATC1                             00000001
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 16
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 16
 
 
 SYMBOL TABLE
@@ -914,7 +934,7 @@ LATJ1                             00000001
 LATJ2                             00000002
 LATJ3                             00000003
 LATJ4                             00000004
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 17
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 17
 
 
 SYMBOL TABLE
@@ -973,7 +993,7 @@ ODCON2                            00000F28
 ODCON3                            00000F27
 OE                                00000001
 OERR                              00000001
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 18
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 18
 
 
 SYMBOL TABLE
@@ -1032,7 +1052,7 @@ P3DC6                             00000006
 P3M0                              00000006
 P3M1                              00000007
 P3RSEN                            00000007
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 19
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 19
 
 
 SYMBOL TABLE
@@ -1091,7 +1111,7 @@ POSTDEC0                          00000FED
 POSTDEC1                          00000FE5
 POSTDEC2                          00000FDD
 POSTINC0                          00000FEE
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 20
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 20
 
 
 SYMBOL TABLE
@@ -1150,7 +1170,7 @@ RA2                               00000002
 RA3                               00000003
 RA4                               00000004
 RA5                               00000005
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 21
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 21
 
 
 SYMBOL TABLE
@@ -1209,7 +1229,7 @@ RD4                               00000004
 RD5                               00000005
 RD6                               00000006
 RD7                               00000007
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 22
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 22
 
 
 SYMBOL TABLE
@@ -1268,7 +1288,7 @@ ROON                              00000007
 ROSEL                             00000004
 ROSSLP                            00000005
 RSEN                              00000001
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 23
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 23
 
 
 SYMBOL TABLE
@@ -1327,7 +1347,7 @@ SOSCEN                            00000003
 SOSCGO                            00000003
 SOSCI                             00000001
 SOSCO                             00000000
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 24
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 24
 
 
 SYMBOL TABLE
@@ -1386,7 +1406,7 @@ SSPM0                             00000000
 SSPM1                             00000001
 SSPM2                             00000002
 SSPM3                             00000003
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 25
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 25
 
 
 SYMBOL TABLE
@@ -1445,7 +1465,7 @@ T1GGO_NOT_T1DONE                  00000003
 T1GPOL                            00000006
 T1GSPM                            00000004
 T1GSS0                            00000000
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 26
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 26
 
 
 SYMBOL TABLE
@@ -1504,7 +1524,7 @@ T6OUTPS1                          00000004
 T6OUTPS2                          00000005
 T6OUTPS3                          00000006
 T7CKI                             00000004
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 27
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 27
 
 
 SYMBOL TABLE
@@ -1563,7 +1583,7 @@ TMR1GIE                           00000002
 TMR1GIF                           00000002
 TMR1GIP                           00000002
 TMR1H                             00000FCF
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 28
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 28
 
 
 SYMBOL TABLE
@@ -1622,7 +1642,7 @@ TMR6IP                            00000002
 TMR6MD                            00000004
 TMR6ON                            00000002
 TMR7                              00000F3E
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 29
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 29
 
 
 SYMBOL TABLE
@@ -1681,7 +1701,7 @@ TRISC4                            00000004
 TRISC5                            00000005
 TRISC6                            00000006
 TRISC7                            00000007
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 30
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 30
 
 
 SYMBOL TABLE
@@ -1740,7 +1760,7 @@ TRISJ7                            00000007
 TRMT                              00000001
 TRMT1                             00000001
 TRMT2                             00000001
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 31
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 31
 
 
 SYMBOL TABLE
@@ -1799,7 +1819,7 @@ VNCFG                             00000003
 VREF_MINUS                        00000002
 VREF_PLUS                         00000003
 W                                 00000000
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 32
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 32
 
 
 SYMBOL TABLE
@@ -1858,7 +1878,7 @@ _CP0_OFF_5L                       000000FF
 _CP0_ON_5L                        000000FE
 _CP1_OFF_5L                       000000FF
 _CP1_ON_5L                        000000FD
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 33
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 33
 
 
 SYMBOL TABLE
@@ -1917,7 +1937,7 @@ _FOSC_EC3_1H                      000000F5
 _FOSC_HS1_1H                      000000F3
 _FOSC_HS2_1H                      000000F2
 _FOSC_INTIO1_1H                   000000F9
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 34
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 34
 
 
 SYMBOL TABLE
@@ -1976,7 +1996,7 @@ _WDTPS_262144_2H                  000000CB
 _WDTPS_2_2H                       00000087
 _WDTPS_32768_2H                   000000BF
 _WDTPS_32_2H                      00000097
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 35
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 35
 
 
 SYMBOL TABLE
@@ -2015,6 +2035,7 @@ _WRTD_ON_6H                       0000007F
 _XINST_OFF_1L                     000000BF
 _XINST_ON_1L                      000000FF
 __18F87K22                        00000001
+again_len                         00000011
 counter                           00000000
 delay_count                       00000001
 failure                           00000028
@@ -2025,20 +2046,22 @@ late                              0000002A
 late_len                          0000000C
 length                            00000012
 levelmessage                      00000046
-loop                              00000082
+loop                              000000A0
 message                           00000002
 next                              0000001E
 next_len                          0000000B
+playagain                         00000082
+restart                           00000036
 setup                             00000000
 toolate                           00000064
 wrong                             0000000E
+MPASM 5.81                  STARTMESSAGE.ASM   2-24-2020  11:45:40         PAGE 36
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 wrong_len                         00000010
-
-MPASM 5.86                  STARTMESSAGE.ASM   2-24-2020  9:58:06         PAGE 36
-
-
-
-
 
 Errors   :     0
 Warnings :     0 reported,     0 suppressed

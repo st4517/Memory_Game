@@ -7,6 +7,7 @@
 	global setup
 	global levelmessage	
 	global toolate
+	global playagain
 	
 acs0	udata_acs   ; reserve data space in access ram
 counter	    res 1   ; reserve one byte for a counter variable
@@ -36,6 +37,9 @@ next	data	    "Next level\n"
 	
 late	data	    "too late m8\n"
 	constant late_len = .12
+	
+restart data	    "Press to restart\n"	; message, plus carriage return
+	constant again_len = .17
 	
 main	code
 	
@@ -99,6 +103,20 @@ toolate	lfsr	FSR0, TextLocation	; Load FSR0 with address in RAM
 		movff	length, counter
 		call	loop
 		return
+		
+playagain	lfsr	FSR0, TextLocation	; Load FSR0 with address in RAM
+		movlw	again_len
+		movwf	length
+		movlw	upper(restart)	; address of data in PM
+		movwf	TBLPTRU		; load upper bits to TBLPTRU
+		movlw	high(restart)	; address of data in PM
+		movwf	TBLPTRH		; load high byte to TBLPTRH
+		movlw	low(restart)	; address of data in PM
+		movwf	TBLPTRL		; load low byte to TBLPTRL
+		movff	length, counter
+		call	loop
+		return
+		
 loop 	tblrd*+			; one byte from PM to TABLA increment TBLPRT
 	movff	TABLAT, POSTINC0; move data from TABLAT to (FSR0), inc FSR0	
 	decfsz	counter		; count down to zero

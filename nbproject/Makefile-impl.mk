@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Memory_Game
+PROJECTNAME=Memory_Game.X
 
 # Active Configuration
 DEFAULTCONF=default

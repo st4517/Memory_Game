@@ -69,6 +69,6 @@ shift	movlw	0x01
 	tstfsz	WREG
 	bsf	STATUS, C
 	rrcf	shiftregister
-	bra	shift
+	return
 	
 	end

@@ -11,7 +11,7 @@ blue  res 1
 violet	res 1
 yellow	res 1
 	
-global	read, setflash, flashcounter, meddelay, lildelay, bigdelay
+global	read, setflash, flashcounter, meddelay, lildelay, bigdelay, allLEDS
 extern	sequence
 
 
@@ -19,6 +19,7 @@ flash   code
    
    
 setflash clrf	TRISD	;PORTD all outputs
+	clrf	PORTD
 	movlw	0x01
 	movwf	red
 	movlw	0x02
@@ -63,6 +64,7 @@ allLEDS movlw	0x00
 	movlw	0x0F
 	movwf	PORTD, ACCESS	
 	movff	POSTINC1,W
+	return
 	;goto	interpret	
 	
 meddelay movlw 0x40	;sets delay time
