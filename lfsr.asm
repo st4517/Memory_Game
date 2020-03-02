@@ -2,43 +2,34 @@
 
 acs0    udata_acs   ; named variables in access ram           
 
-;s0  res 1   ; bits for LFSR
-;s1  res 1
-;s2  res 1
-;s3  res 1
-shiftregister	res 1
-temp	res 1
-random	res 1	;random number produced
-LFSRCounter res 1   ;sequence length
-seed	res 1
+shiftregister	res 1				    ;simulates the LFSR
+temp		res 1				    ;temporary variable
+random		res 1				    ;random number produced
+LFSRCounter	res 1				    ;sequence length
+seed		res 1
       
 global setlfsr, load, LFSRCounter, shiftregister
-extern	sequence
+extern sequence
 
 random	code
 
-setlfsr ;movlw	0x01		    ;inputs seed
-;	movwf	s0
-;	movwf	s1
-;       movwf	s2
-;       movwf	
-        clrf	LFSRCounter
+setlfsr clrf	LFSRCounter	    ;resets counter
         lfsr	FSR1, 0x140	    ;sets FSR1
 	movlw	0x04
-	movwf	sequence
+	movwf	sequence	    ;sets initial sequence length to 4
 	movlw	0x0F
-	cpfsgt	shiftregister
-	setf	shiftregister
+	cpfsgt	shiftregister	    ;ensures seed is not 0000
+	setf	shiftregister	    ;replaces 0000 seeds for 1111
 	return	
 	
 	
 load    call	produce		    ;produces random number 0-3, stores in random
         movff	random, POSTINC1    ;stores in FSR1, increases FSR1
-        incf	LFSRCounter,1,0
-        movff	sequence, WREG
-        cpfseq	LFSRCounter	    ;stops looping when sequence is length 4
-        bra	load
-        lfsr	FSR1, 0x140
+        incf	LFSRCounter,1,0	    ;increases counter
+        movff	sequence, WREG	    
+        cpfseq	LFSRCounter	    ;checks if sequence if finished    
+        bra	load		    ;continues creating numbers if sequence unfinished
+        lfsr	FSR1, 0x140	    ;resets values and exits if sequence finished
 	clrf	LFSRCounter
         return
 	
@@ -49,26 +40,17 @@ produce call	shift		    ;makes first random number
         addwf	random,1,0	    ;now random number can be 0-3
         return
 	
-;shift	movff	s3, WREG                
-;	xorwf	s2,0, ACCESS	    ;XOR gate, stores result in WREG
-;	movff	s2,s3		    ;shifts values to right
-;	movff	s1,s2
-;	movff	s0,s1
-;	movwf	s0, ACCESS	    ;moves XORed result to s0
-;	return
-	
-
-shift	movlw	0x01
+shift	movlw	0x01		    ;moves bit 4 to temp
 	movwf	temp
-	btfss	shiftregister,4
+	btfss	shiftregister,4	    
 	clrf	temp
-	btfss	shiftregister,5
+	btfss	shiftregister,5	    ;moves bit 5 to W
 	clrf	WREG
-	xorwf	temp, WREG
-	bcf	STATUS, C
+	xorwf	temp, WREG	    ;xors bit 4 and 5, moves result to W
+	bcf	STATUS, C	    ;moves result to carry bit
 	tstfsz	WREG
 	bsf	STATUS, C
-	rrcf	shiftregister
-	return
+	rrcf	shiftregister	    ;rotates shift register and uses carry bit as new input
+	return			    ;new bit is now in W and bit 7
 	
 	end

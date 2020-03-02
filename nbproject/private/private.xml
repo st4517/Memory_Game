@@ -3,14 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/H:/Y3/Labs/Microprocessors/Memory_Game/Flash_Seq.asm</file>
-            <file>file:/H:/Y3/Labs/Microprocessors/Memory_Game/LCD.asm</file>
-            <file>file:/H:/Y3/Labs/Microprocessors/Memory_Game/keypad.asm</file>
-            <file>file:/H:/Y3/Labs/Microprocessors/Memory_Game/Main.asm</file>
-            <file>file:/H:/Y3/Labs/Microprocessors/Memory_Game/config.asm</file>
-            <file>file:/H:/Y3/Labs/Microprocessors/Memory_Game/interrupt.asm</file>
-            <file>file:/H:/Y3/Labs/Microprocessors/Memory_Game/lfsr.asm</file>
-            <file>file:/H:/Y3/Labs/Microprocessors/Memory_Game/StartMessage.asm</file>
+            <file>file:/C:/Users/Marta/Documents/Imperial/3RD_YEAR/Lab/Memory_Game/Main.asm</file>
+            <file>file:/C:/Users/Marta/Documents/Imperial/3RD_YEAR/Lab/Memory_Game/keypad.asm</file>
+            <file>file:/C:/Users/Marta/Documents/Imperial/3RD_YEAR/Lab/Memory_Game/lfsr.asm</file>
+            <file>file:/C:/Users/Marta/Documents/Imperial/3RD_YEAR/Lab/Memory_Game/LCD.asm</file>
+            <file>file:/C:/Users/Marta/Documents/Imperial/3RD_YEAR/Lab/Memory_Game/StartMessage.asm</file>
+            <file>file:/C:/Users/Marta/Documents/Imperial/3RD_YEAR/Lab/Memory_Game/interrupt.asm</file>
+            <file>file:/C:/Users/Marta/Documents/Imperial/3RD_YEAR/Lab/Memory_Game/Flash_Seq.asm</file>
         </group>
     </open-files>
 </project-private>

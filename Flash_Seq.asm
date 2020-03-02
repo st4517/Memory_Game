@@ -1,27 +1,28 @@
 	#include p18f87k22.inc
 
-acs0    udata_acs   ; named variables in access ram	
-d0	res 1   ; delay lengths
-d1	res 1
-d2	res 1
-variabledelay	res 1
-flashcounter res 1	
-signal	res 1
-red   res 1
-blue  res 1
-violet	res 1
-yellow	res 1
+acs0		udata_acs	    ; named variables in access ram	
+d0		res 1		    ; delay lengths
+d1		res 1		    ; more delay variables
+d2		res 1		    ; more delay variables
+variabledelay	res 1		    ; length of delay read from ADC
+flashcounter	res 1		    ; counter
+signal		res 1		    ; 1, 2, 4 or 8 depending on LED colour
+red		res 1		    ; colour variables that make code easier
+blue		res 1
+violet		res 1
+yellow		res 1
 	
-global	read, setflash, flashcounter, meddelay, lildelay, bigdelay, allLEDS, variabledelay
+global	read, setflash, flashcounter, meddelay, lildelay, bigdelay, variabledelay
 extern	sequence
 
 
 flash   code
    
    
-setflash clrf	TRISD	;PORTD all outputs
-	clrf	PORTD
-	movlw	0x01
+setflash 
+	clrf	TRISD			 ;PORTD all outputs
+	clrf	PORTD			    
+	movlw	0x01			 ;sets colour variables
 	movwf	red
 	movlw	0x02
 	movwf	blue
@@ -31,23 +32,24 @@ setflash clrf	TRISD	;PORTD all outputs
 	movwf	yellow
 	return
      
-read	call	compare
-	movff	signal, PORTD
-	movf	POSTINC1,W
-	call	flashdelay
-	incf	flashcounter, 1,0
-	clrf	PORTD
-	call	flashdelay	
-	movff	sequence, WREG
-	cpfseq	flashcounter
-	bra	read
-	clrf	PORTD
+read					;reads sequence and flashes it
+	call	compare			;translates numbers 0-3 into signal
+	movff	signal, PORTD		;emits signal out of PORTD
+	movf	POSTINC1,W		;increases FSR1 address
+	call	flashdelay		;keeps light on for a bit
+	incf	flashcounter, 1,0	;increases counter
+	clrf	PORTD			;stops signal
+	call	flashdelay		;delays for a bit
+	movff	sequence, WREG		
+	cpfseq	flashcounter		;checks if all sequence has been read
+	bra	read			;keeps on reading if unfinished
 	lfsr	FSR1, 0x140		;restores FSR1
 	return
 
-compare	movff	red, signal
+compare					;translates 0-3 into 1,2,4,8
+	movff	red, signal
 	movlw	0x00 
-	cpfsgt  INDF1
+	cpfsgt  INDF1			;compares W to contents of FSR1
 	return
 	movff	blue, signal
 	movlw	0x01
@@ -59,54 +61,54 @@ compare	movff	red, signal
 	return
 	movff	yellow, signal
 	return
-				
-allLEDS movlw	0x00
-	movwf	TRISD,ACCESS
-	movlw	0x0F
-	movwf	PORTD, ACCESS	
-	movff	POSTINC1,W
-	return
-	;goto	interpret	
+
 	
-meddelay movlw 0x20	;sets delay time
+meddelay				;medium delay
+	movlw	0x20			;moves value to delay variables
+	movwf	d0
+	movwf	d1
+	movwf	d2
+	call	delay			;calls delay subroutine
+	return
+	
+bigdelay
+	movlw	0xF0			;moves bigger value to delay variables
 	movwf	d0
 	movwf	d1
 	movwf	d2
 	call	delay
 	return
 	
-bigdelay movlw 0xF0	;sets delay time
+lildelay 
+	movlw	0x10			;moves smaller value to delay variables
 	movwf	d0
 	movwf	d1
 	movwf	d2
 	call	delay
 	return
 	
-lildelay movlw 0x10	;sets delay time
+flashdelay  
+	movff	variabledelay, WREG	;moves one of 5 possible delay lengths
 	movwf	d0
 	movwf	d1
 	movwf	d2
 	call	delay
 	return
 	
-flashdelay  movff  variabledelay, WREG
-	movwf	d0
-	movwf	d1
-	movwf	d2
-	call	delay
-	return
-	
-delay	call	delay1
+delay					;main delay subroutine
+	call	delay1
 	decfsz	d0
 	bra	delay
 	return
 	
-delay1	call	delay2
+delay1					;subsubroutine
+	call	delay2
 	decfsz	d1
 	bra	delay1
 	return
 	
-delay2	decfsz	d2
+delay2					;subsubsubrountine
+	decfsz	d2
 	bra	delay2
 	return
 	 

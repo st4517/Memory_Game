@@ -1,4 +1,4 @@
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE  1
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -8,96 +8,78 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00001         LIST
                       00002 
                       00003 ;==========================================================================
-                      00004 ; Build date : Jul 23 2018
+                      00004 ; Build date : Oct 24 2019
                       00005 ;  MPASM PIC18F87K22 processor include
                       00006 ; 
-                      00007 ;  (c) Copyright 1999-2018 Microchip Technology, All rights reserved
+                      00007 ;  (c) Copyright 1999-2019 Microchip Technology, All rights reserved
                       00008 ;==========================================================================
                       00009 
                       02986         LIST
                       00002 
                       00003 acs0    udata_acs   ; named variables in access ram           
                       00004 
-                      00005 ;s0  res 1   ; bits for LFSR
-                      00006 ;s1  res 1
-                      00007 ;s2  res 1
-                      00008 ;s3  res 1
-000000                00009 shiftregister   res 1
-000001                00010 temp    res 1
-000002                00011 random  res 1   ;random number produced
-000003                00012 LFSRCounter res 1   ;sequence length
-000004                00013 seed    res 1
-                      00014       
+000000                00005 shiftregister   res 1                               ;simulates the LFSR
+000001                00006 temp            res 1                               ;temporary variable
+000002                00007 random          res 1                               ;random number produced
+000003                00008 LFSRCounter     res 1                               ;sequence length
+000004                00009 seed            res 1
+                      00010       
 Warning[205]: Found directive in column 1. (global)
-  0000                00015 global setlfsr, load, LFSRCounter, shiftregister
+  0000                00011 global setlfsr, load, LFSRCounter, shiftregister
 Warning[205]: Found directive in column 1. (extern)
-  0000                00016 extern  sequence
-                      00017 
-                      00018 random  code
-                      00019 
-000000                00020 setlfsr ;movlw  0x01                ;inputs seed
-                      00021 ;       movwf   s0
-                      00022 ;       movwf   s1
-                      00023 ;       movwf   s2
-                      00024 ;       movwf   
-000000 6A??           00025         clrf    LFSRCounter
-000002 EE11 F040      00026         lfsr    FSR1, 0x140         ;sets FSR1
-000006 0E04           00027         movlw   0x04
-000008 6E??           00028         movwf   sequence
-00000A 0E0F           00029         movlw   0x0F
-00000C 64??           00030         cpfsgt  shiftregister
-00000E 68??           00031         setf    shiftregister
-000010 0012           00032         return  
-                      00033         
-                      00034         
-000012 EC?? F???      00035 load    call    produce             ;produces random number 0-3, stores in random
-000016 C??? FFE6      00036         movff   random, POSTINC1    ;stores in FSR1, increases FSR1
-00001A 2A00           00037         incf    LFSRCounter,1,0
-00001C C??? FFE8      00038         movff   sequence, WREG
-000020 62??           00039         cpfseq  LFSRCounter         ;stops looping when sequence is length 4
-000022 D???           00040         bra     load
-000024 EE11 F040      00041         lfsr    FSR1, 0x140
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE  2
+  0000                00012 extern sequence
+                      00013 
+                      00014 random  code
+                      00015 
+000000 6A??           00016 setlfsr clrf    LFSRCounter         ;resets counter
+000002 EE11 F040      00017         lfsr    FSR1, 0x140         ;sets FSR1
+000006 0E04           00018         movlw   0x04
+000008 6E??           00019         movwf   sequence            ;sets initial sequence length to 4
+00000A 0E0F           00020         movlw   0x0F
+00000C 64??           00021         cpfsgt  shiftregister       ;ensures seed is not 0000
+00000E 68??           00022         setf    shiftregister       ;replaces 0000 seeds for 1111
+000010 0012           00023         return  
+                      00024         
+                      00025         
+000012 EC?? F???      00026 load    call    produce             ;produces random number 0-3, stores in random
+000016 C??? FFE6      00027         movff   random, POSTINC1    ;stores in FSR1, increases FSR1
+00001A 2A00           00028         incf    LFSRCounter,1,0     ;increases counter
+00001C C??? FFE8      00029         movff   sequence, WREG      
+000020 62??           00030         cpfseq  LFSRCounter         ;checks if sequence if finished    
+000022 D???           00031         bra     load                ;continues creating numbers if sequence unfinished
+000024 EE11 F040      00032         lfsr    FSR1, 0x140         ;resets values and exits if sequence finished
+000028 6A??           00033         clrf    LFSRCounter
+00002A 0012           00034         return
+                      00035         
+00002C EC?? F???      00036 produce call    shift               ;makes first random number
+000030 6E??           00037         movwf   random              ;puts it in random
+000032 EC?? F???      00038         call    shift               ;makes second random number                        
+000036 2600           00039         addwf   random,1,0          ;adds twice to random
+000038 2600           00040         addwf   random,1,0          ;now random number can be 0-3
+00003A 0012           00041         return
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-000028 6A??           00042         clrf    LFSRCounter
-00002A 0012           00043         return
-                      00044         
-00002C EC?? F???      00045 produce call    shift               ;makes first random number
-000030 6E??           00046         movwf   random              ;puts it in random
-000032 EC?? F???      00047         call    shift               ;makes second random number                        
-000036 2600           00048         addwf   random,1,0          ;adds twice to random
-000038 2600           00049         addwf   random,1,0          ;now random number can be 0-3
-00003A 0012           00050         return
-                      00051         
-                      00052 ;shift  movff   s3, WREG                
-                      00053 ;       xorwf   s2,0, ACCESS        ;XOR gate, stores result in WREG
-                      00054 ;       movff   s2,s3               ;shifts values to right
-                      00055 ;       movff   s1,s2
-                      00056 ;       movff   s0,s1
-                      00057 ;       movwf   s0, ACCESS          ;moves XORed result to s0
-                      00058 ;       return
-                      00059         
-                      00060 
-00003C 0E01           00061 shift   movlw   0x01
-00003E 6E??           00062         movwf   temp
-000040 A8??           00063         btfss   shiftregister,4
-000042 6A??           00064         clrf    temp
-000044 AA??           00065         btfss   shiftregister,5
-000046 6AE8           00066         clrf    WREG
+                      00042         
+00003C 0E01           00043 shift   movlw   0x01                ;moves bit 4 to temp
+00003E 6E??           00044         movwf   temp
+000040 A8??           00045         btfss   shiftregister,4     
+000042 6A??           00046         clrf    temp
+000044 AA??           00047         btfss   shiftregister,5     ;moves bit 5 to W
+000046 6AE8           00048         clrf    WREG
 Warning[202]: Argument out of range.  Least significant bits used.
-000048 1800           00067         xorwf   temp, WREG
-00004A 90D8           00068         bcf     STATUS, C
-00004C 66E8           00069         tstfsz  WREG
-00004E 80D8           00070         bsf     STATUS, C
-000050 32??           00071         rrcf    shiftregister
-000052 0012           00072         return
-                      00073         
-                      00074         end
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE  3
+000048 1800           00049         xorwf   temp, WREG          ;xors bit 4 and 5, moves result to W
+00004A 90D8           00050         bcf     STATUS, C           ;moves result to carry bit
+00004C 66E8           00051         tstfsz  WREG
+00004E 80D8           00052         bsf     STATUS, C
+000050 32??           00053         rrcf    shiftregister       ;rotates shift register and uses carry bit as new input
+000052 0012           00054         return                      ;new bit is now in W and bit 7
+                      00055         
+                      00056         end
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE  3
 
 
 SYMBOL TABLE
@@ -156,7 +138,7 @@ ADMSK5                            00000005
 ADON                              00000000
 ADRES                             00000FC3
 ADRESH                            00000FC4
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE  4
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE  4
 
 
 SYMBOL TABLE
@@ -215,7 +197,7 @@ ANSEL16                           00000000
 ANSEL17                           00000001
 ANSEL18                           00000002
 ANSEL19                           00000003
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE  5
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE  5
 
 
 SYMBOL TABLE
@@ -274,7 +256,7 @@ C1TSEL0                           00000000
 C1TSEL1                           00000001
 C1TSEL2                           00000002
 C2INA                             00000004
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE  6
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE  6
 
 
 SYMBOL TABLE
@@ -333,7 +315,7 @@ CCP1IP                            00000001
 CCP1M0                            00000000
 CCP1M1                            00000001
 CCP1M2                            00000002
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE  7
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE  7
 
 
 SYMBOL TABLE
@@ -392,7 +374,7 @@ CCP5M0                            00000000
 CCP5M1                            00000001
 CCP5M2                            00000002
 CCP5M3                            00000003
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE  8
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE  8
 
 
 SYMBOL TABLE
@@ -451,7 +433,7 @@ CCP9IP                            00000006
 CCP9M0                            00000000
 CCP9M1                            00000001
 CCP9M2                            00000002
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE  9
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE  9
 
 
 SYMBOL TABLE
@@ -510,7 +492,7 @@ CHSN1                             00000001
 CHSN2                             00000002
 CK1                               00000006
 CK2                               00000001
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 10
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 10
 
 
 SYMBOL TABLE
@@ -569,7 +551,7 @@ CTMUIE                            00000003
 CTMUIF                            00000003
 CTMUIP                            00000003
 CTMUMD                            00000006
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 11
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 11
 
 
 SYMBOL TABLE
@@ -628,7 +610,7 @@ ECCP1AS1                          00000005
 ECCP1AS2                          00000006
 ECCP1ASE                          00000007
 ECCP1CON                          00000FBB
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 12
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 12
 
 
 SYMBOL TABLE
@@ -687,7 +669,7 @@ FSR2H                             00000FDA
 FSR2L                             00000FD9
 GCEN                              00000007
 GIE                               00000007
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 13
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 13
 
 
 SYMBOL TABLE
@@ -746,7 +728,7 @@ INT3F                             00000002
 INT3IE                            00000005
 INT3IF                            00000002
 INT3IP                            00000001
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 14
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 14
 
 
 SYMBOL TABLE
@@ -805,7 +787,7 @@ LATB7                             00000007
 LATC                              00000F8B
 LATC0                             00000000
 LATC1                             00000001
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 15
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 15
 
 
 SYMBOL TABLE
@@ -864,7 +846,7 @@ LATJ1                             00000001
 LATJ2                             00000002
 LATJ3                             00000003
 LATJ4                             00000004
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 16
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 16
 
 
 SYMBOL TABLE
@@ -923,7 +905,7 @@ ODCON3                            00000F27
 OE                                00000001
 OERR                              00000001
 OERR1                             00000001
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 17
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 17
 
 
 SYMBOL TABLE
@@ -982,7 +964,7 @@ P3M0                              00000006
 P3M1                              00000007
 P3RSEN                            00000007
 PA3                               00000000
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 18
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 18
 
 
 SYMBOL TABLE
@@ -1041,7 +1023,7 @@ POSTDEC1                          00000FE5
 POSTDEC2                          00000FDD
 POSTINC0                          00000FEE
 POSTINC1                          00000FE6
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 19
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 19
 
 
 SYMBOL TABLE
@@ -1100,7 +1082,7 @@ RA3                               00000003
 RA4                               00000004
 RA5                               00000005
 RA6                               00000006
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 20
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 20
 
 
 SYMBOL TABLE
@@ -1159,7 +1141,7 @@ RD5                               00000005
 RD6                               00000006
 RD7                               00000007
 RDPU                              00000007
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 21
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 21
 
 
 SYMBOL TABLE
@@ -1218,7 +1200,7 @@ ROSEL                             00000004
 ROSSLP                            00000005
 RSEN                              00000001
 RTCC                              00000004
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 22
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 22
 
 
 SYMBOL TABLE
@@ -1277,7 +1259,7 @@ SOSCGO                            00000003
 SOSCI                             00000001
 SOSCO                             00000000
 SOSCRUN                           00000006
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 23
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 23
 
 
 SYMBOL TABLE
@@ -1336,7 +1318,7 @@ SSPM1                             00000001
 SSPM2                             00000002
 SSPM3                             00000003
 SSPOV                             00000006
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 24
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 24
 
 
 SYMBOL TABLE
@@ -1395,7 +1377,7 @@ T1GPOL                            00000006
 T1GSPM                            00000004
 T1GSS0                            00000000
 T1GSS1                            00000001
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 25
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 25
 
 
 SYMBOL TABLE
@@ -1454,7 +1436,7 @@ T6OUTPS2                          00000005
 T6OUTPS3                          00000006
 T7CKI                             00000004
 T7CKPS0                           00000004
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 26
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 26
 
 
 SYMBOL TABLE
@@ -1513,7 +1495,7 @@ TMR1GIF                           00000002
 TMR1GIP                           00000002
 TMR1H                             00000FCF
 TMR1IE                            00000000
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 27
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 27
 
 
 SYMBOL TABLE
@@ -1572,7 +1554,7 @@ TMR6MD                            00000004
 TMR6ON                            00000002
 TMR7                              00000F3E
 TMR7CS0                           00000006
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 28
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 28
 
 
 SYMBOL TABLE
@@ -1631,7 +1613,7 @@ TRISC5                            00000005
 TRISC6                            00000006
 TRISC7                            00000007
 TRISD                             00000F95
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 29
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 29
 
 
 SYMBOL TABLE
@@ -1690,7 +1672,7 @@ TRMT                              00000001
 TRMT1                             00000001
 TRMT2                             00000001
 TUN0                              00000000
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 30
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 30
 
 
 SYMBOL TABLE
@@ -1749,7 +1731,7 @@ VREF_PLUS                         00000003
 W                                 00000000
 WAIT0                             00000004
 WAIT1                             00000005
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 31
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 31
 
 
 SYMBOL TABLE
@@ -1808,7 +1790,7 @@ _CP1_OFF_5L                       000000FF
 _CP1_ON_5L                        000000FD
 _CP2_OFF_5L                       000000FF
 _CP2_ON_5L                        000000FB
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 32
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 32
 
 
 SYMBOL TABLE
@@ -1867,7 +1849,7 @@ _FOSC_HS2_1H                      000000F2
 _FOSC_INTIO1_1H                   000000F9
 _FOSC_INTIO2_1H                   000000F8
 _FOSC_LP_1H                       000000F0
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 33
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 33
 
 
 SYMBOL TABLE
@@ -1926,7 +1908,7 @@ _WDTPS_32768_2H                   000000BF
 _WDTPS_32_2H                      00000097
 _WDTPS_4096_2H                    000000B3
 _WDTPS_4_2H                       0000008B
-MPASM 5.81                          LFSR.ASM   2-24-2020  16:25:12         PAGE 34
+MPASM 5.86                          LFSR.ASM   3-2-2020  14:23:00         PAGE 34
 
 
 SYMBOL TABLE

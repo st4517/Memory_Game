@@ -11,32 +11,32 @@ extern	nextlevel, no_buttons, sequence, countdown, lildelay, failure, shiftregis
 	
 	
 
-keypad code                     ; let linker place main program
+keypad code           
 
 keypadsetup
-	banksel PADCFG1		    ; PADCFG1 is not in Access Bank!!
+	banksel PADCFG1			    ;PADCFG1 is not in Access Bank!!
 	bsf	PADCFG1, REPU, BANKED	    ;enable pullup resistors
 	movlw	0x0F
-	movwf	TRISE		    ;lower nibble input, upper nibble output
-	clrf	PORTE
+	movwf	TRISE			    ;lower nibble input, upper nibble output
+	clrf	PORTE			    ;drives outputs low
 	clrf	countdown
 	setf	shiftregister
 	return
 	
-keypadloop
-.	btfss	PORTE, RE0
-	retlw	0x00
-	btfss	PORTE, RE1
-	retlw	0x01
-	btfss	PORTE, RE2
-	retlw	0x02
-	btfss	PORTE, RE3
-	retlw	0x03
-	incf	shiftregister, 1
-	bra	keypadloop
+keypadloop				    ;code that waits for ANY button to be pressed
+.	btfss	PORTE, RE0		    ;checks if 1st button is pressed
+	return
+	btfss	PORTE, RE1		    ;checks if 2nd button is pressed
+	return
+	btfss	PORTE, RE2		    ;checks if 3rd button is pressed
+	return
+	btfss	PORTE, RE3		    ;checks if 4th button is pressed
+	return
+	incf	shiftregister, 1	    ;increases LFSR seed as it loops
+	bra	keypadloop		    ;keeps looping if no button has been pressed
 	
-readinput
-	btfss	PORTE, RE0
+readinput				    ;reads what button has been pressed
+	btfss	PORTE, RE0		    ;redirects code to a certain subroutine depending on button pressed
 	call	red
 	btfss	PORTE, RE1
 	call	blue
@@ -45,23 +45,25 @@ readinput
 	btfss	PORTE, RE3
 	call	yellow
 	movlw	0x15
-	cpfsgt	countdown
-	bra	readinput
-	goto	leave
+	cpfsgt	countdown		    ;checks if time is up
+	bra	readinput		    ;keeps looping if there is time left
+	goto	leave			    ;exits if time has run out
 	
 	
-red	movlw	0x01
-	movwf	PORTD
+red					    ;compares RED
+	movlw	0x01
+	movwf	PORTD			    ;flashes red led
 	movlw	0x00
-	call	check
+	call	check			    ;decides to exit or continue game
 	call	lildelay
 	clrf	PORTD
 	movff	no_buttons, WREG
-	cpfsgt	sequence
-	goto	nextlevel
-	return
+	cpfsgt	sequence		    ;checks if sequence has been completed
+	goto	nextlevel		    ;goes to next level if all correct
+	return				    ;keeps reading if sequence unfinished
 	
-blue	movlw	0x02
+blue					    ;compares BLUE
+	movlw	0x02
 	movwf	PORTD
 	movlw	0x01
 	call	check
@@ -72,7 +74,8 @@ blue	movlw	0x02
 	goto	nextlevel
 	return
 	
-violet	movlw	0x04
+violet					    ;compares VIOLET
+	movlw	0x04
 	movwf	PORTD
 	movlw	0x02
 	call	check
@@ -83,7 +86,8 @@ violet	movlw	0x04
 	goto	nextlevel
 	return
 	
-yellow	movlw	0x08
+yellow					    ;compares YELLOW
+	movlw	0x08
 	movwf	PORTD
 	movlw	0x03
 	call	check
@@ -94,13 +98,10 @@ yellow	movlw	0x08
 	goto	nextlevel
 	return	
 	
-check	cpfseq	POSTINC1
-	goto	errormess
-	incf	no_buttons	    ;posssibly include success message here
+check	cpfseq	POSTINC1	    ;compares input to FSR1 contents +increases address
+	goto	errormess	    ;exits game
+	incf	no_buttons	    ;indicates number of correct inputs
 	return
-	
-
-
 	
 
     end
